@@ -63,8 +63,8 @@ export default function PrivacyPolicy({ isOpen, onClose }: PrivacyPolicyProps) {
               <p>
                 Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:<br />
                 GFKCoach<br />
-                [Adresse]<br />
-                [Kontaktdaten]
+                Stuttgart-Nord<br />
+                info@gfkcoach.com
               </p>
 
               <h3>3. Datenerfassung auf dieser Website</h3>
