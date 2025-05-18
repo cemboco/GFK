@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield } from 'lucide-react';
+import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
 import CreditSystem from './components/CreditSystem';
@@ -7,6 +7,7 @@ import CTAForm from './components/CTAForm';
 import FeedbackDialog from './components/FeedbackDialog';
 import PositiveFeedbackDialog from './components/PositiveFeedbackDialog';
 import PrivacyPolicy from './components/PrivacyPolicy';
+import Contact from './components/Contact';
 import { useCredits } from './hooks/useCredits';
 
 const supabase = createClient(
@@ -15,7 +16,7 @@ const supabase = createClient(
 );
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'gfk' | 'about'>('gfk');
+  const [activeTab, setActiveTab] = useState<'gfk' | 'about' | 'contact'>('gfk');
   const [input, setInput] = useState('');
   const [output, setOutput] = useState<{
     observation: string;
@@ -247,6 +248,21 @@ function App() {
                   Über GFK
                 </div>
               </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setActiveTab('contact')}
+                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                  activeTab === 'contact'
+                    ? 'bg-purple-100 text-purple-700'
+                    : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                }`}
+              >
+                <div className="flex items-center">
+                  <Mail className="h-5 w-5 mr-2" />
+                  Kontakt
+                </div>
+              </motion.button>
             </div>
           </div>
         </div>
@@ -256,6 +272,8 @@ function App() {
         <AnimatePresence mode="wait">
           {activeTab === 'about' ? (
             <AboutContent />
+          ) : activeTab === 'contact' ? (
+            <Contact />
           ) : (
             <motion.div
               key="gfk"
