@@ -434,7 +434,7 @@ function App() {
             <Heart className="h-12 w-12 mx-auto mb-6 text-white opacity-90" />
             <h2 className="text-3xl font-bold mb-4">Hilf uns, GFKCoach zu verbessern!</h2>
             <p className="mb-8 text-lg text-purple-100">
-              Hilf uns, GFKCoach zu verbessern! Damit wir die App weiterentwickeln können, würden wir uns freuen, dich kontaktieren zu dürfen.
+              Damit wir die App weiterentwickeln können, würden wir uns freuen, dich kontaktieren zu dürfen.
             </p>
             <form onSubmit={(e) => {
               e.preventDefault();
