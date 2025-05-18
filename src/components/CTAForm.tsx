@@ -81,7 +81,7 @@ export default function CTAForm({ onSubmit, isLoading, error, subscribeSuccess }
               Bleib auf dem Laufenden!
             </h3>
             <p className="text-gray-600 mt-2">
-              Erhalte Updates und sichere dir Zugang zur Beta-Version.
+              Damit wir die App weiterentwickeln können, würden wir uns freuen, dich kontaktieren zu dürfen.
             </p>
           </div>
 
