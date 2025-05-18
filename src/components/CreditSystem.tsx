@@ -113,7 +113,7 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
                   <h2 className="text-2xl font-bold text-gray-900">Wertschätzung</h2>
                   <p className="text-gray-600">
                     Wie viel wär dir diese Anwendung im Monat wert und wie oft würdest du die App verwenden?
-Als Dankeschön erhältst du 5 weitere Credits. Wenn diese aufgebraucht sind, musst du warten, bis die vollständige App verfügbar ist.
+Als Dankeschön erhältst du weitere Credits. Wenn diese aufgebraucht sind, musst du warten, bis die vollständige App verfügbar ist.
                   </p>
                   <form onSubmit={handleCustomPrice} className="space-y-4">
                     <div className="relative">
