@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle } from 'lucide-react';
+import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
 import CreditSystem from './components/CreditSystem';
 import CTAForm from './components/CTAForm';
 import FeedbackDialog from './components/FeedbackDialog';
 import PositiveFeedbackDialog from './components/PositiveFeedbackDialog';
+import PrivacyPolicy from './components/PrivacyPolicy';
 import { useCredits } from './hooks/useCredits';
 
 const supabase = createClient(
@@ -30,6 +31,7 @@ function App() {
   const [feedbackGiven, setFeedbackGiven] = useState(false);
   const [showNegativeFeedbackDialog, setShowNegativeFeedbackDialog] = useState(false);
   const [showPositiveFeedbackDialog, setShowPositiveFeedbackDialog] = useState(false);
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const { credits, useCredit, addCredits } = useCredits();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -210,6 +212,9 @@ function App() {
               <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">
                 GFKCoach
               </h1>
+              <span className="ml-2 text-sm text-purple-600 bg-purple-100 px-2 py-1 rounded-full">
+                Beta-Version
+              </span>
             </motion.div>
             <div className="flex space-x-4">
               <motion.button
@@ -498,6 +503,13 @@ function App() {
       <footer className="bg-white/80 backdrop-blur-sm mt-12 py-8 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 text-center text-gray-600">
           <p>© {new Date().getFullYear()} GFKCoach - Alle Rechte vorbehalten</p>
+          <button
+            onClick={() => setShowPrivacyPolicy(true)}
+            className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center mx-auto mt-2"
+          >
+            <Shield className="h-4 w-4 mr-1" />
+            Datenschutz
+          </button>
         </div>
       </footer>
 
@@ -511,6 +523,11 @@ function App() {
         isOpen={showPositiveFeedbackDialog}
         onClose={() => setShowPositiveFeedbackDialog(false)}
         onSubmit={handlePositiveFeedbackSubmit}
+      />
+
+      <PrivacyPolicy
+        isOpen={showPrivacyPolicy}
+        onClose={() => setShowPrivacyPolicy(false)}
       />
     </div>
   );
