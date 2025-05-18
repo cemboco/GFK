@@ -182,10 +182,15 @@ ANLEITUNG ZUR VERWENDUNG DER BEISPIELE:
    - Formuliere Bitten positiv und konkret wie in den ✅ Beispielen
 
 ZUSÄTZLICHE ANWEISUNGEN:
-- Achte besonders auf kulturelle Sensibilität und Kontext
-- Passe den Sprachstil an die Situation an
-- Stelle sicher, dass alle vier Komponenten logisch zusammenhängen
-- Vermeide Verallgemeinerungen wie "immer", "nie", "jeder", "keiner"
+
+- Achte besonders auf kulturelle Sensibilität und Kontext.
+- Passe den Sprachstil an die Situation an.
+- Stelle sicher, dass alle vier Komponenten logisch zusammenhängen.
+- Vermeide Verallgemeinerungen wie "immer", "nie", "jeder", "keiner".
+- Formuliere die Antworten so, dass sie sowohl empathisch als auch verständlich sind.
+- Berücksichtige unterschiedliche Perspektiven und vermeide einseitige Darstellungen.
+- Gib konkrete Beispiele, wenn möglich, um die Botschaft anschaulich zu machen.
+- Ermögliche dem Nutzer, die Formulierung individuell anzupassen, um den persönlichen Ausdruck zu bewahren.
 
 Antworte AUSSCHLIESSLICH im folgenden JSON-Format:
 {
