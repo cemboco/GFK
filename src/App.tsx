@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info } from 'lucide-react';
+import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
 import CreditSystem from './components/CreditSystem';
@@ -65,7 +65,6 @@ function App() {
       setOutput(data);
       useCredit();
 
-      // Store input and output in messages table
       await supabase.from('messages').insert([{
         input_text: input,
         output_text: data
@@ -178,6 +177,19 @@ function App() {
         onPurchase={addCredits}
       />
       
+      <div className="fixed top-4 right-4 z-40 flex items-center space-x-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white/90 backdrop-blur-sm shadow-lg rounded-full px-4 py-2 flex items-center"
+        >
+          <MessageCircle className="h-5 w-5 text-purple-600 mr-2" />
+          <span className="font-medium text-purple-600">
+            23 Nutzer haben bereits Feedback gegeben
+          </span>
+        </motion.div>
+      </div>
+
       <div className="fixed top-4 left-4 z-40">
         <div className="bg-white/90 backdrop-blur-sm shadow-lg rounded-full px-4 py-2">
           <span className="font-medium text-purple-600">
