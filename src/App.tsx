@@ -180,19 +180,6 @@ function App() {
         onPurchase={addCredits}
       />
       
-      <div className="fixed top-4 right-4 z-40 flex items-center space-x-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-white/90 backdrop-blur-sm shadow-lg rounded-full px-4 py-2 flex items-center"
-        >
-          <MessageCircle className="h-5 w-5 text-purple-600 mr-2" />
-          <span className="font-medium text-purple-600">
-            23 Nutzer haben bereits Feedback gegeben
-          </span>
-        </motion.div>
-      </div>
-
       <div className="fixed top-4 left-4 z-40">
         <div className="bg-white/90 backdrop-blur-sm shadow-lg rounded-full px-4 py-2">
           <span className="font-medium text-purple-600">
@@ -515,6 +502,17 @@ function App() {
               </motion.div>
             )}
           </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white/90 backdrop-blur-sm shadow-lg rounded-full px-6 py-3 flex items-center justify-center mx-auto mt-8 max-w-max"
+        >
+          <MessageCircle className="h-5 w-5 text-purple-600 mr-2" />
+          <span className="font-medium text-purple-600">
+            23 Nutzer haben bereits Feedback gegeben
+          </span>
         </motion.div>
       </main>
 
