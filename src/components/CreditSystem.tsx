@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { CreditCard, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCredits } from '../hooks/useCredits';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 interface CreditSystemProps {
   onCreditUse: () => void;
@@ -14,6 +20,7 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
   const [wasHelpful, setWasHelpful] = useState<boolean | null>(null);
   const [wantsToContinue, setWantsToContinue] = useState<boolean | null>(null);
   const [customPrice, setCustomPrice] = useState<string>('');
+  const [usageFrequency, setUsageFrequency] = useState<string>('');
 
   useEffect(() => {
     if (credits === 0 && !hasReceivedBonusCredits) {
@@ -38,13 +45,23 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
     }
   };
 
-  const handleCustomPrice = (e: React.FormEvent) => {
+  const handleCustomPrice = async (e: React.FormEvent) => {
     e.preventDefault();
     const price = parseFloat(customPrice);
     if (isNaN(price) || price <= 0) return;
     
-    onPurchase(5); // Give 5 bonus credits
-    setShowFeedbackDialog(false);
+    try {
+      // Store feedback in the database
+      await supabase.from('credit_feedback').insert([{
+        amount: price,
+        message: usageFrequency
+      }]);
+
+      onPurchase(5); // Give 5 bonus credits
+      setShowFeedbackDialog(false);
+    } catch (error) {
+      console.error('Error saving feedback:', error);
+    }
   };
 
   return (
@@ -113,7 +130,7 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
                   <h2 className="text-2xl font-bold text-gray-900">Wertschätzung</h2>
                   <p className="text-gray-600">
                     Wie viel wär dir diese Anwendung im Monat wert und wie oft würdest du die App verwenden?
-Als Dankeschön erhältst du weitere Credits. Wenn diese aufgebraucht sind, musst du warten, bis die vollständige App verfügbar ist.
+                    Als Dankeschön erhältst du weitere Credits. Wenn diese aufgebraucht sind, musst du warten, bis die vollständige App verfügbar ist.
                   </p>
                   <form onSubmit={handleCustomPrice} className="space-y-4">
                     <div className="relative">
@@ -128,6 +145,13 @@ Als Dankeschön erhältst du weitere Credits. Wenn diese aufgebraucht sind, muss
                       />
                       <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">€</span>
                     </div>
+                    <textarea
+                      value={usageFrequency}
+                      onChange={(e) => setUsageFrequency(e.target.value)}
+                      placeholder="Wie oft würdest du die App nutzen?"
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
+                      rows={3}
+                    />
                     <button
                       type="submit"
                       className="w-full py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
