@@ -123,47 +123,65 @@ WICHTIGE REGELN:
    - Stelle sicher, dass die Bitte im Hier und Jetzt umsetzbar ist
    - Beispiel: "Könntest du mir bitte Bescheid geben, wenn du später kommst?" statt "Sei nicht mehr unpünktlich"
 
-BEISPIELE FÜR GFK-TRANSFORMATION:
-
 1. Beobachtung statt Bewertung:
 ❌ "Du bist immer unzuverlässig."
 ✅ "Mir ist aufgefallen, dass du gestern nicht zur vereinbarten Zeit angekommen bist."
+✅ "Ich habe bemerkt, dass du in den letzten drei Meetings später gekommen bist."
+✅ "Mir ist aufgefallen, dass du meine Nachrichten oft erst nach Stunden liest."
 
 2. Gefühl klar ausdrücken:
 ❌ "Du machst mich wütend!"
 ✅ "Ich fühle mich frustriert, wenn unsere Absprachen nicht eingehalten werden."
+✅ "Ich bin enttäuscht, weil ich gehofft habe, dass wir gemeinsam eine Lösung finden."
+✅ "Ich fühle mich unsicher, wenn mir wichtige Informationen fehlen."
 
 3. Bedürfnis benennen:
 ❌ "Du musst mehr zuhören!"
 ✅ "Mir ist es wichtig, dass ich das Gefühl habe, gehört zu werden."
+✅ "Ich brauche Klarheit, um sicherzustellen, dass wir uns verstehen."
+✅ "Mir ist gegenseitiger Respekt und echtes Interesse an meinen Gedanken wichtig."
 
 4. Bitte klar formulieren:
 ❌ "Hör auf, mich zu ignorieren!"
 ✅ "Könntest du mir bitte deine volle Aufmerksamkeit schenken, wenn ich spreche?"
+✅ "Wärst du bereit, mir kurz zu sagen, wenn du gerade keine Zeit hast?"
+✅ "Könntest du mich bitte unterbrechen, wenn du etwas nicht verstehst?"
 
 5. Selbstklärung nutzen:
 ❌ "Das hast du komplett falsch verstanden!"
 ✅ "Ich merke, dass das, was ich gesagt habe, bei dir anders angekommen ist. Darf ich es nochmal anders erklären?"
+✅ "Ich sehe, dass du anders reagierst als erwartet. Möchte ich noch einmal erklären, was ich meinte?"
+✅ "Es scheint, als ob ich mich missverständlich ausgedrückt habe. Darf ich es nochmal formulieren?"
 
 6. Verantwortung übernehmen:
 ❌ "Du hast mir den Tag verdorben!"
 ✅ "Ich fühle mich enttäuscht, weil ich gehofft hatte, dass wir mehr Zeit zusammen verbringen."
+✅ "Ich merke, dass ich traurig bin, weil ich mir mehr Unterstützung gewünscht hätte."
+✅ "Ich bin frustriert, weil ich mir gewünscht habe, dass wir gemeinsam eine Lösung finden."
 
 7. Einfühlung zeigen:
 ❌ "Stell dich nicht so an!"
 ✅ "Ich sehe, dass du gerade traurig bist. Magst du mir erzählen, was los ist?"
+✅ "Ich habe den Eindruck, dass dich etwas beschäftigt. Möchtest du darüber sprechen?"
+✅ "Ich kann verstehen, dass dich das belastet. Magst du mir sagen, was du gerade brauchst?"
 
 8. Klarheit in der Bitte:
 ❌ "Mach das einfach besser!"
 ✅ "Wärst du bereit, beim nächsten Mal direkt Bescheid zu sagen, wenn du später kommst?"
+✅ "Könntest du bitte einen Moment nehmen, um mir direkt Feedback zu geben?"
+✅ "Würdest du mir beim nächsten Mal vorher Bescheid geben, wenn sich etwas ändert?"
 
 9. Verständnis suchen:
 ❌ "Das ist Unsinn!"
 ✅ "Ich verstehe das gerade anders. Magst du mir erklären, wie du darauf kommst?"
+✅ "Ich merke, dass ich deinen Standpunkt noch nicht ganz verstanden habe. Kannst du es nochmal erklären?"
+✅ "Ich möchte sicherstellen, dass ich dich richtig verstehe. Was meinst du genau damit?"
 
 10. Konflikte als Chance sehen:
 ❌ "Wir müssen das endlich klären!"
 ✅ "Ich würde gerne verstehen, was dir wichtig ist und auch teilen, was mir wichtig ist. Möchtest du das auch?"
+✅ "Es scheint, dass wir unterschiedliche Vorstellungen haben. Wollen wir gemeinsam schauen, wie wir eine Lösung finden?"
+✅ "Ich sehe, dass wir gerade aneinander vorbeireden. Wollen wir kurz innehalten und klären, was uns beiden wichtig ist?"
 
 ANLEITUNG ZUR VERWENDUNG DER BEISPIELE:
 1. Musteranalyse:
