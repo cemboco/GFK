@@ -183,6 +183,54 @@ WICHTIGE REGELN:
 ✅ "Es scheint, dass wir unterschiedliche Vorstellungen haben. Wollen wir gemeinsam schauen, wie wir eine Lösung finden?"
 ✅ "Ich sehe, dass wir gerade aneinander vorbeireden. Wollen wir kurz innehalten und klären, was uns beiden wichtig ist?"
 
+11. Mit Kritik umgehen:
+❌ "Warum kritisierst du mich immer?"
+✅ "Wenn ich höre, dass du mit meiner Arbeit unzufrieden bist, fühle ich mich verunsichert, weil mir Wertschätzung wichtig ist. Könntest du mir bitte konkret sagen, was du dir anders wünschst?"
+
+12. Mit Unterbrechungen umgehen:
+❌ "Du lässt mich nie ausreden!"
+✅ "Ich habe bemerkt, dass ich dreimal unterbrochen wurde, während ich sprach. Ich fühle mich dadurch frustriert, weil mir ein vollständiger Gedankenaustausch wichtig ist. Könnten wir vereinbaren, dass jeder ausreden darf?"
+
+13. Grenzen setzen:
+❌ "Du kannst nicht einfach so über meine Grenzen gehen!"
+✅ "Als du ohne Ankündigung in mein Büro gekommen bist, während ich in einer Besprechung war, fühlte ich mich überrumpelt. Mir ist Privatsphäre und Planbarkeit wichtig. Könntest du mich bitte vorher fragen, ob es ein guter Zeitpunkt ist?"
+
+14. Umgang mit Verspätungen:
+❌ "Deine ständige Unpünktlichkeit ist respektlos!"
+✅ "Ich habe bemerkt, dass du in den letzten drei Treffen 15-20 Minuten später gekommen bist. Ich fühle mich dadurch ungeduldig, weil mir Effizienz und gegenseitige Rücksichtnahme wichtig sind. Wäre es möglich, dass du mir Bescheid gibst, wenn du später kommst?"
+
+15. Fehler ansprechen:
+❌ "Das hast du völlig falsch gemacht!"
+✅ "Ich sehe, dass in diesem Bericht andere Zahlen stehen als in unseren Unterlagen. Ich bin beunruhigt, weil mir Genauigkeit wichtig ist. Könnten wir gemeinsam die Daten überprüfen?"
+
+16. Bei Meinungsverschiedenheiten:
+❌ "Deine Herangehensweise ist unprofessionell und wird nicht funktionieren."
+✅ "Ich sehe, dass wir unterschiedliche Ansätze für dieses Projekt haben. Ich bin besorgt, weil mir ein strukturiertes Vorgehen wichtig ist. Könntest du mir erklären, welche Vorteile du in deinem Ansatz siehst?"
+
+17. Feedback geben:
+❌ "Deine Präsentation war viel zu lang und langweilig."
+✅ "Ich habe bemerkt, dass deine Präsentation 15 Minuten länger ging als geplant. Ich war unruhig, weil mir Zeiteffizienz wichtig ist. Würdest du beim nächsten Mal die wichtigsten Punkte kompakter zusammenfassen?"
+
+18. Bei Missverständnissen:
+❌ "Du hast mich absichtlich missverstanden!"
+✅ "Ich merke, dass meine Botschaft anders angekommen ist, als ich sie gemeint habe. Ich bin frustriert, weil mir klare Kommunikation wichtig ist. Darf ich noch einmal versuchen, mein Anliegen deutlicher zu formulieren?"
+
+19. Umgang mit Ablehnung:
+❌ "Ich finde es unfair, dass du meinen Vorschlag ablehnst."
+✅ "Ich höre, dass mein Vorschlag für dich nicht passend ist. Ich bin enttäuscht, weil ich gehofft hatte, eine Lösung gefunden zu haben. Magst du mir sagen, welche Aspekte für dich nicht funktionieren, damit wir gemeinsam eine Alternative finden können?"
+
+20. Bei Stress und Überforderung:
+❌ "Ich kann das unmöglich alles erledigen, was du von mir verlangst!"
+✅ "Wenn ich mir die Anzahl der Aufgaben ansehe, die bis morgen erledigt sein sollen, fühle ich mich überfordert. Mir ist wichtig, qualitativ gute Arbeit zu leisten. Könnten wir gemeinsam priorisieren oder einige Deadlines verschieben?"
+
+21. Bei wiederholten Problemen:
+❌ "Wir diskutieren ständig dasselbe, aber nichts ändert sich!"
+✅ "Ich bemerke, dass wir in den letzten drei Meetings über dasselbe Thema gesprochen haben, ohne zu einer Lösung zu kommen. Ich fühle mich entmutigt, weil mir Fortschritt und Effizienz wichtig sind. Könnten wir einen konkreten Aktionsplan mit Verantwortlichkeiten erstellen?"
+
+22. Bei Konflikten im Team:
+❌ "In eurem Team herrscht ein toxisches Klima!"
+✅ "Ich habe in den letzten Teammeetings beobachtet, dass mehrere Personen sich gegenseitig unterbrochen haben und Vorschläge sofort kritisiert wurden. Ich bin besorgt, weil mir ein respektvoller Umgang und die Nutzung aller Potenziale wichtig sind. Wären Sie bereit, gemeinsam Kommunikationsregeln für Meetings zu vereinbaren?"
+
 ANLEITUNG ZUR VERWENDUNG DER BEISPIELE:
 1. Musteranalyse:
    - Erkenne das Muster in den positiven Beispielen (✅)
