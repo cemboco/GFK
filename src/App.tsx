@@ -508,7 +508,7 @@ function App() {
                             animate={{ opacity: 1, y: 0 }}
                             className="mt-4 p-4 bg-green-800/20 rounded-xl text-white max-w-md mx-auto"
                           >
-                            Danke für deine Anmeldung! Wir halten dich über alle Neuigkeiten auf dem Laufenden.
+                            Danke für deine Bereitschaft.
                           </motion.div>
                         )}
                       </div>
@@ -521,7 +521,7 @@ function App() {
                     >
                       <MessageCircle className="h-5 w-5 text-purple-600 mr-2" />
                       <span className="font-medium text-purple-600">
-                        23 Nutzer haben bereits Feedback gegeben
+                        49 Nutzer haben bereits getestet
                       </span>
                     </motion.div>
                   </motion.div>
