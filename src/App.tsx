@@ -8,6 +8,7 @@ import FeedbackDialog from './components/FeedbackDialog';
 import PositiveFeedbackDialog from './components/PositiveFeedbackDialog';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import Contact from './components/Contact';
+import GFKAdjustmentDialog from './components/GFKAdjustmentDialog';
 import { useCredits } from './hooks/useCredits';
 
 const supabase = createClient(
@@ -33,6 +34,13 @@ function App() {
   const [showNegativeFeedbackDialog, setShowNegativeFeedbackDialog] = useState(false);
   const [showPositiveFeedbackDialog, setShowPositiveFeedbackDialog] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const [showGFKAdjustment, setShowGFKAdjustment] = useState(false);
+  const [initialOutput, setInitialOutput] = useState<{
+    observation: string;
+    feeling: string;
+    need: string;
+    request: string;
+  } | null>(null);
   const { credits, useCredit, addCredits } = useCredits();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,8 +73,43 @@ function App() {
         throw new Error(data.error);
       }
 
-      setOutput(data);
+      setInitialOutput(data);
+      setShowGFKAdjustment(true);
       useCredit();
+
+    } catch (err) {
+      console.error('Error:', err);
+      setError(
+        err instanceof Error 
+          ? err.message 
+          : 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGFKAdjustment = async (feeling: string, need: string) => {
+    if (!initialOutput) return;
+
+    try {
+      const { data, error: functionError } = await supabase.functions.invoke('gfk-transform', {
+        body: { 
+          input: input.trim(),
+          feeling,
+          need
+        }
+      });
+
+      if (functionError) {
+        throw new Error(functionError.message);
+      }
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setOutput(data);
 
       await supabase.from('messages').insert([{
         input_text: input,
@@ -80,8 +123,6 @@ function App() {
           ? err.message 
           : 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.'
       );
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -544,6 +585,15 @@ function App() {
       <PrivacyPolicy
         isOpen={showPrivacyPolicy}
         onClose={() => setShowPrivacyPolicy(false)}
+      />
+
+      <GFKAdjustmentDialog
+        isOpen={showGFKAdjustment}
+        onClose={() => setShowGFKAdjustment(false)}
+        initialFeeling={initialOutput?.feeling || ''}
+        initialNeed={initialOutput?.need || ''}
+        observation={initialOutput?.observation || ''}
+        onConfirm={handleGFKAdjustment}
       />
     </div>
   );
