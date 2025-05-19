@@ -645,3 +645,5 @@ const AboutContent = () => (
 );
 
 export default App;
+
+export default App
