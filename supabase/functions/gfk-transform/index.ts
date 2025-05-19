@@ -7,7 +7,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const MAX_INPUTS_PER_IP = 5;
+const MAX_INPUTS_PER_IP = 10;
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
