@@ -516,45 +516,16 @@ function App() {
         </motion.div>
       </main>
 
-      <footer className="fixed bottom-0 w-full bg-gray-50 py-3 px-5 text-sm text-gray-600 border-t border-gray-200 z-50">
-        <div className="max-w-7xl mx-auto text-center space-y-1">
-          <p className="flex items-center justify-center flex-wrap gap-x-2">
-            <span>&copy; {new Date().getFullYear()} GFKCoach</span>
-            <span className="hidden sm:inline">|</span>
-            <span>
-              Diese Website verwendet den Begriff <strong>„GFK"</strong> im Sinne der <em>Gewaltfreien Kommunikation</em> nach Marshall B. Rosenberg.
-            </span>
-          </p>
-          <p>
-            Es besteht keine Verbindung zur{' '}
-            <a 
-              href="https://www.gfk.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-purple-600 hover:text-purple-700 underline"
-            >
-              GfK SE
-            </a>{' '}
-            oder deren Markenrechten.
-          </p>
-          <p className="flex items-center justify-center gap-2">
-            Bei Fragen:{' '}
-            <a 
-              href="mailto:info@gfkcoach.com"
-              className="text-purple-600 hover:text-purple-700 underline flex items-center"
-            >
-              <Mail className="h-4 w-4 mr-1" />
-              info@gfkcoach.com
-            </a>
-            <span className="mx-2">|</span>
-            <button
-              onClick={() => setShowPrivacyPolicy(true)}
-              className="text-purple-600 hover:text-purple-700 underline flex items-center"
-            >
-              <Shield className="h-4 w-4 mr-1" />
-              Datenschutz
-            </button>
-          </p>
+      <footer className="bg-white/80 backdrop-blur-sm mt-12 py-8 border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 text-center text-gray-600">
+          <p>© {new Date().getFullYear()} GFKCoach - Alle Rechte vorbehalten</p>
+          <button
+            onClick={() => setShowPrivacyPolicy(true)}
+            className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center mx-auto mt-2"
+          >
+            <Shield className="h-4 w-4 mr-1" />
+            Datenschutz
+          </button>
         </div>
       </footer>
 
@@ -645,5 +616,3 @@ const AboutContent = () => (
 );
 
 export default App;
-
-export default App
