@@ -265,6 +265,7 @@ ANLEITUNG ZUR VERWENDUNG DER BEISPIELE:
    - Verwende ähnliche Einleitungen wie in den positiven Beispielen
    - Nutze die gleichen Formulierungsmuster für Gefühle und Bedürfnisse
    - Übernimm den respektvollen, nicht-wertenden Ton
+   - Achte auf eine einwandfreie Grammatik und Rechtschreibung
 
 3. Transformation:
    - Wandle anklagende Aussagen (wie in ❌ Beispielen) in beschreibende Beobachtungen um
