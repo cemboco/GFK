@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn } from 'lucide-react';
+import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, Menu, X as XIcon } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
@@ -35,6 +35,7 @@ function App() {
   const [showNegativeFeedbackDialog, setShowNegativeFeedbackDialog] = useState(false);
   const [showPositiveFeedbackDialog, setShowPositiveFeedbackDialog] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { credits, useCredit, addCredits } = useCredits();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -203,11 +204,13 @@ function App() {
                 <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">
                   GFKCoach
                 </h1>
-                <span className="ml-2 text-sm text-purple-600 bg-purple-100 px-2 py-1 rounded-full">
+                <span className="ml-2 text-sm text-purple-600 bg-purple-100 px-2 py-1 rounded-full hidden sm:inline-block">
                   Beta-Version
                 </span>
               </motion.div>
-              <div className="flex space-x-4">
+              
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex space-x-4">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -261,14 +264,91 @@ function App() {
                   Login
                 </Link>
               </div>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="md:hidden p-2 rounded-lg text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+              >
+                {isMobileMenuOpen ? <XIcon className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button>
             </div>
+
+            {/* Mobile Navigation */}
+            <AnimatePresence>
+              {isMobileMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="md:hidden mt-4 space-y-2"
+                >
+                  <button
+                    onClick={() => {
+                      setActiveTab('gfk');
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`w-full px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                      activeTab === 'gfk'
+                        ? 'bg-purple-100 text-purple-700'
+                        : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                    }`}
+                  >
+                    <div className="flex items-center">
+                      <Sparkles className="h-5 w-5 mr-2" />
+                      GFK Transform
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveTab('about');
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`w-full px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                      activeTab === 'about'
+                        ? 'bg-purple-100 text-purple-700'
+                        : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                    }`}
+                  >
+                    <div className="flex items-center">
+                      <Info className="h-5 w-5 mr-2" />
+                      Über GFK
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveTab('contact');
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`w-full px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                      activeTab === 'contact'
+                        ? 'bg-purple-100 text-purple-700'
+                        : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                    }`}
+                  >
+                    <div className="flex items-center">
+                      <Mail className="h-5 w-5 mr-2" />
+                      Kontakt
+                    </div>
+                  </button>
+                  <Link
+                    to="/auth"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="w-full flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+                  >
+                    <LogIn className="h-5 w-5 mr-2" />
+                    Login
+                  </Link>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </header>
 
         <Routes>
           <Route path="/auth" element={<Auth />} />
           <Route path="/" element={
-            <main className="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
+            <main className="max-w-7xl mx-auto px-4 py-6 sm:py-10 sm:px-6 lg:px-8">
               <AnimatePresence mode="wait">
                 {activeTab === 'about' ? (
                   <AboutContent />
@@ -281,21 +361,21 @@ function App() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                   >
-                    <div className="text-center mb-16">
-                      <h2 className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600 sm:text-5xl">
+                    <div className="text-center mb-8 sm:mb-16">
+                      <h2 className="text-3xl sm:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600 sm:text-5xl">
                         Verbessere deine Kommunikation mit KI
                       </h2>
-                      <p className="mt-4 text-xl text-gray-600">
+                      <p className="mt-4 text-lg sm:text-xl text-gray-600">
                         Wandle alltägliche Nachrichten in gewaltfreie Kommunikation um - mit nur einem Klick.
                       </p>
                     </div>
 
-                    <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl p-8 mb-8">
-                      <h3 className="text-2xl font-semibold text-gray-900 mb-6">Beispiele:</h3>
-                      <div className="grid gap-6 md:grid-cols-2 mb-8">
+                    <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl p-4 sm:p-8 mb-8">
+                      <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-6">Beispiele:</h3>
+                      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 mb-8">
                         <motion.div 
                           whileHover={{ scale: 1.02 }}
-                          className="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-xl shadow-sm"
+                          className="bg-gradient-to-br from-purple-50 to-indigo-50 p-4 sm:p-6 rounded-xl shadow-sm"
                         >
                           <p className="font-medium text-purple-800 mb-2">Ursprüngliche Nachricht:</p>
                           <p className="text-gray-700">"Du kommst schon wieder zu spät!"</p>
@@ -307,7 +387,7 @@ function App() {
                         </motion.div>
                         <motion.div 
                           whileHover={{ scale: 1.02 }}
-                          className="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-xl shadow-sm"
+                          className="bg-gradient-to-br from-purple-50 to-indigo-50 p-4 sm:p-6 rounded-xl shadow-sm"
                         >
                           <p className="font-medium text-purple-800 mb-2">Ursprüngliche Nachricht:</p>
                           <p className="text-gray-700">"Du hörst mir nie richtig zu!"</p>
@@ -573,6 +653,7 @@ const AboutContent = () => (
     className="max-w-3xl mx-auto"
   >
     <div className="bg-white shadow-xl rounded-2xl p-8">
+      
       <h2 className="text-3xl font-bold text-gray-900 mb-6">Über Gewaltfreie Kommunikation</h2>
       
       <div className="space-y-6 text-gray-700">
