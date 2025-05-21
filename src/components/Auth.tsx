@@ -13,45 +13,74 @@ const supabase = createClient(
 export default function Auth() {
   const navigate = useNavigate();
   const [name, setName] = useState('');
+  const [error, setError] = useState('');
 
   const handleSignUp = async (event: any) => {
     event.preventDefault();
+    setError('');
+    
     const email = event.target.email.value;
     const password = event.target.password.value;
 
-    const { data: authData, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: name
-        }
-      }
-    });
-
-    if (signUpError) {
-      console.error('Error signing up:', signUpError.message);
-      return;
-    }
-
-    if (authData.user) {
-      const { error: profileError } = await supabase
+    try {
+      // First check if the user exists
+      const { data: existingUser } = await supabase
         .from('profiles')
-        .insert([
-          {
-            id: authData.user.id,
-            full_name: name,
-            username: email.split('@')[0],
-            created_at: new Date().toISOString()
-          }
-        ]);
+        .select('id')
+        .eq('username', email.split('@')[0])
+        .single();
 
-      if (profileError) {
-        console.error('Error creating profile:', profileError.message);
+      if (existingUser) {
+        setError('Ein Benutzer mit dieser E-Mail-Adresse existiert bereits. Bitte melden Sie sich an.');
         return;
       }
 
-      navigate('/');
+      // Proceed with sign up
+      const { data: authData, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name
+          }
+        }
+      });
+
+      if (signUpError) {
+        if (signUpError.message.includes('already registered')) {
+          setError('Ein Benutzer mit dieser E-Mail-Adresse existiert bereits. Bitte melden Sie sich an.');
+        } else {
+          setError(`Fehler bei der Registrierung: ${signUpError.message}`);
+        }
+        return;
+      }
+
+      if (authData.user) {
+        // Wait a brief moment to ensure the auth session is established
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              id: authData.user.id,
+              full_name: name,
+              username: email.split('@')[0],
+              created_at: new Date().toISOString()
+            }
+          ]);
+
+        if (profileError) {
+          console.error('Error creating profile:', profileError.message);
+          setError('Fehler beim Erstellen des Profils. Bitte versuchen Sie es später erneut.');
+          return;
+        }
+
+        navigate('/');
+      }
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      setError('Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
     }
   };
 
@@ -71,6 +100,12 @@ export default function Auth() {
 
       <div className="space-y-6">
         <div className="bg-white rounded-lg">
+          {error && (
+            <div className="mb-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg">
+              {error}
+            </div>
+          )}
+          
           <form onSubmit={handleSignUp} className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
