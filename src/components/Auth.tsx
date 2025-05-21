@@ -56,24 +56,24 @@ export default function Auth() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-8 bg-white rounded-xl shadow-lg relative">
-      <Link 
-        to="/" 
-        className="absolute top-4 left-4 text-gray-600 hover:text-purple-600 transition-colors flex items-center gap-2"
-      >
-        <ArrowLeft className="h-5 w-5" />
-        <span>Zurück</span>
-      </Link>
-
-      <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-        Anmelden oder Registrieren
-      </h2>
+    <div className="max-w-md mx-auto mt-8 p-8 bg-white rounded-xl shadow-lg">
+      <div className="flex items-center mb-6">
+        <Link 
+          to="/" 
+          className="text-gray-600 hover:text-purple-600 transition-colors"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Link>
+        <h2 className="text-2xl font-bold text-gray-900 ml-auto mr-auto">
+          Anmelden oder Registrieren
+        </h2>
+      </div>
 
       <div className="space-y-6">
         <div className="bg-white rounded-lg">
           <form onSubmit={handleSignUp} className="space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                 Name
               </label>
               <input
@@ -81,35 +81,35 @@ export default function Auth() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition duration-150 ease-in-out"
                 required
               />
             </div>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 E-Mail
               </label>
               <input
                 id="email"
                 type="email"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition duration-150 ease-in-out"
                 required
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                 Passwort
               </label>
               <input
                 id="password"
                 type="password"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition duration-150 ease-in-out"
                 required
               />
             </div>
             <button
               type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+              className="w-full py-3 px-4 border border-transparent rounded-xl text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out font-medium"
             >
               Registrieren
             </button>
@@ -137,6 +137,11 @@ export default function Auth() {
                     },
                   },
                 },
+                className: {
+                  input: 'w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition duration-150 ease-in-out',
+                  button: 'w-full py-3 px-4 border border-transparent rounded-xl text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out font-medium',
+                  label: 'block text-sm font-medium text-gray-700 mb-1',
+                }
               }}
               providers={[]}
               localization={{
