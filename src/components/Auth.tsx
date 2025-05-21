@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Auth as SupabaseAuth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { createClient } from '@supabase/supabase-js';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -55,13 +56,21 @@ export default function Auth() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-16 p-8 bg-white rounded-xl shadow-lg">
+    <div className="max-w-md mx-auto mt-8 p-8 bg-white rounded-xl shadow-lg relative">
+      <Link 
+        to="/" 
+        className="absolute top-4 left-4 text-gray-600 hover:text-purple-600 transition-colors flex items-center gap-2"
+      >
+        <ArrowLeft className="h-5 w-5" />
+        <span>Zurück</span>
+      </Link>
+
       <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
         Anmelden oder Registrieren
       </h2>
 
       <div className="space-y-6">
-        <div className="bg-white rounded-lg p-6">
+        <div className="bg-white rounded-lg">
           <form onSubmit={handleSignUp} className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
