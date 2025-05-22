@@ -14,29 +14,19 @@ export default function Auth() {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSignUp = async (event: any) => {
     event.preventDefault();
     setError('');
+    setIsLoading(true);
     
     const email = event.target.email.value;
     const password = event.target.password.value;
 
     try {
-      // First check if the user exists
-      const { data: existingUser } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('username', email.split('@')[0])
-        .single();
-
-      if (existingUser) {
-        setError('Ein Benutzer mit dieser E-Mail-Adresse existiert bereits. Bitte melden Sie sich an.');
-        return;
-      }
-
-      // Proceed with sign up
-      const { data: authData, error: signUpError } = await supabase.auth.signUp({
+      // Check if user exists in auth
+      const { data: { user }, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -52,18 +42,17 @@ export default function Auth() {
         } else {
           setError(`Fehler bei der Registrierung: ${signUpError.message}`);
         }
+        setIsLoading(false);
         return;
       }
 
-      if (authData.user) {
-        // Wait a brief moment to ensure the auth session is established
-        await new Promise(resolve => setTimeout(resolve, 500));
-
+      if (user) {
+        // Create profile after successful signup
         const { error: profileError } = await supabase
           .from('profiles')
           .insert([
             {
-              id: authData.user.id,
+              id: user.id,
               full_name: name,
               username: email.split('@')[0],
               created_at: new Date().toISOString()
@@ -73,6 +62,7 @@ export default function Auth() {
         if (profileError) {
           console.error('Error creating profile:', profileError.message);
           setError('Fehler beim Erstellen des Profils. Bitte versuchen Sie es später erneut.');
+          setIsLoading(false);
           return;
         }
 
@@ -81,6 +71,8 @@ export default function Auth() {
     } catch (err) {
       console.error('Unexpected error:', err);
       setError('Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -144,9 +136,12 @@ export default function Auth() {
             </div>
             <button
               type="submit"
-              className="w-full py-3 px-4 border border-transparent rounded-xl text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out font-medium"
+              disabled={isLoading}
+              className={`w-full py-3 px-4 border border-transparent rounded-xl text-white ${
+                isLoading ? 'bg-purple-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out font-medium`}
             >
-              Registrieren
+              {isLoading ? 'Registrierung...' : 'Registrieren'}
             </button>
           </form>
 
