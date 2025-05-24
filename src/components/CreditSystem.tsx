@@ -14,6 +14,8 @@ interface CreditSystemProps {
   onPurchase: (credits: number) => void;
 }
 
+const unlimited = Infinity;
+
 const SUBSCRIPTION_PLANS = [
   {
     id: 'basis',
