@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, Menu, X as XIcon } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
@@ -36,7 +36,26 @@ function App() {
   const [showPositiveFeedbackDialog, setShowPositiveFeedbackDialog] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const { credits, useCredit, addCredits } = useCredits();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -256,13 +275,23 @@ function App() {
                     Kontakt
                   </div>
                 </motion.button>
-                <Link
-                  to="/auth"
-                  className="flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
-                >
-                  <LogIn className="h-5 w-5 mr-2" />
-                  Login
-                </Link>
+                {user ? (
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+                  >
+                    <LogOut className="h-5 w-5 mr-2" />
+                    Abmelden
+                  </button>
+                ) : (
+                  <Link
+                    to="/auth"
+                    className="flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+                  >
+                    <LogIn className="h-5 w-5 mr-2" />
+                    Anmelden
+                  </Link>
+                )}
               </div>
 
               {/* Mobile Menu Button */}
@@ -331,14 +360,27 @@ function App() {
                       Kontakt
                     </div>
                   </button>
-                  <Link
-                    to="/auth"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="w-full flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
-                  >
-                    <LogIn className="h-5 w-5 mr-2" />
-                    Login
-                  </Link>
+                  {user ? (
+                    <button
+                      onClick={() => {
+                        handleSignOut();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+                    >
+                      <LogOut className="h-5 w-5 mr-2" />
+                      Abmelden
+                    </button>
+                  ) : (
+                    <Link
+                      to="/auth"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-full flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+                    >
+                      <LogIn className="h-5 w-5 mr-2" />
+                      Anmelden
+                    </Link>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
