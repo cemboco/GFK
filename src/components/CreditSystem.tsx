@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CreditCard, X, Share2, MessageSquare, Gift, Info } from 'lucide-react';
+import { CreditCard, X, Share2, MessageSquare, Gift, Info, Star } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCredits } from '../hooks/useCredits';
 import { createClient } from '@supabase/supabase-js';
@@ -14,21 +14,52 @@ interface CreditSystemProps {
   onPurchase: (credits: number) => void;
 }
 
+const SUBSCRIPTION_PLANS = [
+  {
+    id: 'free',
+    name: 'Basis',
+    credits: 5,
+    price: 0,
+    period: 'pro Monat',
+    description: 'Kostenlose Basis-Version'
+  },
+  {
+    id: 'pro',
+    name: 'Professional',
+    credits: 50,
+    price: 9.99,
+    period: 'pro Monat',
+    description: '7-Tage Testversion',
+    trial: 7,
+    popular: true
+  },
+  {
+    id: 'unlimited',
+    name: 'Unlimited',
+    credits: 'Unbegrenzt',
+    price: 49.99,
+    period: 'pro Monat',
+    description: '14-Tage Testversion',
+    trial: 14
+  }
+];
+
 const CREDIT_PACKAGES = [
-  { id: 'basic', name: 'Basis', credits: 10, price: 4.99, description: 'Ideal für gelegentliche Nutzung' },
-  { id: 'pro', name: 'Professional', credits: 50, price: 19.99, description: 'Für regelmäßige Nutzer', popular: true },
-  { id: 'unlimited', name: 'Unlimited', credits: 150, price: 49.99, description: 'Beste Wahl für intensive Nutzung' }
+  { id: 'small', credits: 10, price: 2.99 },
+  { id: 'medium', credits: 20, price: 4.99 },
+  { id: 'large', credits: 50, price: 7.99 }
 ];
 
 export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemProps) {
   const { credits, hasReceivedBonusCredits } = useCredits();
-  const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
   const [showCreditInfo, setShowCreditInfo] = useState(false);
+  const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
   const [wasHelpful, setWasHelpful] = useState<boolean | null>(null);
   const [wantsToContinue, setWantsToContinue] = useState<boolean | null>(null);
   const [customPrice, setCustomPrice] = useState<string>('');
   const [usageFrequency, setUsageFrequency] = useState<string>('');
   const [showShareSuccess, setShowShareSuccess] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
   useEffect(() => {
     if (credits === 0 && !hasReceivedBonusCredits) {
@@ -51,38 +82,17 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
     }
   };
 
-  const handleFeedback = (helpful: boolean) => {
-    setWasHelpful(helpful);
-    if (!helpful) {
-      setShowFeedbackDialog(false);
-      return;
-    }
-    setWantsToContinue(null);
+  const handlePlanSelect = (planId: string) => {
+    setSelectedPlan(planId);
+    // Here you would typically integrate with a payment provider
+    console.log(`Selected plan: ${planId}`);
   };
 
-  const handleContinueChoice = (wants: boolean) => {
-    setWantsToContinue(wants);
-    if (!wants) {
-      setShowFeedbackDialog(false);
-      return;
-    }
-  };
-
-  const handleCustomPrice = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const price = parseFloat(customPrice);
-    if (isNaN(price) || price <= 0) return;
-    
-    try {
-      await supabase.from('credit_feedback').insert([{
-        amount: price,
-        message: usageFrequency
-      }]);
-
-      onPurchase(5); // Give 5 bonus credits
-      setShowFeedbackDialog(false);
-    } catch (error) {
-      console.error('Error saving feedback:', error);
+  const handlePackagePurchase = (packageId: string) => {
+    const creditPackage = CREDIT_PACKAGES.find(pkg => pkg.id === packageId);
+    if (creditPackage) {
+      // Here you would typically integrate with a payment provider
+      console.log(`Purchasing package: ${packageId}`);
     }
   };
 
@@ -100,7 +110,7 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.95 }}
-              className="bg-white rounded-2xl p-6 max-w-lg w-full relative"
+              className="bg-white rounded-2xl p-6 max-w-4xl w-full relative overflow-y-auto max-h-[90vh]"
             >
               <button
                 onClick={() => setShowCreditInfo(false)}
@@ -109,156 +119,94 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
                 <X className="h-6 w-6" />
               </button>
 
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-gray-900">Credits System</h2>
-                
-                <div className="space-y-4">
-                  <div className="bg-purple-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-purple-700 mb-2">So funktionieren Credits</h3>
-                    <p className="text-gray-600">
-                      Jede GFK-Transformation kostet 1 Credit. Du kannst Credits auf verschiedene Weisen erhalten:
-                    </p>
-                    <ul className="mt-2 space-y-2">
-                      <li className="flex items-center text-gray-600">
-                        <Gift className="h-4 w-4 mr-2 text-purple-600" />
-                        5 Credits kostenlos zum Start
-                      </li>
-                      <li className="flex items-center text-gray-600">
-                        <Share2 className="h-4 w-4 mr-2 text-purple-600" />
-                        2 Credits für das Teilen der App
-                      </li>
-                      <li className="flex items-center text-gray-600">
-                        <MessageSquare className="h-4 w-4 mr-2 text-purple-600" />
-                        1 Credit für detailliertes Feedback
-                      </li>
-                    </ul>
-                  </div>
+              <div className="space-y-8">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Abonnements</h2>
+                  <p className="text-gray-600 mt-2">Wähle den Plan, der am besten zu dir passt</p>
+                </div>
 
-                  <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-6 md:grid-cols-3">
+                  {SUBSCRIPTION_PLANS.map((plan) => (
+                    <div
+                      key={plan.id}
+                      className={`relative p-6 rounded-xl border-2 ${
+                        plan.popular
+                          ? 'border-purple-500 bg-purple-50'
+                          : 'border-gray-200'
+                      }`}
+                    >
+                      {plan.popular && (
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                          <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
+                            <Star className="h-4 w-4 mr-1" />
+                            Beliebt
+                          </span>
+                        </div>
+                      )}
+                      <h3 className="text-xl font-semibold text-gray-900">{plan.name}</h3>
+                      <p className="text-gray-500 mt-2">{plan.description}</p>
+                      <div className="mt-4">
+                        <span className="text-3xl font-bold text-purple-600">{plan.price}€</span>
+                        <span className="text-gray-500">{plan.period}</span>
+                      </div>
+                      <div className="mt-2 text-gray-700">
+                        <span className="font-semibold">{plan.credits}</span> Credits
+                      </div>
+                      {plan.trial && (
+                        <div className="mt-2 text-green-600 text-sm">
+                          {plan.trial} Tage kostenlos testen
+                        </div>
+                      )}
+                      <button
+                        onClick={() => handlePlanSelect(plan.id)}
+                        className={`mt-4 w-full py-2 rounded-lg font-medium transition-colors ${
+                          plan.popular
+                            ? 'bg-purple-600 text-white hover:bg-purple-700'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {plan.price === 0 ? 'Kostenlos starten' : 'Auswählen'}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Credit-Pakete</h3>
+                  <div className="grid gap-4 md:grid-cols-3">
                     {CREDIT_PACKAGES.map((pkg) => (
                       <div
                         key={pkg.id}
-                        className={`relative p-4 rounded-xl border-2 ${
-                          pkg.popular
-                            ? 'border-purple-500 bg-purple-50'
-                            : 'border-gray-200'
-                        }`}
+                        className="p-4 rounded-xl border-2 border-gray-200"
                       >
-                        {pkg.popular && (
-                          <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-500 text-white px-3 py-1 rounded-full text-sm">
-                            Beliebt
-                          </span>
-                        )}
-                        <h4 className="font-semibold text-gray-900">{pkg.name}</h4>
-                        <p className="text-sm text-gray-500 mt-1">{pkg.description}</p>
-                        <div className="mt-2">
-                          <span className="text-2xl font-bold text-purple-600">{pkg.credits}</span>
-                          <span className="text-gray-600"> Credits</span>
-                        </div>
-                        <p className="text-gray-700 mt-1">{pkg.price.toFixed(2)}€</p>
+                        <div className="text-2xl font-bold text-purple-600">{pkg.credits}</div>
+                        <div className="text-gray-700">Credits</div>
+                        <div className="mt-2 text-xl font-semibold">{pkg.price}€</div>
+                        <button
+                          onClick={() => handlePackagePurchase(pkg.id)}
+                          className="mt-3 w-full py-2 bg-gray-100 rounded-lg font-medium text-gray-700 hover:bg-gray-200 transition-colors"
+                        >
+                          Kaufen
+                        </button>
                       </div>
                     ))}
                   </div>
                 </div>
+
+                <div className="bg-purple-50 p-6 rounded-xl">
+                  <h3 className="text-lg font-semibold text-purple-700 mb-3">Kostenlose Credits</h3>
+                  <ul className="space-y-2">
+                    <li className="flex items-center text-gray-700">
+                      <Share2 className="h-5 w-5 text-purple-600 mr-2" />
+                      Teile die App und erhalte 2 Credits
+                    </li>
+                    <li className="flex items-center text-gray-700">
+                      <MessageSquare className="h-5 w-5 text-purple-600 mr-2" />
+                      Gib Feedback und erhalte 1 Credit
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-
-        {showFeedbackDialog && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
-          >
-            <motion.div
-              initial={{ scale: 0.95 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.95 }}
-              className="bg-white rounded-2xl p-6 max-w-md w-full relative"
-            >
-              <button
-                onClick={() => setShowFeedbackDialog(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-              >
-                <X className="h-6 w-6" />
-              </button>
-
-              {wasHelpful === null ? (
-                <div className="space-y-6">
-                  <h2 className="text-2xl font-bold text-gray-900">Dein Feedback</h2>
-                  <p className="text-gray-600">War die gewaltfreie Kommunikation für dich hilfreich?</p>
-                  <div className="flex space-x-4">
-                    <button
-                      onClick={() => handleFeedback(true)}
-                      className="flex-1 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-                    >
-                      Ja
-                    </button>
-                    <button
-                      onClick={() => handleFeedback(false)}
-                      className="flex-1 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                    >
-                      Nein
-                    </button>
-                  </div>
-                </div>
-              ) : wasHelpful && wantsToContinue === null ? (
-                <div className="space-y-6">
-                  <h2 className="text-2xl font-bold text-gray-900">Weiter nutzen?</h2>
-                  <p className="text-gray-600">Möchtest du GFKCoach weiter nutzen?</p>
-                  <div className="flex space-x-4">
-                    <button
-                      onClick={() => handleContinueChoice(true)}
-                      className="flex-1 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                    >
-                      Ja
-                    </button>
-                    <button
-                      onClick={() => handleContinueChoice(false)}
-                      className="flex-1 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
-                    >
-                      Nein
-                    </button>
-                  </div>
-                </div>
-              ) : wasHelpful && wantsToContinue ? (
-                <div className="space-y-6">
-                  <h2 className="text-2xl font-bold text-gray-900">Wertschätzung</h2>
-                  <p className="text-gray-600">
-                    Wie viel wär dir diese Anwendung im Monat wert und wie oft würdest du die App verwenden?
-                    Als Dankeschön erhältst du weitere Credits.
-                  </p>
-                  <form onSubmit={handleCustomPrice} className="space-y-4">
-                    <div className="relative">
-                      <input
-                        type="number"
-                        value={customPrice}
-                        onChange={(e) => setCustomPrice(e.target.value)}
-                        placeholder="Betrag in Euro"
-                        step="0.01"
-                        min="0"
-                        className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
-                      />
-                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">€</span>
-                    </div>
-                    <textarea
-                      value={usageFrequency}
-                      onChange={(e) => setUsageFrequency(e.target.value)}
-                      placeholder="Wie oft würdest du die App nutzen?"
-                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
-                      rows={3}
-                    />
-                    <button
-                      type="submit"
-                      className="w-full py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                    >
-                      Bestätigen
-                    </button>
-                  </form>
-                </div>
-              ) : null}
             </motion.div>
           </motion.div>
         )}
