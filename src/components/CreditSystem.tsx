@@ -53,9 +53,24 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
   const { credits, hasReceivedBonusCredits } = useCredits();
   const [showCreditInfo, setShowCreditInfo] = useState(false);
   const [showShareSuccess, setShowShareSuccess] = useState(false);
+  const [showShareError, setShowShareError] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
   const handleShare = async () => {
+    if (!navigator.share) {
+      // Fallback for browsers that don't support Web Share API
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        onPurchase(2); // Still give credits for copying the link
+        setShowShareSuccess(true);
+        setTimeout(() => setShowShareSuccess(false), 3000);
+      } catch (err) {
+        setShowShareError(true);
+        setTimeout(() => setShowShareError(false), 3000);
+      }
+      return;
+    }
+
     try {
       await navigator.share({
         title: 'GFKCoach - Gewaltfreie Kommunikation mit KI',
@@ -66,9 +81,10 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
       setShowShareSuccess(true);
       setTimeout(() => setShowShareSuccess(false), 3000);
     } catch (err: any) {
-      // Only log actual errors, not user cancellations
+      // Only show error for actual errors, not user cancellations
       if (err.message !== 'Share canceled') {
-        console.error('Error sharing:', err);
+        setShowShareError(true);
+        setTimeout(() => setShowShareError(false), 3000);
       }
     }
   };
@@ -206,6 +222,17 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
             +2 Credits für's Teilen!
           </motion.div>
         )}
+
+        {showShareError && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg"
+          >
+            Link in die Zwischenablage kopiert
+          </motion.div>
+        )}
         
         <div className="flex space-x-2">
           <button
@@ -218,6 +245,7 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
           <button
             onClick={handleShare}
             className="bg-white/90 backdrop-blur-sm shadow-lg rounded-full p-2 text-purple-600 hover:text-purple-700 transition-colors"
+            title={navigator.share ? "Teilen" : "Link kopieren"}
           >
             <Share2 className="h-5 w-5" />
           </button>
