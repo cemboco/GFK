@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Auth as SupabaseAuth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { createClient } from '@supabase/supabase-js';
@@ -15,17 +15,30 @@ export default function Auth() {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [view, setView] = useState<'sign_in' | 'sign_up'>('sign_in');
 
-  const handleSignUp = async (event: any) => {
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        navigate('/');
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [navigate]);
+
+  const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
     setIsLoading(true);
     
-    const email = event.target.email.value;
-    const password = event.target.password.value;
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
 
     try {
-      // Check if user exists in auth
       const { data: { user }, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -42,12 +55,10 @@ export default function Auth() {
         } else {
           setError(`Fehler bei der Registrierung: ${signUpError.message}`);
         }
-        setIsLoading(false);
         return;
       }
 
       if (user) {
-        // Create profile after successful signup
         const { error: profileError } = await supabase
           .from('profiles')
           .insert([
@@ -62,12 +73,40 @@ export default function Auth() {
         if (profileError) {
           console.error('Error creating profile:', profileError.message);
           setError('Fehler beim Erstellen des Profils. Bitte versuchen Sie es später erneut.');
-          setIsLoading(false);
           return;
         }
 
         navigate('/');
       }
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      setError('Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    try {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (signInError) {
+        setError('Ungültige E-Mail oder Passwort.');
+        return;
+      }
+
+      navigate('/');
     } catch (err) {
       console.error('Unexpected error:', err);
       setError('Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
@@ -86,7 +125,7 @@ export default function Auth() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <h2 className="text-2xl font-bold text-gray-900 ml-auto mr-auto">
-          Anmelden oder Registrieren
+          {view === 'sign_in' ? 'Anmelden' : 'Registrieren'}
         </h2>
       </div>
 
@@ -98,52 +137,94 @@ export default function Auth() {
             </div>
           )}
           
-          <form onSubmit={handleSignUp} className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                Name
-              </label>
-              <input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition duration-150 ease-in-out"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                E-Mail
-              </label>
-              <input
-                id="email"
-                type="email"
-                className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition duration-150 ease-in-out"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Passwort
-              </label>
-              <input
-                id="password"
-                type="password"
-                className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition duration-150 ease-in-out"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`w-full py-3 px-4 border border-transparent rounded-xl text-white ${
-                isLoading ? 'bg-purple-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'
-              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out font-medium`}
-            >
-              {isLoading ? 'Registrierung...' : 'Registrieren'}
-            </button>
-          </form>
+          {view === 'sign_up' ? (
+            <form onSubmit={handleSignUp} className="space-y-4">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                  Name
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition duration-150 ease-in-out"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  E-Mail
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition duration-150 ease-in-out"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                  Passwort
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition duration-150 ease-in-out"
+                  required
+                  minLength={6}
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className={`w-full py-3 px-4 border border-transparent rounded-xl text-white ${
+                  isLoading ? 'bg-purple-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out font-medium`}
+              >
+                {isLoading ? 'Registrierung...' : 'Registrieren'}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleSignIn} className="space-y-4">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  E-Mail
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition duration-150 ease-in-out"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                  Passwort
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition duration-150 ease-in-out"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className={`w-full py-3 px-4 border border-transparent rounded-xl text-white ${
+                  isLoading ? 'bg-purple-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out font-medium`}
+              >
+                {isLoading ? 'Anmeldung...' : 'Anmelden'}
+              </button>
+            </form>
+          )}
 
           <div className="mt-6">
             <div className="relative">
@@ -155,45 +236,14 @@ export default function Auth() {
               </div>
             </div>
 
-            <SupabaseAuth
-              supabaseClient={supabase}
-              appearance={{
-                theme: ThemeSupa,
-                variables: {
-                  default: {
-                    colors: {
-                      brand: '#7C3AED',
-                      brandAccent: '#6D28D9',
-                    },
-                  },
-                },
-                className: {
-                  input: 'w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition duration-150 ease-in-out',
-                  button: 'w-full py-3 px-4 border border-transparent rounded-xl text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out font-medium',
-                  label: 'block text-sm font-medium text-gray-700 mb-1',
-                }
-              }}
-              providers={[]}
-              localization={{
-                variables: {
-                  sign_in: {
-                    email_label: 'E-Mail',
-                    password_label: 'Passwort',
-                    button_label: 'Anmelden',
-                    loading_button_label: 'Anmeldung...',
-                    link_text: 'Bereits registriert? Anmelden',
-                  },
-                  sign_up: {
-                    email_label: 'E-Mail',
-                    password_label: 'Passwort',
-                    button_label: 'Registrieren',
-                    loading_button_label: 'Registrierung...',
-                    link_text: 'Noch kein Konto? Registrieren',
-                  },
-                },
-              }}
-              view="sign_in"
-            />
+            <button
+              onClick={() => setView(view === 'sign_in' ? 'sign_up' : 'sign_in')}
+              className="mt-4 w-full text-center text-sm text-purple-600 hover:text-purple-700"
+            >
+              {view === 'sign_in' 
+                ? 'Noch kein Konto? Registrieren' 
+                : 'Bereits registriert? Anmelden'}
+            </button>
           </div>
         </div>
       </div>
