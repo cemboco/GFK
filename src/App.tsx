@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import CreditSystem from './components/CreditSystem';
 import CTAForm from './components/CTAForm';
 import FeedbackDialog from './components/FeedbackDialog';
@@ -38,7 +38,6 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const { credits, useCredit, addCredits } = useCredits();
-  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -54,7 +53,6 @@ function App() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    navigate('/');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -644,6 +642,7 @@ function App() {
                       <MessageCircle className="h-5 w-5 text-purple-600 mr-2" />
                       <span className="font-medium text-purple-600">
                         49 Nutzer haben bereits getestet
+                      
                       </span>
                     </motion.div>
                   </motion.div>
