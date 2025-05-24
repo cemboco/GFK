@@ -16,30 +16,30 @@ interface CreditSystemProps {
 
 const SUBSCRIPTION_PLANS = [
   {
-    id: 'free',
+    id: 'basis',
     name: 'Basis',
+    description: 'Ideal für gelegentliche Nutzung',
     credits: 5,
     price: 0,
-    period: 'pro Monat',
-    description: 'Kostenlose Basis-Version'
+    period: 'pro Monat'
   },
   {
     id: 'pro',
     name: 'Professional',
+    description: 'Für regelmäßige Nutzer',
     credits: 50,
     price: 9.99,
     period: 'pro Monat',
-    description: '7-Tage Testversion',
     trial: 7,
     popular: true
   },
   {
     id: 'unlimited',
     name: 'Unlimited',
-    credits: 'Unbegrenzt',
+    description: 'Beste Wahl für intensive Nutzung',
+    credits: 150,
     price: 49.99,
-    period: 'pro Monat',
-    description: '14-Tage Testversion',
+    period: 'einmalig',
     trial: 14
   }
 ];
@@ -53,19 +53,8 @@ const CREDIT_PACKAGES = [
 export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemProps) {
   const { credits, hasReceivedBonusCredits } = useCredits();
   const [showCreditInfo, setShowCreditInfo] = useState(false);
-  const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
-  const [wasHelpful, setWasHelpful] = useState<boolean | null>(null);
-  const [wantsToContinue, setWantsToContinue] = useState<boolean | null>(null);
-  const [customPrice, setCustomPrice] = useState<string>('');
-  const [usageFrequency, setUsageFrequency] = useState<string>('');
   const [showShareSuccess, setShowShareSuccess] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (credits === 0 && !hasReceivedBonusCredits) {
-      setShowFeedbackDialog(true);
-    }
-  }, [credits, hasReceivedBonusCredits]);
 
   const handleShare = async () => {
     try {
@@ -74,7 +63,7 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
         text: 'Verbessere deine Kommunikation mit KI-gestützter gewaltfreier Kommunikation!',
         url: window.location.href
       });
-      onPurchase(2); // Bonus credits for sharing
+      onPurchase(2);
       setShowShareSuccess(true);
       setTimeout(() => setShowShareSuccess(false), 3000);
     } catch (err) {
@@ -86,14 +75,6 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
     setSelectedPlan(planId);
     // Here you would typically integrate with a payment provider
     console.log(`Selected plan: ${planId}`);
-  };
-
-  const handlePackagePurchase = (packageId: string) => {
-    const creditPackage = CREDIT_PACKAGES.find(pkg => pkg.id === packageId);
-    if (creditPackage) {
-      // Here you would typically integrate with a payment provider
-      console.log(`Purchasing package: ${packageId}`);
-    }
   };
 
   return (
@@ -110,7 +91,7 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.95 }}
-              className="bg-white rounded-2xl p-6 max-w-4xl w-full relative overflow-y-auto max-h-[90vh]"
+              className="bg-white rounded-2xl p-6 max-w-2xl w-full relative"
             >
               <button
                 onClick={() => setShowCreditInfo(false)}
@@ -119,47 +100,47 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
                 <X className="h-6 w-6" />
               </button>
 
-              <div className="space-y-8">
+              <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Abonnements</h2>
-                  <p className="text-gray-600 mt-2">Wähle den Plan, der am besten zu dir passt</p>
+                  <h2 className="text-2xl font-bold text-gray-900">Credits</h2>
+                  <p className="text-gray-600 mt-2">Wähle das passende Paket</p>
                 </div>
 
-                <div className="grid gap-6 md:grid-cols-3">
+                <div className="grid gap-4 grid-cols-3">
                   {SUBSCRIPTION_PLANS.map((plan) => (
                     <div
                       key={plan.id}
-                      className={`relative p-6 rounded-xl border-2 ${
+                      className={`relative p-4 rounded-xl border-2 ${
                         plan.popular
                           ? 'border-purple-500 bg-purple-50'
                           : 'border-gray-200'
-                      }`}
+                      } flex flex-col`}
                     >
                       {plan.popular && (
                         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                          <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
-                            <Star className="h-4 w-4 mr-1" />
+                          <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-sm">
                             Beliebt
                           </span>
                         </div>
                       )}
-                      <h3 className="text-xl font-semibold text-gray-900">{plan.name}</h3>
-                      <p className="text-gray-500 mt-2">{plan.description}</p>
-                      <div className="mt-4">
-                        <span className="text-3xl font-bold text-purple-600">{plan.price}€</span>
-                        <span className="text-gray-500">{plan.period}</span>
+                      <h3 className="text-lg font-semibold text-gray-900">{plan.name}</h3>
+                      <p className="text-sm text-gray-500 mt-1">{plan.description}</p>
+                      <div className="mt-2">
+                        <span className="text-2xl font-bold text-purple-600">{plan.credits}</span>
+                        <span className="text-sm text-gray-500"> Credits</span>
                       </div>
-                      <div className="mt-2 text-gray-700">
-                        <span className="font-semibold">{plan.credits}</span> Credits
+                      <div className="mt-2">
+                        <span className="text-xl font-bold">{plan.price}€</span>
+                        <span className="text-sm text-gray-500"> {plan.period}</span>
                       </div>
                       {plan.trial && (
-                        <div className="mt-2 text-green-600 text-sm">
+                        <div className="mt-1 text-green-600 text-sm">
                           {plan.trial} Tage kostenlos testen
                         </div>
                       )}
                       <button
                         onClick={() => handlePlanSelect(plan.id)}
-                        className={`mt-4 w-full py-2 rounded-lg font-medium transition-colors ${
+                        className={`mt-auto w-full py-2 rounded-lg font-medium transition-colors ${
                           plan.popular
                             ? 'bg-purple-600 text-white hover:bg-purple-700'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -171,20 +152,20 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
                   ))}
                 </div>
 
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Credit-Pakete</h3>
-                  <div className="grid gap-4 md:grid-cols-3">
+                <div className="mt-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Einzelne Credit-Pakete</h3>
+                  <div className="grid grid-cols-3 gap-4">
                     {CREDIT_PACKAGES.map((pkg) => (
                       <div
                         key={pkg.id}
-                        className="p-4 rounded-xl border-2 border-gray-200"
+                        className="p-3 rounded-xl border-2 border-gray-200 text-center"
                       >
-                        <div className="text-2xl font-bold text-purple-600">{pkg.credits}</div>
-                        <div className="text-gray-700">Credits</div>
-                        <div className="mt-2 text-xl font-semibold">{pkg.price}€</div>
+                        <div className="text-xl font-bold text-purple-600">{pkg.credits}</div>
+                        <div className="text-sm text-gray-500">Credits</div>
+                        <div className="mt-1 text-lg font-semibold">{pkg.price}€</div>
                         <button
-                          onClick={() => handlePackagePurchase(pkg.id)}
-                          className="mt-3 w-full py-2 bg-gray-100 rounded-lg font-medium text-gray-700 hover:bg-gray-200 transition-colors"
+                          onClick={() => handlePlanSelect(pkg.id)}
+                          className="mt-2 w-full py-1.5 bg-gray-100 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors"
                         >
                           Kaufen
                         </button>
@@ -193,18 +174,18 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
                   </div>
                 </div>
 
-                <div className="bg-purple-50 p-6 rounded-xl">
-                  <h3 className="text-lg font-semibold text-purple-700 mb-3">Kostenlose Credits</h3>
-                  <ul className="space-y-2">
-                    <li className="flex items-center text-gray-700">
-                      <Share2 className="h-5 w-5 text-purple-600 mr-2" />
-                      Teile die App und erhalte 2 Credits
-                    </li>
-                    <li className="flex items-center text-gray-700">
-                      <MessageSquare className="h-5 w-5 text-purple-600 mr-2" />
-                      Gib Feedback und erhalte 1 Credit
-                    </li>
-                  </ul>
+                <div className="bg-purple-50 p-4 rounded-xl">
+                  <h3 className="text-base font-semibold text-purple-700 mb-2">Kostenlose Credits</h3>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="flex items-center text-gray-700">
+                      <Share2 className="h-4 w-4 text-purple-600 mr-2" />
+                      Teilen: +2 Credits
+                    </div>
+                    <div className="flex items-center text-gray-700">
+                      <MessageSquare className="h-4 w-4 text-purple-600 mr-2" />
+                      Feedback: +1 Credit
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
