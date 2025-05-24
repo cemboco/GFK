@@ -39,8 +39,7 @@ const SUBSCRIPTION_PLANS = [
     description: 'Beste Wahl für intensive Nutzung',
     credits: 150,
     price: 49.99,
-    period: 'einmalig',
-    trial: 14
+    period: 'einmalig'
   }
 ];
 
@@ -126,11 +125,11 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
                       <h3 className="text-lg font-semibold text-gray-900">{plan.name}</h3>
                       <p className="text-sm text-gray-500 mt-1">{plan.description}</p>
                       <div className="mt-2">
-                        <span className="text-2xl font-bold text-purple-600">{plan.credits}</span>
+                        <span className="text-lg font-bold text-purple-600">{plan.credits}</span>
                         <span className="text-sm text-gray-500"> Credits</span>
                       </div>
                       <div className="mt-2">
-                        <span className="text-xl font-bold">{plan.price}€</span>
+                        <span className="text-lg font-bold">{plan.price}€</span>
                         <span className="text-sm text-gray-500"> {plan.period}</span>
                       </div>
                       {plan.trial && (
@@ -160,9 +159,9 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
                         key={pkg.id}
                         className="p-3 rounded-xl border-2 border-gray-200 text-center"
                       >
-                        <div className="text-xl font-bold text-purple-600">{pkg.credits}</div>
+                        <div className="text-lg font-bold text-purple-600">{pkg.credits}</div>
                         <div className="text-sm text-gray-500">Credits</div>
-                        <div className="mt-1 text-lg font-semibold">{pkg.price}€</div>
+                        <div className="mt-1 text-base font-semibold">{pkg.price}€</div>
                         <button
                           onClick={() => handlePlanSelect(pkg.id)}
                           className="mt-2 w-full py-1.5 bg-gray-100 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors"
@@ -223,7 +222,7 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
           <div className="bg-white/90 backdrop-blur-sm shadow-lg rounded-full px-4 py-2 flex items-center">
             <CreditCard className="h-5 w-5 text-purple-600 mr-2" />
             <span className="font-medium text-purple-600">
-              {credits} Credits
+              {credits}
             </span>
           </div>
         </div>
