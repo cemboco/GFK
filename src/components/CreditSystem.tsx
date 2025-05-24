@@ -34,10 +34,10 @@ const SUBSCRIPTION_PLANS = [
     popular: true
   },
   {
-    id: 'unlimited',
+    id: 'Premium',
     name: 'Unlimited',
     description: 'Beste Wahl für intensive Nutzung',
-    credits: Number.POSITIVE_INFINITY,
+    credits: unlimited,
     price: 49.99,
     period: 'einmalig'
   }
