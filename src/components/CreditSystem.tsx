@@ -27,7 +27,7 @@ const SUBSCRIPTION_PLANS = [
     id: 'pro',
     name: 'Professional',
     description: 'Für regelmäßige Nutzer',
-    credits: 50,
+    credits: 20,
     price: 9.99,
     period: 'pro Monat',
     trial: 7,
@@ -37,7 +37,7 @@ const SUBSCRIPTION_PLANS = [
     id: 'unlimited',
     name: 'Unlimited',
     description: 'Beste Wahl für intensive Nutzung',
-    credits: 150,
+    credits: ∞,
     price: 49.99,
     period: 'einmalig'
   }
