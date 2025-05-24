@@ -65,8 +65,11 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
       onPurchase(2);
       setShowShareSuccess(true);
       setTimeout(() => setShowShareSuccess(false), 3000);
-    } catch (err) {
-      console.error('Error sharing:', err);
+    } catch (err: any) {
+      // Only log actual errors, not user cancellations
+      if (err.message !== 'Share canceled') {
+        console.error('Error sharing:', err);
+      }
     }
   };
 
