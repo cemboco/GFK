@@ -48,36 +48,62 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
   const [showCreditInfo, setShowCreditInfo] = useState(false);
   const [showShareSuccess, setShowShareSuccess] = useState(false);
   const [showShareError, setShowShareError] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
-  const handleShare = async () => {
-    if (!navigator.share) {
-      try {
-        await navigator.clipboard.writeText(window.location.href);
-        onPurchase(2);
-        setShowShareSuccess(true);
-        setTimeout(() => setShowShareSuccess(false), 3000);
-      } catch (err) {
-        setShowShareError(true);
-        setTimeout(() => setShowShareError(false), 3000);
-      }
-      return;
-    }
+  const handleShare = async (method: 'native' | 'whatsapp' | 'telegram' | 'email' | 'copy') => {
+    const shareData = {
+      title: 'GFKCoach - Gewaltfreie Kommunikation mit KI',
+      text: 'Verbessere deine Kommunikation mit KI-gestützter gewaltfreier Kommunikation!',
+      url: window.location.href
+    };
 
     try {
-      await navigator.share({
-        title: 'GFKCoach - Gewaltfreie Kommunikation mit KI',
-        text: 'Verbessere deine Kommunikation mit KI-gestützter gewaltfreier Kommunikation!',
-        url: window.location.href
-      });
-      onPurchase(2);
-      setShowShareSuccess(true);
-      setTimeout(() => setShowShareSuccess(false), 3000);
-    } catch (err: any) {
-      if (err.message !== 'Share canceled') {
-        setShowShareError(true);
-        setTimeout(() => setShowShareError(false), 3000);
+      switch (method) {
+        case 'native':
+          if (navigator.share) {
+            await navigator.share(shareData);
+            onPurchase(2);
+            setShowShareSuccess(true);
+          }
+          break;
+
+        case 'whatsapp':
+          window.open(`https://wa.me/?text=${encodeURIComponent(`${shareData.text} ${shareData.url}`)}`, '_blank');
+          onPurchase(2);
+          setShowShareSuccess(true);
+          break;
+
+        case 'telegram':
+          window.open(`https://t.me/share/url?url=${encodeURIComponent(shareData.url)}&text=${encodeURIComponent(shareData.text)}`, '_blank');
+          onPurchase(2);
+          setShowShareSuccess(true);
+          break;
+
+        case 'email':
+          window.location.href = `mailto:?subject=${encodeURIComponent(shareData.title)}&body=${encodeURIComponent(`${shareData.text}\n\n${shareData.url}`)}`;
+          onPurchase(2);
+          setShowShareSuccess(true);
+          break;
+
+        case 'copy':
+          await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+          onPurchase(2);
+          setShowShareSuccess(true);
+          break;
       }
+    } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') {
+        // User cancelled the share operation
+        return;
+      }
+      setShowShareError(true);
+    } finally {
+      setTimeout(() => {
+        setShowShareSuccess(false);
+        setShowShareError(false);
+        setShowShareMenu(false);
+      }, 3000);
     }
   };
 
@@ -176,6 +202,66 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
             </motion.div>
           </motion.div>
         )}
+
+        {showShareMenu && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+          >
+            <motion.div
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              className="bg-white rounded-2xl p-4 max-w-sm w-full relative"
+            >
+              <button
+                onClick={() => setShowShareMenu(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">App teilen</h3>
+              <div className="space-y-2">
+                {navigator.share && (
+                  <button
+                    onClick={() => handleShare('native')}
+                    className="w-full flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                  >
+                    <Share2 className="h-5 w-5 mr-2" />
+                    Teilen
+                  </button>
+                )}
+                <button
+                  onClick={() => handleShare('whatsapp')}
+                  className="w-full flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                >
+                  WhatsApp
+                </button>
+                <button
+                  onClick={() => handleShare('telegram')}
+                  className="w-full flex items-center justify-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  Telegram
+                </button>
+                <button
+                  onClick={() => handleShare('email')}
+                  className="w-full flex items-center justify-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                >
+                  E-Mail
+                </button>
+                <button
+                  onClick={() => handleShare('copy')}
+                  className="w-full flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Link kopieren
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end space-y-2">
@@ -197,7 +283,7 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
             exit={{ opacity: 0, y: -10 }}
             className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg"
           >
-            Link in die Zwischenablage kopiert
+            Fehler beim Teilen
           </motion.div>
         )}
         
@@ -210,9 +296,9 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
           </button>
           
           <button
-            onClick={handleShare}
+            onClick={() => setShowShareMenu(true)}
             className="bg-white/90 backdrop-blur-sm shadow-lg rounded-full p-2 text-purple-600 hover:text-purple-700 transition-colors"
-            title={navigator.share ? "Teilen" : "Link kopieren"}
+            title="Teilen"
           >
             <Share2 className="h-5 w-5" />
           </button>
