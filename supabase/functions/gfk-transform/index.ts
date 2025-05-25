@@ -7,27 +7,55 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, {
-      headers: corsHeaders
+      headers: corsHeaders,
+      status: 200
     });
   }
 
   try {
-    const { input } = await req.json();
-    
-    if (!input?.trim()) {
-      throw new Error('Bitte geben Sie einen Text ein.');
+    // Parse request body
+    const requestData = await req.json().catch(() => null);
+    if (!requestData || !requestData.input) {
+      return new Response(
+        JSON.stringify({ error: 'Bitte geben Sie einen Text ein.' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400
+        }
+      );
     }
 
+    const input = requestData.input.trim();
+    if (!input) {
+      return new Response(
+        JSON.stringify({ error: 'Der Text darf nicht leer sein.' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400
+        }
+      );
+    }
+
+    // Check for API key
     const apiKey = Deno.env.get('OPENAI_API_KEY');
     if (!apiKey) {
-      throw new Error('OpenAI API Konfigurationsfehler.');
+      return new Response(
+        JSON.stringify({ error: 'OpenAI API Konfigurationsfehler.' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500
+        }
+      );
     }
 
+    // Call OpenAI API
     const openai = new OpenAI({ apiKey });
-    const response = await openai.chat.completions.create({
+    const completion = await openai.chat.completions.create({
       model: "o4-mini",
+      temperature: 0.7,
       messages: [
         {
           role: "system",
@@ -48,33 +76,45 @@ Antworte AUSSCHLIESSLICH im folgenden JSON-Format:
         },
         {
           role: "user",
-          content: input.trim()
+          content: input
         }
-      ],
-      temperature: 0.7,
-      max_tokens: 500,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0
+      ]
     });
 
+    // Parse and validate OpenAI response
     try {
-      const parsedResponse = JSON.parse(response.choices[0].message.content);
+      const parsedResponse = JSON.parse(completion.choices[0].message.content);
+      
+      // Validate response structure
+      if (!parsedResponse.observation || !parsedResponse.feeling || 
+          !parsedResponse.need || !parsedResponse.request) {
+        throw new Error('Ungültige API-Antwort.');
+      }
+
       return new Response(
         JSON.stringify(parsedResponse),
         { 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200
         }
       );
     } catch (parseError) {
-      throw new Error('Fehler beim Parsen der API-Antwort.');
+      return new Response(
+        JSON.stringify({ error: 'Fehler beim Verarbeiten der API-Antwort.' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500
+        }
+      );
     }
   } catch (error) {
     return new Response(
-      JSON.stringify({ error: error.message || 'Ein unerwarteter Fehler ist aufgetreten.' }), 
+      JSON.stringify({ 
+        error: error.message || 'Ein unerwarteter Fehler ist aufgetreten.' 
+      }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400
+        status: error.status || 500
       }
     );
   }
