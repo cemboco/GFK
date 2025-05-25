@@ -32,9 +32,9 @@ export function useCredits() {
           .eq('user_id', user.id)
           .eq('type', 'bonus')
           .eq('description', 'Anmeldebonus')
-          .single();
+          .maybeSingle();
 
-        if (!creditHistory) {
+        if (creditHistory === null) {
           // Add signup bonus credits
           await supabase.from('user_credit_history').insert([{
             user_id: user.id,
