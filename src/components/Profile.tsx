@@ -1,13 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { useNavigate } from 'react-router-dom';
-import { User, CreditCard, History, Settings, LogOut } from 'lucide-react';
+import { User, CreditCard, History, Settings, LogOut, MessageSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY
 );
+
+interface Message {
+  id: string;
+  input_text: string;
+  output_text: {
+    observation: string;
+    feeling: string;
+    need: string;
+    request: string;
+  };
+  created_at: string;
+}
 
 interface CreditHistory {
   id: string;
@@ -27,8 +39,9 @@ interface Payment {
 
 export default function Profile() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'profile' | 'credits' | 'payments' | 'settings'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'messages' | 'credits' | 'payments' | 'settings'>('profile');
   const [profile, setProfile] = useState<any>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [creditHistory, setCreditHistory] = useState<CreditHistory[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,6 +69,15 @@ export default function Profile() {
 
       if (profileError) throw profileError;
 
+      // Fetch messages
+      const { data: messagesData, error: messagesError } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (messagesError) throw messagesError;
+
       // Fetch credit history
       const { data: historyData, error: historyError } = await supabase
         .from('user_credit_history')
@@ -75,6 +97,7 @@ export default function Profile() {
       if (paymentsError) throw paymentsError;
 
       setProfile(profileData);
+      setMessages(messagesData || []);
       setCreditHistory(historyData || []);
       setPayments(paymentsData || []);
     } catch (err) {
@@ -120,6 +143,17 @@ export default function Profile() {
               >
                 <User className="h-5 w-5 mr-2" />
                 Profil
+              </button>
+              <button
+                onClick={() => setActiveTab('messages')}
+                className={`w-full flex items-center px-4 py-2 rounded-lg transition-colors ${
+                  activeTab === 'messages'
+                    ? 'bg-purple-100 text-purple-700'
+                    : 'text-gray-600 hover:bg-purple-50'
+                }`}
+              >
+                <MessageSquare className="h-5 w-5 mr-2" />
+                Meine GFK-Texte
               </button>
               <button
                 onClick={() => setActiveTab('credits')}
@@ -200,6 +234,52 @@ export default function Profile() {
                       </p>
                     </div>
                   </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'messages' && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-6"
+              >
+                <h2 className="text-2xl font-bold text-gray-900">Meine GFK-Texte</h2>
+                <div className="space-y-6">
+                  {messages.map((message) => (
+                    <div key={message.id} className="bg-gray-50 rounded-xl p-6">
+                      <div className="mb-4">
+                        <h3 className="text-lg font-medium text-gray-900">Ursprünglicher Text:</h3>
+                        <p className="mt-2 text-gray-700">{message.input_text}</p>
+                      </div>
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-medium text-purple-700">Beobachtung:</h4>
+                          <p className="text-gray-700">{message.output_text.observation}</p>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-purple-700">Gefühl:</h4>
+                          <p className="text-gray-700">{message.output_text.feeling}</p>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-purple-700">Bedürfnis:</h4>
+                          <p className="text-gray-700">{message.output_text.need}</p>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-purple-700">Bitte:</h4>
+                          <p className="text-gray-700">{message.output_text.request}</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 text-sm text-gray-500">
+                        {new Date(message.created_at).toLocaleString('de-DE')}
+                      </div>
+                    </div>
+                  ))}
+                  {messages.length === 0 && (
+                    <div className="text-center text-gray-500">
+                      Noch keine GFK-Texte vorhanden.
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )}

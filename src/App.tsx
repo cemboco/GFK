@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import CreditSystem from './components/CreditSystem';
 import CTAForm from './components/CTAForm';
 import FeedbackDialog from './components/FeedbackDialog';
@@ -10,6 +10,7 @@ import PositiveFeedbackDialog from './components/PositiveFeedbackDialog';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import Contact from './components/Contact';
 import Auth from './components/Auth';
+import Profile from './components/Profile';
 import { useCredits } from './hooks/useCredits';
 
 const supabase = createClient(
@@ -88,10 +89,13 @@ function App() {
       setOutput(data);
       useCredit();
 
-      await supabase.from('messages').insert([{
-        input_text: input,
-        output_text: data
-      }]);
+      if (user) {
+        await supabase.from('messages').insert([{
+          user_id: user.id,
+          input_text: input,
+          output_text: data
+        }]);
+      }
 
     } catch (err) {
       console.error('Error:', err);
@@ -163,7 +167,8 @@ function App() {
         is_helpful: false,
         reasons: feedback.reasons,
         other_reason: feedback.otherReason,
-        better_formulation: feedback.betterFormulation
+        better_formulation: feedback.betterFormulation,
+        user_id: user?.id
       }]);
       setFeedbackGiven(true);
       setShowNegativeFeedbackDialog(false);
@@ -184,7 +189,8 @@ function App() {
         is_helpful: true,
         reasons: feedback.reasons,
         other_reason: feedback.otherReason,
-        additional_comment: feedback.additionalComment
+        additional_comment: feedback.additionalComment,
+        user_id: user?.id
       }]);
       setFeedbackGiven(true);
       setShowPositiveFeedbackDialog(false);
@@ -226,7 +232,6 @@ function App() {
                 </span>
               </motion.div>
               
-              {/* Desktop Navigation */}
               <div className="hidden md:flex space-x-4">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -274,13 +279,21 @@ function App() {
                   </div>
                 </motion.button>
                 {user ? (
-                  <button
-                    onClick={handleSignOut}
-                    className="flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
-                  >
-                    <LogOut className="h-5 w-5 mr-2" />
-                    Abmelden
-                  </button>
+                  <>
+                    <Link
+                      to="/profile"
+                      className="flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+                    >
+                      Profil
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+                    >
+                      <LogOut className="h-5 w-5 mr-2" />
+                      Abmelden
+                    </button>
+                  </>
                 ) : (
                   <Link
                     to="/auth"
@@ -292,7 +305,6 @@ function App() {
                 )}
               </div>
 
-              {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="md:hidden p-2 rounded-lg text-gray-600 hover:text-purple-600 hover:bg-purple-50"
@@ -301,7 +313,6 @@ function App() {
               </button>
             </div>
 
-            {/* Mobile Navigation */}
             <AnimatePresence>
               {isMobileMenuOpen && (
                 <motion.div
@@ -359,16 +370,25 @@ function App() {
                     </div>
                   </button>
                   {user ? (
-                    <button
-                      onClick={() => {
-                        handleSignOut();
-                        setIsMobileMenuOpen(false);
-                      }}
-                      className="w-full flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
-                    >
-                      <LogOut className="h-5 w-5 mr-2" />
-                      Abmelden
-                    </button>
+                    <>
+                      <Link
+                        to="/profile"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="w-full flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+                      >
+                        Profil
+                      </Link>
+                      <button
+                        onClick={() => {
+                          handleSignOut();
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="w-full flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+                      >
+                        <LogOut className="h-5 w-5 mr-2" />
+                        Abmelden
+                      </button>
+                    </>
                   ) : (
                     <Link
                       to="/auth"
@@ -386,7 +406,8 @@ function App() {
         </header>
 
         <Routes>
-          <Route path="/auth" element={<Auth />} />
+          <Route path="/auth" element={user ? <Navigate to="/profile" /> : <Auth />} />
+          <Route path="/profile" element={user ? <Profile /> : <Navigate to="/auth" />} />
           <Route path="/" element={
             <main className="max-w-7xl mx-auto px-4 py-6 sm:py-10 sm:px-6 lg:px-8">
               <AnimatePresence mode="wait">
@@ -631,6 +652,7 @@ function App() {
                             Danke für deine Bereitschaft.
                           </motion.div>
                         )}
+                
                       </div>
                     </motion.div>
 
@@ -642,7 +664,6 @@ function App() {
                       <MessageCircle className="h-5 w-5 text-purple-600 mr-2" />
                       <span className="font-medium text-purple-600">
                         49 Nutzer haben bereits getestet
-                      
                       </span>
                     </motion.div>
                   </motion.div>
