@@ -65,9 +65,28 @@ export default function Profile() {
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        throw new Error('Fehler beim Laden des Profils');
+      }
+
+      if (!profileData) {
+        // If no profile exists, create one
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert([{ id: user.id }])
+          .select()
+          .maybeSingle();
+
+        if (createError) {
+          throw new Error('Fehler beim Erstellen des Profils');
+        }
+
+        setProfile(newProfile);
+      } else {
+        setProfile(profileData);
+      }
 
       // Fetch messages
       const { data: messagesData, error: messagesError } = await supabase
@@ -76,7 +95,9 @@ export default function Profile() {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (messagesError) throw messagesError;
+      if (messagesError) {
+        throw new Error('Fehler beim Laden der GFK-Texte');
+      }
 
       // Fetch credit history
       const { data: historyData, error: historyError } = await supabase
@@ -85,7 +106,9 @@ export default function Profile() {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (historyError) throw historyError;
+      if (historyError) {
+        throw new Error('Fehler beim Laden des Credit-Verlaufs');
+      }
 
       // Fetch payments
       const { data: paymentsData, error: paymentsError } = await supabase
@@ -94,15 +117,16 @@ export default function Profile() {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (paymentsError) throw paymentsError;
+      if (paymentsError) {
+        throw new Error('Fehler beim Laden der Zahlungen');
+      }
 
-      setProfile(profileData);
       setMessages(messagesData || []);
       setCreditHistory(historyData || []);
       setPayments(paymentsData || []);
     } catch (err) {
       console.error('Error fetching user data:', err);
-      setError('Fehler beim Laden der Benutzerdaten');
+      setError(err instanceof Error ? err.message : 'Ein unerwarteter Fehler ist aufgetreten');
     } finally {
       setIsLoading(false);
     }
@@ -217,20 +241,20 @@ export default function Profile() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Name</label>
-                      <p className="mt-1 text-lg">{profile?.full_name}</p>
+                      <p className="mt-1 text-lg">{profile?.full_name || '-'}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Benutzername</label>
-                      <p className="mt-1 text-lg">{profile?.username}</p>
+                      <p className="mt-1 text-lg">{profile?.username || '-'}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">E-Mail</label>
-                      <p className="mt-1 text-lg">{profile?.email}</p>
+                      <p className="mt-1 text-lg">{profile?.email || '-'}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Mitglied seit</label>
                       <p className="mt-1 text-lg">
-                        {new Date(profile?.created_at).toLocaleDateString('de-DE')}
+                        {profile?.created_at ? new Date(profile.created_at).toLocaleDateString('de-DE') : '-'}
                       </p>
                     </div>
                   </div>
