@@ -285,10 +285,10 @@ ZUSÄTZLICHE ANWEISUNGEN:
 
 Antworte AUSSCHLIESSLICH im folgenden JSON-Format:
 {
-  "observation": "konkrete Beobachtung ohne Bewertung",
-  "feeling": "echtes Gefühl",
-  "need": "universelles Bedürfnis",
-  "request": "konkrete, positive Bitte"
+  "observation": "<span class='text-blue-600'>konkrete Beobachtung ohne Bewertung</span>",
+  "feeling": "<span class='text-green-600'>echtes Gefühl</span>",
+  "need": "<span class='text-orange-600'>universelles Bedürfnis</span>",
+  "request": "<span class='text-purple-600'>konkrete, positive Bitte</span>"
 }`
         },
         {
