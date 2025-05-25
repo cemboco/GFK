@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CreditCard, X, Share2, MessageSquare, Gift, Info, Star } from 'lucide-react';
+import { CreditCard, X, Share2, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCredits } from '../hooks/useCredits';
 import { createClient } from '@supabase/supabase-js';
@@ -41,6 +41,12 @@ const SUBSCRIPTION_PLANS = [
     price: 49.99,
     period: 'einmalig'
   }
+];
+
+const CREDIT_PACKAGES = [
+  { id: 'small', credits: 10, price: 2.99 },
+  { id: 'medium', credits: 20, price: 4.99 },
+  { id: 'large', credits: 50, price: 7.99 }
 ];
 
 export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemProps) {
@@ -183,6 +189,28 @@ export default function CreditSystem({ onCreditUse, onPurchase }: CreditSystemPr
                       </button>
                     </div>
                   ))}
+                </div>
+
+                <div>
+                  <h3 className="text-base font-semibold text-gray-900 mb-2">Einzelne Credit-Pakete</h3>
+                  <div className="grid grid-cols-3 gap-3">
+                    {CREDIT_PACKAGES.map((pkg) => (
+                      <div
+                        key={pkg.id}
+                        className="p-2 rounded-xl border-2 border-gray-200 text-center"
+                      >
+                        <div className="text-base font-bold text-purple-600">{pkg.credits}</div>
+                        <div className="text-xs text-gray-500">Credits</div>
+                        <div className="mt-0.5 text-sm font-semibold">{pkg.price}€</div>
+                        <button
+                          onClick={() => handlePlanSelect(pkg.id)}
+                          className="mt-1 w-full py-1 bg-gray-100 rounded-lg text-xs font-medium text-gray-700 hover:bg-gray-200 transition-colors"
+                        >
+                          Kaufen
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="bg-purple-50 p-3 rounded-xl">
