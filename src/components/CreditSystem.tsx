@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CreditCard, X, Share2, Info } from 'lucide-react';
+import { CreditCard, X, Share2, Info, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCredits } from '../hooks/useCredits';
 import { createClient } from '@supabase/supabase-js';
