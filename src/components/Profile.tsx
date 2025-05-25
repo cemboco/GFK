@@ -279,19 +279,19 @@ export default function Profile() {
                       <div className="space-y-4">
                         <div>
                           <h4 className="font-medium text-purple-700">Beobachtung:</h4>
-                          <p className="text-gray-700">{message.output_text.observation}</p>
+                          <p className="text-gray-700" dangerouslySetInnerHTML={{ __html: message.output_text.observation }} />
                         </div>
                         <div>
                           <h4 className="font-medium text-purple-700">Gefühl:</h4>
-                          <p className="text-gray-700">{message.output_text.feeling}</p>
+                          <p className="text-gray-700" dangerouslySetInnerHTML={{ __html: message.output_text.feeling }} />
                         </div>
                         <div>
                           <h4 className="font-medium text-purple-700">Bedürfnis:</h4>
-                          <p className="text-gray-700">{message.output_text.need}</p>
+                          <p className="text-gray-700" dangerouslySetInnerHTML={{ __html: message.output_text.need }} />
                         </div>
                         <div>
                           <h4 className="font-medium text-purple-700">Bitte:</h4>
-                          <p className="text-gray-700">{message.output_text.request}</p>
+                          <p className="text-gray-700" dangerouslySetInnerHTML={{ __html: message.output_text.request }} />
                         </div>
                       </div>
                       <div className="mt-4 text-sm text-gray-500">

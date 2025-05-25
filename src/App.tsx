@@ -521,16 +521,20 @@ function App() {
                                 className="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-xl shadow-sm"
                               >
                                 <p className="text-gray-800 leading-relaxed mb-4">
-                                  <span className="font-medium text-purple-700">Beobachtung:</span> {output.observation}
+                                  <span className="font-medium text-purple-700">Beobachtung:</span>{' '}
+                                  <span dangerouslySetInnerHTML={{ __html: output.observation }} />
                                 </p>
                                 <p className="text-gray-800 leading-relaxed mb-4">
-                                  <span className="font-medium text-purple-700">Gefühl:</span> {output.feeling}
+                                  <span className="font-medium text-purple-700">Gefühl:</span>{' '}
+                                  <span dangerouslySetInnerHTML={{ __html: output.feeling }} />
                                 </p>
                                 <p className="text-gray-800 leading-relaxed mb-4">
-                                  <span className="font-medium text-purple-700">Bedürfnis:</span> {output.need}
+                                  <span className="font-medium text-purple-700">Bedürfnis:</span>{' '}
+                                  <span dangerouslySetInnerHTML={{ __html: output.need }} />
                                 </p>
                                 <p className="text-gray-800 leading-relaxed">
-                                  <span className="font-medium text-purple-700">Bitte:</span> {output.request}
+                                  <span className="font-medium text-purple-700">Bitte:</span>{' '}
+                                  <span dangerouslySetInnerHTML={{ __html: output.request }} />
                                 </p>
                               </motion.div>
 
