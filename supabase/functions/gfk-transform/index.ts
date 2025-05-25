@@ -54,7 +54,7 @@ serve(async (req) => {
     // Call OpenAI API
     const openai = new OpenAI({ apiKey });
     const completion = await openai.chat.completions.create({
-      model: "o4-mini",
+      model: "gpt-4",
       temperature: 0.7,
       messages: [
         {
@@ -108,6 +108,7 @@ Antworte AUSSCHLIESSLICH im folgenden JSON-Format:
       );
     }
   } catch (error) {
+    console.error('Error:', error);
     return new Response(
       JSON.stringify({ 
         error: error.message || 'Ein unerwarteter Fehler ist aufgetreten.' 
