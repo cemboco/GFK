@@ -26,9 +26,8 @@ serve(async (req) => {
     }
 
     const openai = new OpenAI({ apiKey });
-    const completion = await openai.chat.completions.create({
+    const response = await openai.chat.completions.create({
       model: "o4-mini",
-      temperature: 0.7,
       messages: [
         {
           role: "system",
@@ -51,11 +50,16 @@ Antworte AUSSCHLIESSLICH im folgenden JSON-Format:
           role: "user",
           content: input.trim()
         }
-      ]
+      ],
+      temperature: 0.7,
+      max_tokens: 500,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0
     });
 
     try {
-      const parsedResponse = JSON.parse(completion.choices[0].message.content);
+      const parsedResponse = JSON.parse(response.choices[0].message.content);
       return new Response(
         JSON.stringify(parsedResponse),
         { 
