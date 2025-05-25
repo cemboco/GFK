@@ -31,7 +31,7 @@ export function useCredits() {
           .select('*')
           .eq('user_id', user.id)
           .eq('type', 'bonus')
-          .eq('description', 'Anmeldebonus')
+          .eq('description', 'Registrierungsbonus')
           .maybeSingle();
 
         if (creditHistory === null) {
@@ -40,7 +40,7 @@ export function useCredits() {
             user_id: user.id,
             amount: SIGNUP_BONUS_CREDITS,
             type: 'bonus',
-            description: 'Anmeldebonus'
+            description: 'Registrierungsbonus'
           }]);
           
           setCredits(prev => prev + SIGNUP_BONUS_CREDITS);
