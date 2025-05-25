@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Auth as SupabaseAuth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { createClient } from '@supabase/supabase-js';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -20,7 +18,7 @@ export default function Auth() {
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        navigate('/');
+        navigate('/profile');
       }
     });
 
@@ -76,7 +74,7 @@ export default function Auth() {
           return;
         }
 
-        navigate('/');
+        navigate('/profile');
       }
     } catch (err) {
       console.error('Unexpected error:', err);
@@ -106,7 +104,7 @@ export default function Auth() {
         return;
       }
 
-      navigate('/');
+      navigate('/profile');
     } catch (err) {
       console.error('Unexpected error:', err);
       setError('Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
