@@ -74,7 +74,7 @@ function App() {
     setFeedbackGiven(false);
 
     try {
-      const { data: response, error: functionError } = await supabase.functions.invoke('gfk-transform', {
+      const { data, error: functionError } = await supabase.functions.invoke('gfk-transform', {
         body: { input: input.trim() }
       });
 
@@ -82,23 +82,18 @@ function App() {
         throw new Error(functionError.message);
       }
 
-      if (response.error) {
-        throw new Error(response.error);
+      if (data.error) {
+        throw new Error(data.error);
       }
 
-      // Validate the response structure
-      if (!response.observation || !response.feeling || !response.need || !response.request) {
-        throw new Error('Ungültige Antwort vom Server. Bitte versuchen Sie es später erneut.');
-      }
-
-      setOutput(response);
+      setOutput(data);
       useCredit();
 
       if (user) {
         await supabase.from('messages').insert([{
           user_id: user.id,
           input_text: input,
-          output_text: response
+          output_text: data
         }]);
       }
 
