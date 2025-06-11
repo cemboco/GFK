@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { useNavigate } from 'react-router-dom';
-import { User, CreditCard, History, Settings, LogOut, MessageSquare } from 'lucide-react';
+import { User, History, Settings, LogOut, MessageSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const supabase = createClient(
@@ -21,29 +21,11 @@ interface Message {
   created_at: string;
 }
 
-interface CreditHistory {
-  id: string;
-  amount: number;
-  type: 'purchase' | 'usage' | 'bonus';
-  description: string;
-  created_at: string;
-}
-
-interface Payment {
-  id: string;
-  amount: number;
-  credits: number;
-  status: 'pending' | 'completed' | 'failed';
-  created_at: string;
-}
-
 export default function Profile() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'profile' | 'messages' | 'credits' | 'payments' | 'settings'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'messages' | 'settings'>('profile');
   const [profile, setProfile] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [creditHistory, setCreditHistory] = useState<CreditHistory[]>([]);
-  const [payments, setPayments] = useState<Payment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -99,31 +81,7 @@ export default function Profile() {
         throw new Error('Fehler beim Laden der GFK-Texte');
       }
 
-      // Fetch credit history
-      const { data: historyData, error: historyError } = await supabase
-        .from('user_credit_history')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (historyError) {
-        throw new Error('Fehler beim Laden des Credit-Verlaufs');
-      }
-
-      // Fetch payments
-      const { data: paymentsData, error: paymentsError } = await supabase
-        .from('user_payments')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (paymentsError) {
-        throw new Error('Fehler beim Laden der Zahlungen');
-      }
-
       setMessages(messagesData || []);
-      setCreditHistory(historyData || []);
-      setPayments(paymentsData || []);
     } catch (err) {
       console.error('Error fetching user data:', err);
       setError(err instanceof Error ? err.message : 'Ein unerwarteter Fehler ist aufgetreten');
@@ -178,28 +136,6 @@ export default function Profile() {
               >
                 <MessageSquare className="h-5 w-5 mr-2" />
                 Meine GFK-Texte
-              </button>
-              <button
-                onClick={() => setActiveTab('credits')}
-                className={`w-full flex items-center px-4 py-2 rounded-lg transition-colors ${
-                  activeTab === 'credits'
-                    ? 'bg-purple-100 text-purple-700'
-                    : 'text-gray-600 hover:bg-purple-50'
-                }`}
-              >
-                <History className="h-5 w-5 mr-2" />
-                Credit-Verlauf
-              </button>
-              <button
-                onClick={() => setActiveTab('payments')}
-                className={`w-full flex items-center px-4 py-2 rounded-lg transition-colors ${
-                  activeTab === 'payments'
-                    ? 'bg-purple-100 text-purple-700'
-                    : 'text-gray-600 hover:bg-purple-50'
-                }`}
-              >
-                <CreditCard className="h-5 w-5 mr-2" />
-                Zahlungen
               </button>
               <button
                 onClick={() => setActiveTab('settings')}
@@ -308,118 +244,6 @@ export default function Profile() {
               </motion.div>
             )}
 
-            {activeTab === 'credits' && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-6"
-              >
-                <h2 className="text-2xl font-bold text-gray-900">Credit-Verlauf</h2>
-                <div className="bg-gray-50 rounded-xl overflow-hidden">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-100">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Datum
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Typ
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Anzahl
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Beschreibung
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {creditHistory.map((history) => (
-                        <tr key={history.id}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {new Date(history.created_at).toLocaleDateString('de-DE')}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm">
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              history.type === 'purchase'
-                                ? 'bg-green-100 text-green-800'
-                                : history.type === 'usage'
-                                ? 'bg-red-100 text-red-800'
-                                : 'bg-blue-100 text-blue-800'
-                            }`}>
-                              {history.type === 'purchase' ? 'Kauf' : history.type === 'usage' ? 'Nutzung' : 'Bonus'}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {history.amount > 0 ? `+${history.amount}` : history.amount}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {history.description}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </motion.div>
-            )}
-
-            {activeTab === 'payments' && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-6"
-              >
-                <h2 className="text-2xl font-bold text-gray-900">Zahlungen</h2>
-                <div className="bg-gray-50 rounded-xl overflow-hidden">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-100">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Datum
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Betrag
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Credits
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Status
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {payments.map((payment) => (
-                        <tr key={payment.id}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {new Date(payment.created_at).toLocaleDateString('de-DE')}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {payment.amount.toFixed(2)}€
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {payment.credits}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              payment.status === 'completed'
-                                ? 'bg-green-100 text-green-800'
-                                : payment.status === 'pending'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-red-100 text-red-800'
-                            }`}>
-                              {payment.status === 'completed' ? 'Abgeschlossen' : payment.status === 'pending' ? 'In Bearbeitung' : 'Fehlgeschlagen'}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </motion.div>
-            )}
-
             {activeTab === 'settings' && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -438,14 +262,6 @@ export default function Profile() {
                           defaultChecked
                         />
                         <span className="ml-2 text-gray-700">E-Mail-Benachrichtigungen</span>
-                      </label>
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                          defaultChecked
-                        />
-                        <span className="ml-2 text-gray-700">Credit-Warnungen</span>
                       </label>
                     </div>
                   </div>

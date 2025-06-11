@@ -3,7 +3,6 @@ import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, Messa
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-import CreditSystem from './components/CreditSystem';
 import CTAForm from './components/CTAForm';
 import FeedbackDialog from './components/FeedbackDialog';
 import PositiveFeedbackDialog from './components/PositiveFeedbackDialog';
@@ -11,7 +10,6 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import Contact from './components/Contact';
 import Auth from './components/Auth';
 import Profile from './components/Profile';
-import { useCredits } from './hooks/useCredits';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -38,7 +36,6 @@ function App() {
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const { credits, useCredit, addCredits } = useCredits();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -63,11 +60,6 @@ function App() {
       return;
     }
 
-    if (credits <= 0) {
-      setError('Keine Credits mehr verfügbar. Bitte kaufen Sie neue Credits.');
-      return;
-    }
-
     setIsLoading(true);
     setError(null);
     setOutput(null);
@@ -87,7 +79,6 @@ function App() {
       }
 
       setOutput(data);
-      useCredit();
 
       if (user) {
         await supabase.from('messages').insert([{
@@ -202,19 +193,6 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50">
-        <CreditSystem 
-          onCreditUse={useCredit}
-          onPurchase={addCredits}
-        />
-        
-        <div className="fixed top-4 left-4 z-40">
-          <div className="bg-white/90 backdrop-blur-sm shadow-lg rounded-full px-4 py-2">
-            <span className="font-medium text-purple-600">
-              {credits} Credits verfügbar
-            </span>
-          </div>
-        </div>
-
         <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-gray-200 sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between">
