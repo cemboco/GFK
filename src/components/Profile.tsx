@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, History, Settings, LogOut, MessageSquare, ArrowLeft } from 'lucide-react';
+import { User, History, Settings, LogOut, MessageSquare, ArrowLeft, Edit2, Save, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const supabase = createClient(
@@ -25,9 +25,17 @@ export default function Profile() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'profile' | 'messages' | 'settings'>('profile');
   const [profile, setProfile] = useState<any>(null);
+  const [user, setUser] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  
+  // Edit mode states
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedName, setEditedName] = useState('');
+  const [editedUsername, setEditedUsername] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     fetchUserData();
@@ -41,6 +49,8 @@ export default function Profile() {
         navigate('/auth');
         return;
       }
+
+      setUser(user);
 
       // Fetch profile data
       const { data: profileData, error: profileError } = await supabase
@@ -57,7 +67,11 @@ export default function Profile() {
         // If no profile exists, create one
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
-          .insert([{ id: user.id }])
+          .insert([{ 
+            id: user.id,
+            username: user.email?.split('@')[0] || '',
+            full_name: user.user_metadata?.full_name || ''
+          }])
           .select()
           .maybeSingle();
 
@@ -66,8 +80,12 @@ export default function Profile() {
         }
 
         setProfile(newProfile);
+        setEditedName(newProfile?.full_name || '');
+        setEditedUsername(newProfile?.username || '');
       } else {
         setProfile(profileData);
+        setEditedName(profileData.full_name || '');
+        setEditedUsername(profileData.username || '');
       }
 
       // Fetch messages
@@ -88,6 +106,77 @@ export default function Profile() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSaveProfile = async () => {
+    if (!user || !profile) return;
+
+    setIsSaving(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      // Validate inputs
+      if (!editedName.trim()) {
+        throw new Error('Name darf nicht leer sein');
+      }
+
+      if (!editedUsername.trim()) {
+        throw new Error('Benutzername darf nicht leer sein');
+      }
+
+      // Check if username is already taken (excluding current user)
+      const { data: existingUser, error: checkError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('username', editedUsername.trim())
+        .neq('id', user.id)
+        .maybeSingle();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        throw new Error('Fehler beim Überprüfen des Benutzernamens');
+      }
+
+      if (existingUser) {
+        throw new Error('Dieser Benutzername ist bereits vergeben');
+      }
+
+      // Update profile
+      const { data: updatedProfile, error: updateError } = await supabase
+        .from('profiles')
+        .update({
+          full_name: editedName.trim(),
+          username: editedUsername.trim(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', user.id)
+        .select()
+        .single();
+
+      if (updateError) {
+        throw new Error('Fehler beim Speichern des Profils');
+      }
+
+      setProfile(updatedProfile);
+      setIsEditing(false);
+      setSuccess('Profil erfolgreich aktualisiert!');
+
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccess(null), 3000);
+
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      setError(err instanceof Error ? err.message : 'Ein unerwarteter Fehler ist aufgetreten');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedName(profile?.full_name || '');
+    setEditedUsername(profile?.username || '');
+    setError(null);
   };
 
   const handleSignOut = async () => {
@@ -161,9 +250,23 @@ export default function Profile() {
           {/* Main Content */}
           <div className="flex-1 p-6">
             {error && (
-              <div className="mb-4 p-4 bg-red-50 text-red-700 rounded-lg">
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-4 p-4 bg-red-50 text-red-700 rounded-lg border border-red-200"
+              >
                 {error}
-              </div>
+              </motion.div>
+            )}
+
+            {success && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-4 p-4 bg-green-50 text-green-700 rounded-lg border border-green-200"
+              >
+                {success}
+              </motion.div>
             )}
 
             {activeTab === 'profile' && (
@@ -172,28 +275,94 @@ export default function Profile() {
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-6"
               >
-                <h2 className="text-2xl font-bold text-gray-900">Profil</h2>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold text-gray-900">Profil</h2>
+                  {!isEditing && (
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setIsEditing(true)}
+                      className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                    >
+                      <Edit2 className="h-4 w-4 mr-2" />
+                      Bearbeiten
+                    </motion.button>
+                  )}
+                </div>
+
                 <div className="bg-gray-50 p-6 rounded-xl">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Name</label>
-                      <p className="mt-1 text-lg">{profile?.full_name || '-'}</p>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          value={editedName}
+                          onChange={(e) => setEditedName(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                          placeholder="Ihr vollständiger Name"
+                        />
+                      ) : (
+                        <p className="text-lg text-gray-900">{profile?.full_name || 'Nicht angegeben'}</p>
+                      )}
                     </div>
+
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Benutzername</label>
-                      <p className="mt-1 text-lg">{profile?.username || '-'}</p>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Benutzername</label>
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          value={editedUsername}
+                          onChange={(e) => setEditedUsername(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                          placeholder="Ihr Benutzername"
+                        />
+                      ) : (
+                        <p className="text-lg text-gray-900">{profile?.username || 'Nicht angegeben'}</p>
+                      )}
                     </div>
+
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">E-Mail</label>
-                      <p className="mt-1 text-lg">{profile?.email || '-'}</p>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">E-Mail</label>
+                      <p className="text-lg text-gray-900">{user?.email || 'Nicht verfügbar'}</p>
+                      <p className="text-sm text-gray-500 mt-1">E-Mail kann nicht geändert werden</p>
                     </div>
+
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Mitglied seit</label>
-                      <p className="mt-1 text-lg">
-                        {profile?.created_at ? new Date(profile.created_at).toLocaleDateString('de-DE') : '-'}
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Mitglied seit</label>
+                      <p className="text-lg text-gray-900">
+                        {profile?.created_at ? new Date(profile.created_at).toLocaleDateString('de-DE') : 'Unbekannt'}
                       </p>
                     </div>
                   </div>
+
+                  {isEditing && (
+                    <div className="mt-6 flex items-center gap-4">
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={handleSaveProfile}
+                        disabled={isSaving}
+                        className={`flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors ${
+                          isSaving && 'opacity-50 cursor-not-allowed'
+                        }`}
+                      >
+                        <Save className="h-4 w-4 mr-2" />
+                        {isSaving ? 'Speichert...' : 'Speichern'}
+                      </motion.button>
+
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={handleCancelEdit}
+                        disabled={isSaving}
+                        className="flex items-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                      >
+                        <X className="h-4 w-4 mr-2" />
+                        Abbrechen
+                      </motion.button>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )}
@@ -236,8 +405,10 @@ export default function Profile() {
                     </div>
                   ))}
                   {messages.length === 0 && (
-                    <div className="text-center text-gray-500">
-                      Noch keine GFK-Texte vorhanden.
+                    <div className="text-center text-gray-500 py-8">
+                      <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                      <p>Noch keine GFK-Texte vorhanden.</p>
+                      <p className="text-sm mt-2">Besuchen Sie die Hauptseite, um Ihre erste GFK-Transformation zu erstellen.</p>
                     </div>
                   )}
                 </div>
