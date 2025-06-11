@@ -80,6 +80,7 @@ function App() {
 
       setOutput(data);
 
+      // Only save to database if user is authenticated
       if (user) {
         await supabase.from('messages').insert([{
           user_id: user.id,
@@ -152,15 +153,17 @@ function App() {
     betterFormulation: string;
   }) => {
     try {
-      await supabase.from('feedback').insert([{
+      const feedbackData = {
         input_text: input,
         output_text: output,
         is_helpful: false,
         reasons: feedback.reasons,
         other_reason: feedback.otherReason,
         better_formulation: feedback.betterFormulation,
-        user_id: user?.id
-      }]);
+        user_id: user?.id || null
+      };
+
+      await supabase.from('feedback').insert([feedbackData]);
       setFeedbackGiven(true);
       setShowNegativeFeedbackDialog(false);
     } catch (err) {
@@ -174,15 +177,17 @@ function App() {
     additionalComment?: string;
   }) => {
     try {
-      await supabase.from('feedback').insert([{
+      const feedbackData = {
         input_text: input,
         output_text: output,
         is_helpful: true,
         reasons: feedback.reasons,
         other_reason: feedback.otherReason,
         additional_comment: feedback.additionalComment,
-        user_id: user?.id
-      }]);
+        user_id: user?.id || null
+      };
+
+      await supabase.from('feedback').insert([feedbackData]);
       setFeedbackGiven(true);
       setShowPositiveFeedbackDialog(false);
     } catch (err) {
