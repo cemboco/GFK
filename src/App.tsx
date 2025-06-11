@@ -22,7 +22,7 @@ function Header({ user, handleSignOut }: { user: any; handleSignOut: () => void 
   const location = useLocation();
 
   return (
-    <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-white/90 backdrop-blur-md shadow-lg border-b border-gray-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <motion.div 
@@ -41,85 +41,92 @@ function Header({ user, handleSignOut }: { user: any; handleSignOut: () => void 
             </Link>
           </motion.div>
           
-          <div className="hidden md:flex space-x-4">
+          <div className="hidden md:flex items-center space-x-2">
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative"
             >
               <Link
                 to="/"
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                   location.pathname === '/'
-                    ? 'bg-purple-100 text-purple-700'
-                    : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                    ? 'bg-purple-100 text-purple-700 shadow-sm'
+                    : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50 hover:shadow-sm'
                 }`}
               >
-                <div className="flex items-center">
-                  <Sparkles className="h-5 w-5 mr-2" />
-                  GFK Transform
-                </div>
+                <Sparkles className="h-5 w-5 mr-2" />
+                <span>GFK Transform</span>
               </Link>
             </motion.div>
+            
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative"
             >
               <Link
                 to="/contact"
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                   location.pathname === '/contact'
-                    ? 'bg-purple-100 text-purple-700'
-                    : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                    ? 'bg-purple-100 text-purple-700 shadow-sm'
+                    : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50 hover:shadow-sm'
                 }`}
               >
-                <div className="flex items-center">
-                  <Mail className="h-5 w-5 mr-2" />
-                  Kontakt
-                </div>
+                <Mail className="h-5 w-5 mr-2" />
+                <span>Kontakt</span>
               </Link>
             </motion.div>
+            
             {user ? (
               <>
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="relative"
                 >
                   <Link
                     to="/profile"
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                       location.pathname === '/profile'
-                        ? 'bg-purple-100 text-purple-700'
-                        : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                        ? 'bg-purple-100 text-purple-700 shadow-sm'
+                        : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50 hover:shadow-sm'
                     }`}
                   >
-                    Profil
+                    <span>Profil</span>
                   </Link>
                 </motion.div>
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+                
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="relative"
                 >
-                  <LogOut className="h-5 w-5 mr-2" />
-                  Abmelden
-                </button>
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50 hover:shadow-sm"
+                  >
+                    <LogOut className="h-5 w-5 mr-2" />
+                    <span>Abmelden</span>
+                  </button>
+                </motion.div>
               </>
             ) : (
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="relative"
               >
                 <Link
                   to="/auth"
-                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                  className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                     location.pathname === '/auth'
-                      ? 'bg-purple-100 text-purple-700'
-                      : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                      ? 'bg-purple-100 text-purple-700 shadow-sm'
+                      : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50 hover:shadow-sm'
                   }`}
                 >
-                  <div className="flex items-center">
-                    <LogIn className="h-5 w-5 mr-2" />
-                    Anmelden
-                  </div>
+                  <LogIn className="h-5 w-5 mr-2" />
+                  <span>Anmelden</span>
                 </Link>
               </motion.div>
             )}
@@ -127,7 +134,7 @@ function Header({ user, handleSignOut }: { user: any; handleSignOut: () => void 
 
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+            className="md:hidden p-2 rounded-lg text-gray-600 hover:text-purple-600 hover:bg-purple-50 transition-colors"
           >
             {isMobileMenuOpen ? <XIcon className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -139,68 +146,71 @@ function Header({ user, handleSignOut }: { user: any; handleSignOut: () => void 
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden mt-4 space-y-2"
+              className="md:hidden mt-4 space-y-2 border-t border-gray-100 pt-4"
             >
               <Link
                 to="/"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`w-full flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
                   location.pathname === '/'
-                    ? 'bg-purple-100 text-purple-700'
+                    ? 'bg-purple-100 text-purple-700 shadow-sm'
                     : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
                 }`}
               >
-                <Sparkles className="h-5 w-5 mr-2" />
-                GFK Transform
+                <Sparkles className="h-5 w-5 mr-3" />
+                <span>GFK Transform</span>
               </Link>
+              
               <Link
                 to="/contact"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`w-full flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
                   location.pathname === '/contact'
-                    ? 'bg-purple-100 text-purple-700'
+                    ? 'bg-purple-100 text-purple-700 shadow-sm'
                     : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
                 }`}
               >
-                <Mail className="h-5 w-5 mr-2" />
-                Kontakt
+                <Mail className="h-5 w-5 mr-3" />
+                <span>Kontakt</span>
               </Link>
+              
               {user ? (
                 <>
                   <Link
                     to="/profile"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`w-full flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
                       location.pathname === '/profile'
-                        ? 'bg-purple-100 text-purple-700'
+                        ? 'bg-purple-100 text-purple-700 shadow-sm'
                         : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
                     }`}
                   >
-                    Profil
+                    <span>Profil</span>
                   </Link>
+                  
                   <button
                     onClick={() => {
                       handleSignOut();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="w-full flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+                    className="w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
                   >
-                    <LogOut className="h-5 w-5 mr-2" />
-                    Abmelden
+                    <LogOut className="h-5 w-5 mr-3" />
+                    <span>Abmelden</span>
                   </button>
                 </>
               ) : (
                 <Link
                   to="/auth"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`w-full flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                  className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
                     location.pathname === '/auth'
-                      ? 'bg-purple-100 text-purple-700'
+                      ? 'bg-purple-100 text-purple-700 shadow-sm'
                       : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
                   }`}
                 >
-                  <LogIn className="h-5 w-5 mr-2" />
-                  Anmelden
+                  <LogIn className="h-5 w-5 mr-3" />
+                  <span>Anmelden</span>
                 </Link>
               )}
             </motion.div>
