@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { useNavigate } from 'react-router-dom';
-import { User, History, Settings, LogOut, MessageSquare } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { User, History, Settings, LogOut, MessageSquare, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const supabase = createClient(
