@@ -233,7 +233,11 @@ function MainContent() {
   } | null>(null);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  
+  // Separate loading states
+  const [isGfkLoading, setIsGfkLoading] = useState(false);
+  const [isEmailLoading, setIsEmailLoading] = useState(false);
+  
   const [error, setError] = useState<string | null>(null);
   const [subscribeSuccess, setSubscribeSuccess] = useState(false);
   const [feedbackGiven, setFeedbackGiven] = useState(false);
@@ -260,7 +264,7 @@ function MainContent() {
       return;
     }
 
-    setIsLoading(true);
+    setIsGfkLoading(true);
     setError(null);
     setOutput(null);
     setFeedbackGiven(false);
@@ -297,12 +301,12 @@ function MainContent() {
           : 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.'
       );
     } finally {
-      setIsLoading(false);
+      setIsGfkLoading(false);
     }
   };
 
   const handleEmailSubmit = async (email: string, name: string) => {
-    setIsLoading(true);
+    setIsEmailLoading(true);
     setError(null);
     setSubscribeSuccess(false);
 
@@ -329,7 +333,7 @@ function MainContent() {
           : 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.'
       );
     } finally {
-      setIsLoading(false);
+      setIsEmailLoading(false);
     }
   };
 
@@ -469,13 +473,13 @@ function MainContent() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       type="submit"
-                      disabled={isLoading || !input.trim()}
+                      disabled={isGfkLoading || !input.trim()}
                       className={`px-6 py-3 border border-transparent text-lg font-medium rounded-xl text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out flex items-center ${
-                        (isLoading || !input.trim()) && 'opacity-50 cursor-not-allowed'
+                        (isGfkLoading || !input.trim()) && 'opacity-50 cursor-not-allowed'
                       }`}
                     >
                       <Sparkles className="h-5 w-5 mr-2" />
-                      {isLoading ? 'Verarbeite...' : 'In GFK umformulieren'}
+                      {isGfkLoading ? 'Verarbeite...' : 'In GFK umformulieren'}
                     </motion.button>
                   </div>
 
@@ -570,7 +574,7 @@ function MainContent() {
 
               <CTAForm
                 onSubmit={handleEmailSubmit}
-                isLoading={isLoading}
+                isLoading={isEmailLoading}
                 error={error}
                 subscribeSuccess={subscribeSuccess}
               />
@@ -614,13 +618,13 @@ function MainContent() {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         type="submit"
-                        disabled={isLoading}
+                        disabled={isEmailLoading}
                         className={`bg-white text-purple-600 px-6 py-3 rounded-r-xl font-medium hover:bg-gray-50 transition duration-150 ease-in-out flex items-center ${
-                          isLoading && 'opacity-50 cursor-not-allowed'
+                          isEmailLoading && 'opacity-50 cursor-not-allowed'
                         }`}
                       >
                         <Send className="h-5 w-5 mr-2" />
-                        {isLoading ? 'Wird gesendet...' : 'Anmelden'}
+                        {isEmailLoading ? 'Wird gesendet...' : 'Anmelden'}
                       </motion.button>
                     </div>
                   </form>
