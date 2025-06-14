@@ -57,7 +57,17 @@ export function useUserTracking() {
   const initializeSession = async () => {
     try {
       // Check if user is authenticated
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user }, error } = await supabase.auth.getUser();
+      
+      // Check for invalid session error
+      if (error && error.message.includes('Session from session_id claim in JWT does not exist')) {
+        await supabase.auth.signOut();
+        // Continue with anonymous session after clearing invalid session
+        const anonymousSession = await getAnonymousUserSession();
+        setSession(anonymousSession);
+        setIsLoading(false);
+        return;
+      }
       
       if (user) {
         // Authenticated user - unlimited usage

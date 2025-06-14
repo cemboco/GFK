@@ -284,9 +284,25 @@ function MainContent() {
   const { canUseService, incrementUsage, getUsageInfo } = useUserTracking();
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-    });
+    const initializeUser = async () => {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        
+        // Check for invalid session error
+        if (error && error.message.includes('Session from session_id claim in JWT does not exist')) {
+          await supabase.auth.signOut();
+          setUser(null);
+          return;
+        }
+        
+        setUser(user);
+      } catch (err) {
+        console.error('Error getting user:', err);
+        setUser(null);
+      }
+    };
+
+    initializeUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
@@ -738,9 +754,25 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-    });
+    const initializeUser = async () => {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        
+        // Check for invalid session error
+        if (error && error.message.includes('Session from session_id claim in JWT does not exist')) {
+          await supabase.auth.signOut();
+          setUser(null);
+          return;
+        }
+        
+        setUser(user);
+      } catch (err) {
+        console.error('Error getting user:', err);
+        setUser(null);
+      }
+    };
+
+    initializeUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);

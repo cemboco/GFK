@@ -43,7 +43,14 @@ export default function Profile() {
 
   const fetchUserData = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      // Check for invalid session error
+      if (userError && userError.message.includes('Session from session_id claim in JWT does not exist')) {
+        await supabase.auth.signOut();
+        navigate('/auth');
+        return;
+      }
       
       if (!user) {
         navigate('/auth');
