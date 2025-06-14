@@ -591,7 +591,7 @@ function App() {
                                 <motion.button
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
-                                  onClick={() => setShowChatDialog(true)}
+                                  onClick={() => user ? setShowChatDialog(true) : window.location.href = '/auth'}
                                   className="flex items-center px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors"
                                 >
                                   <Bot className="h-4 w-4 mr-2" />
