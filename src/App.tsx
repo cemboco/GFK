@@ -277,11 +277,14 @@ function FlowingTextDialog({
   const [editedFeeling, setEditedFeeling] = useState('');
   const [editedNeed, setEditedNeed] = useState('');
   const [copySuccess, setCopySuccess] = useState(false);
+  const [currentFlowingText, setCurrentFlowingText] = useState('');
 
   useEffect(() => {
     if (output) {
       setEditedFeeling(stripHtml(output.feeling));
       setEditedNeed(stripHtml(output.need));
+      // Update flowing text when output changes
+      updateFlowingText(stripHtml(output.feeling), stripHtml(output.need));
     }
   }, [output]);
 
@@ -341,14 +344,15 @@ function FlowingTextDialog({
     return flowingText;
   };
 
-  const flowingText = createFlowingText(
-    isEditing ? editedFeeling : stripHtml(output.feeling),
-    isEditing ? editedNeed : stripHtml(output.need)
-  );
+  // Update flowing text and store it in state
+  const updateFlowingText = (feeling: string, need: string) => {
+    const newFlowingText = createFlowingText(feeling, need);
+    setCurrentFlowingText(newFlowingText);
+  };
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(flowingText);
+      await navigator.clipboard.writeText(currentFlowingText);
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
     } catch (err) {
@@ -357,6 +361,8 @@ function FlowingTextDialog({
   };
 
   const handleSaveEdit = () => {
+    // Update the flowing text with the edited values
+    updateFlowingText(editedFeeling, editedNeed);
     setIsEditing(false);
   };
 
@@ -364,6 +370,8 @@ function FlowingTextDialog({
     setIsEditing(false);
     setEditedFeeling(stripHtml(output.feeling));
     setEditedNeed(stripHtml(output.need));
+    // Reset to original flowing text
+    updateFlowingText(stripHtml(output.feeling), stripHtml(output.need));
   };
 
   return (
@@ -461,7 +469,7 @@ function FlowingTextDialog({
 
               <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-xl border border-purple-100">
                 <p className="text-gray-800 leading-relaxed text-lg">
-                  {flowingText}
+                  {currentFlowingText}
                 </p>
               </div>
 
