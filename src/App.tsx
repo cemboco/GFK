@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon, FileText, Edit2, Save, Copy } from 'lucide-react';
+import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon, FileText, Edit2, Save, Copy, Bot } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
@@ -10,6 +10,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import Contact from './components/Contact';
 import Auth from './components/Auth';
 import Profile from './components/Profile';
+import ChatDialog from './components/ChatDialog';
 import { useUserTracking } from './hooks/useUserTracking';
 
 const supabase = createClient(
@@ -536,6 +537,7 @@ function MainContent() {
   const [showNegativeFeedbackDialog, setShowNegativeFeedbackDialog] = useState(false);
   const [showPositiveFeedbackDialog, setShowPositiveFeedbackDialog] = useState(false);
   const [showFlowingTextDialog, setShowFlowingTextDialog] = useState(false);
+  const [showChatDialog, setShowChatDialog] = useState(false);
   const [user, setUser] = useState(null);
 
   // User tracking
@@ -856,8 +858,8 @@ function MainContent() {
                           </p>
                         </motion.div>
 
-                        {/* Flowing Text Button */}
-                        <div className="flex justify-center">
+                        {/* Action Buttons */}
+                        <div className="flex flex-wrap justify-center gap-4">
                           <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
@@ -866,6 +868,16 @@ function MainContent() {
                           >
                             <FileText className="h-5 w-5 mr-2" />
                             Als Fließtext anzeigen
+                          </motion.button>
+
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setShowChatDialog(true)}
+                            className="flex items-center px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors shadow-sm"
+                          >
+                            <Bot className="h-5 w-5 mr-2" />
+                            Mit KI besprechen
                           </motion.button>
                         </div>
 
@@ -1021,6 +1033,14 @@ function MainContent() {
         isOpen={showFlowingTextDialog}
         onClose={() => setShowFlowingTextDialog(false)}
         output={output}
+        user={user}
+      />
+
+      <ChatDialog
+        isOpen={showChatDialog}
+        onClose={() => setShowChatDialog(false)}
+        originalInput={input}
+        gfkOutput={output || { observation: '', feeling: '', need: '', request: '' }}
         user={user}
       />
     </>
