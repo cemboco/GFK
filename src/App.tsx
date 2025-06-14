@@ -873,13 +873,27 @@ function MainContent() {
                           <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => setShowChatDialog(true)}
-                            className="flex items-center px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors shadow-sm"
+                            onClick={() => user ? setShowChatDialog(true) : null}
+                            disabled={!user}
+                            className={`flex items-center px-6 py-3 rounded-xl transition-colors shadow-sm ${
+                              user 
+                                ? 'bg-green-600 text-white hover:bg-green-700' 
+                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            }`}
+                            title={!user ? 'Nur für registrierte Benutzer verfügbar' : ''}
                           >
                             <Bot className="h-5 w-5 mr-2" />
-                            Mit KI besprechen
+                            GFK-Coach fragen
                           </motion.button>
                         </div>
+
+                        {!user && (
+                          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-center">
+                            <p className="text-yellow-800 text-sm">
+                              💡 <strong>Tipp:</strong> Melden Sie sich an, um den GFK-Coach zu nutzen und Ihre Transformationen zu speichern!
+                            </p>
+                          </div>
+                        )}
 
                         <div className="mt-6 border-t border-gray-200 pt-6">
                           <p className="text-gray-700 mb-4">War diese Umformulierung hilfreich?</p>

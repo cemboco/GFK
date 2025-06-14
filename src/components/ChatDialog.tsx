@@ -144,6 +144,59 @@ Was möchtest du über deine GFK-Transformation wissen?`,
     }
   };
 
+  // Show access restriction for non-authenticated users
+  if (!user) {
+    return (
+      <AnimatePresence>
+        {isOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative w-full max-w-md bg-white rounded-2xl shadow-xl p-6"
+            >
+              <button
+                onClick={onClose}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="h-6 w-6" />
+              </button>
+
+              <div className="text-center">
+                <Bot className="h-12 w-12 text-purple-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                  Anmeldung erforderlich
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Der GFK-Coach ist nur für registrierte Benutzer verfügbar. 
+                  Melden Sie sich an, um diese Funktion zu nutzen.
+                </p>
+                <div className="flex space-x-3">
+                  <button
+                    onClick={onClose}
+                    className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                  >
+                    Schließen
+                  </button>
+                  <button
+                    onClick={() => {
+                      onClose();
+                      window.location.href = '/auth';
+                    }}
+                    className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                  >
+                    Anmelden
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    );
+  }
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -159,7 +212,7 @@ Was möchtest du über deine GFK-Transformation wissen?`,
               <div className="flex items-center space-x-3">
                 <MessageCircle className="h-6 w-6 text-purple-600" />
                 <h3 className="text-xl font-semibold text-gray-900">
-                  GFK-Chat mit KI
+                  GFK-Coach fragen
                 </h3>
               </div>
               <button
@@ -269,14 +322,6 @@ Was möchtest du über deine GFK-Transformation wissen?`,
                   <Send className="h-5 w-5" />
                 </motion.button>
               </div>
-              
-              {!user && (
-                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <p className="text-yellow-800 text-sm">
-                    💡 <strong>Tipp:</strong> Melden Sie sich an, um Ihre Chat-Verläufe zu speichern!
-                  </p>
-                </div>
-              )}
             </div>
           </motion.div>
         </div>
