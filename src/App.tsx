@@ -624,6 +624,7 @@ function MainContent() {
   } | null>(null);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [message, setMessage] = useState('');
   
   // Separate loading states
   const [isGfkLoading, setIsGfkLoading] = useState(false);
@@ -731,26 +732,35 @@ function MainContent() {
     }
   };
 
-  const handleEmailSubmit = async (email: string, name: string) => {
+  const handleNewsletterSubmit = async (email: string, name: string, message: string) => {
     setIsEmailLoading(true);
     setError(null);
     setSubscribeSuccess(false);
 
     try {
+      // Save to newsletter_messages table
+      const { error: messageError } = await supabase
+        .from('newsletter_messages')
+        .insert([{ name, email, message }]);
+
+      if (messageError) {
+        throw new Error('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
+      }
+
+      // Also save to subscribers table for backwards compatibility
       const { error: subscribeError } = await supabase
         .from('subscribers')
         .insert([{ name, email }]);
 
-      if (subscribeError) {
-        if (subscribeError.code === '23505') {
-          throw new Error('Diese E-Mail-Adresse ist bereits registriert.');
-        }
-        throw new Error('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
+      // Ignore duplicate email errors for subscribers table
+      if (subscribeError && subscribeError.code !== '23505') {
+        console.warn('Warning saving to subscribers:', subscribeError);
       }
 
       setSubscribeSuccess(true);
       setName('');
       setEmail('');
+      setMessage('');
     } catch (err) {
       console.error('Error:', err);
       setError(
@@ -1034,7 +1044,7 @@ function MainContent() {
           </div>
 
           <CTAForm
-            onSubmit={handleEmailSubmit}
+            onSubmit={(email, name) => handleNewsletterSubmit(email, name, '')}
             isLoading={isEmailLoading}
             error={error}
             subscribeSuccess={subscribeSuccess}
@@ -1054,7 +1064,7 @@ function MainContent() {
               </p>
               <form onSubmit={(e) => {
                 e.preventDefault();
-                handleEmailSubmit(email, name);
+                handleNewsletterSubmit(email, name, message);
               }} className="max-w-md mx-auto space-y-4">
                 <div>
                   <input
@@ -1066,26 +1076,37 @@ function MainContent() {
                     required
                   />
                 </div>
-                <div className="flex">
+                <div>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Deine E-Mail"
-                    className="flex-1 px-6 py-3 rounded-l-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/90 backdrop-blur-sm"
+                    className="w-full px-6 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/90 backdrop-blur-sm"
                     required
                   />
+                </div>
+                <div>
+                  <textarea
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Deine Nachricht (optional)"
+                    rows={3}
+                    className="w-full px-6 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/90 backdrop-blur-sm resize-none"
+                  />
+                </div>
+                <div className="flex justify-center">
                   <motion.button 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     type="submit"
                     disabled={isEmailLoading}
-                    className={`bg-white text-purple-600 px-6 py-3 rounded-r-xl font-medium hover:bg-gray-50 transition duration-150 ease-in-out flex items-center ${
+                    className={`bg-white text-purple-600 px-8 py-3 rounded-xl font-medium hover:bg-gray-50 transition duration-150 ease-in-out flex items-center ${
                       isEmailLoading && 'opacity-50 cursor-not-allowed'
                     }`}
                   >
-                    <Send className="h-5 w-5 mr-2" />
-                    {isEmailLoading ? 'Wird gesendet...' : 'Anmelden'}
+                    <Save className="h-5 w-5 mr-2" />
+                    {isEmailLoading ? 'Wird gespeichert...' : 'Eintrag speichern'}
                   </motion.button>
                 </div>
               </form>
