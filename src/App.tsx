@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon } from 'lucide-react';
+import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon, FileText } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
@@ -256,6 +256,98 @@ function UsageIndicator() {
   );
 }
 
+// Flowing Text Dialog Component
+function FlowingTextDialog({ 
+  isOpen, 
+  onClose, 
+  output 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void; 
+  output: {
+    observation: string;
+    feeling: string;
+    need: string;
+    request: string;
+  } | null;
+}) {
+  if (!output) return null;
+
+  // Strip HTML tags for flowing text
+  const stripHtml = (html: string) => {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
+  const flowingText = `${stripHtml(output.observation)} ${stripHtml(output.feeling)}, weil mir ${stripHtml(output.need)} wichtig ist. ${stripHtml(output.request)}`;
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(flowingText);
+      // You could add a toast notification here
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="relative w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6"
+          >
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <XIcon className="h-6 w-6" />
+            </button>
+
+            <div className="space-y-6">
+              <div className="flex items-center space-x-3">
+                <FileText className="h-6 w-6 text-purple-600" />
+                <h3 className="text-xl font-semibold text-gray-900">
+                  GFK als Fließtext
+                </h3>
+              </div>
+
+              <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-xl">
+                <p className="text-gray-800 leading-relaxed text-lg">
+                  {flowingText}
+                </p>
+              </div>
+
+              <div className="flex justify-end space-x-3">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={copyToClipboard}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center"
+                >
+                  <span>Text kopieren</span>
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={onClose}
+                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                >
+                  Schließen
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 // Main page content component
 function MainContent() {
   const [activeTab, setActiveTab] = useState<'gfk' | 'about'>('gfk');
@@ -278,6 +370,7 @@ function MainContent() {
   const [feedbackGiven, setFeedbackGiven] = useState(false);
   const [showNegativeFeedbackDialog, setShowNegativeFeedbackDialog] = useState(false);
   const [showPositiveFeedbackDialog, setShowPositiveFeedbackDialog] = useState(false);
+  const [showFlowingTextDialog, setShowFlowingTextDialog] = useState(false);
   const [user, setUser] = useState(null);
 
   // User tracking
@@ -598,6 +691,19 @@ function MainContent() {
                           </p>
                         </motion.div>
 
+                        {/* Flowing Text Button */}
+                        <div className="flex justify-center">
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setShowFlowingTextDialog(true)}
+                            className="flex items-center px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
+                          >
+                            <FileText className="h-5 w-5 mr-2" />
+                            Als Fließtext anzeigen
+                          </motion.button>
+                        </div>
+
                         <div className="mt-6 border-t border-gray-200 pt-6">
                           <p className="text-gray-700 mb-4">War diese Umformulierung hilfreich?</p>
                           <div className="flex justify-center gap-4">
@@ -744,6 +850,12 @@ function MainContent() {
         isOpen={showPositiveFeedbackDialog}
         onClose={() => setShowPositiveFeedbackDialog(false)}
         onSubmit={handlePositiveFeedbackSubmit}
+      />
+
+      <FlowingTextDialog
+        isOpen={showFlowingTextDialog}
+        onClose={() => setShowFlowingTextDialog(false)}
+        output={output}
       />
     </>
   );
