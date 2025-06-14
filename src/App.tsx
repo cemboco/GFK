@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon, FileText } from 'lucide-react';
+import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon, FileText, Edit2, Save, Copy } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
@@ -256,11 +256,12 @@ function UsageIndicator() {
   );
 }
 
-// Flowing Text Dialog Component
+// Flowing Text Dialog Component with editing capabilities
 function FlowingTextDialog({ 
   isOpen, 
   onClose, 
-  output 
+  output,
+  user
 }: { 
   isOpen: boolean; 
   onClose: () => void; 
@@ -270,7 +271,20 @@ function FlowingTextDialog({
     need: string;
     request: string;
   } | null;
+  user: any;
 }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedFeeling, setEditedFeeling] = useState('');
+  const [editedNeed, setEditedNeed] = useState('');
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  useEffect(() => {
+    if (output) {
+      setEditedFeeling(stripHtml(output.feeling));
+      setEditedNeed(stripHtml(output.need));
+    }
+  }, [output]);
+
   if (!output) return null;
 
   // Strip HTML tags for flowing text
@@ -280,15 +294,63 @@ function FlowingTextDialog({
     return tmp.textContent || tmp.innerText || '';
   };
 
-  const flowingText = `${stripHtml(output.observation)} ${stripHtml(output.feeling)}, weil mir ${stripHtml(output.need)} wichtig ist. ${stripHtml(output.request)}`;
+  // Create grammatically correct flowing text
+  const createFlowingText = (feeling: string, need: string) => {
+    const observation = stripHtml(output.observation);
+    const request = stripHtml(output.request);
+    
+    // Ensure proper grammar and sentence structure
+    let flowingText = observation;
+    
+    // Add feeling with proper connection
+    if (feeling) {
+      if (flowingText.endsWith('.')) {
+        flowingText = flowingText.slice(0, -1); // Remove period
+      }
+      flowingText += `, ${feeling}`;
+    }
+    
+    // Add need with proper connection
+    if (need) {
+      flowingText += `, weil mir ${need} wichtig ist.`;
+    } else {
+      flowingText += '.';
+    }
+    
+    // Add request as separate sentence
+    if (request) {
+      flowingText += ` ${request}`;
+      if (!request.endsWith('.') && !request.endsWith('?') && !request.endsWith('!')) {
+        flowingText += '.';
+      }
+    }
+    
+    return flowingText;
+  };
+
+  const flowingText = createFlowingText(
+    isEditing ? editedFeeling : stripHtml(output.feeling),
+    isEditing ? editedNeed : stripHtml(output.need)
+  );
 
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(flowingText);
-      // You could add a toast notification here
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
     } catch (err) {
       console.error('Failed to copy text: ', err);
     }
+  };
+
+  const handleSaveEdit = () => {
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedFeeling(stripHtml(output.feeling));
+    setEditedNeed(stripHtml(output.need));
   };
 
   return (
@@ -299,7 +361,7 @@ function FlowingTextDialog({
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="relative w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6"
+            className="relative w-full max-w-3xl bg-white rounded-2xl shadow-xl p-6 max-h-[90vh] overflow-y-auto"
           >
             <button
               onClick={onClose}
@@ -309,28 +371,110 @@ function FlowingTextDialog({
             </button>
 
             <div className="space-y-6">
-              <div className="flex items-center space-x-3">
-                <FileText className="h-6 w-6 text-purple-600" />
-                <h3 className="text-xl font-semibold text-gray-900">
-                  GFK als Fließtext
-                </h3>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <FileText className="h-6 w-6 text-purple-600" />
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    GFK als Fließtext
+                  </h3>
+                </div>
+                
+                {user && !isEditing && (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setIsEditing(true)}
+                    className="flex items-center px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm"
+                  >
+                    <Edit2 className="h-4 w-4 mr-2" />
+                    Anpassen
+                  </motion.button>
+                )}
               </div>
 
-              <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-xl">
+              {isEditing && user && (
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 space-y-4">
+                  <h4 className="font-medium text-blue-900">Gefühl und Bedürfnis anpassen:</h4>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-blue-800 mb-2">
+                      Gefühl:
+                    </label>
+                    <input
+                      type="text"
+                      value={editedFeeling}
+                      onChange={(e) => setEditedFeeling(e.target.value)}
+                      className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                      placeholder="z.B. fühle ich mich frustriert"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-blue-800 mb-2">
+                      Bedürfnis:
+                    </label>
+                    <input
+                      type="text"
+                      value={editedNeed}
+                      onChange={(e) => setEditedNeed(e.target.value)}
+                      className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                      placeholder="z.B. Verlässlichkeit und Respekt"
+                    />
+                  </div>
+                  
+                  <div className="flex space-x-3">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={handleSaveEdit}
+                      className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      Übernehmen
+                    </motion.button>
+                    
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={handleCancelEdit}
+                      className="flex items-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                    >
+                      <XIcon className="h-4 w-4 mr-2" />
+                      Abbrechen
+                    </motion.button>
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-xl border border-purple-100">
                 <p className="text-gray-800 leading-relaxed text-lg">
                   {flowingText}
                 </p>
               </div>
+
+              {!user && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                  <p className="text-yellow-800 text-sm">
+                    💡 <strong>Tipp:</strong> Melden Sie sich an, um Gefühl und Bedürfnis individuell anzupassen!
+                  </p>
+                </div>
+              )}
 
               <div className="flex justify-end space-x-3">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={copyToClipboard}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center"
+                  className={`px-4 py-2 rounded-lg transition-colors flex items-center ${
+                    copySuccess 
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-purple-600 text-white hover:bg-purple-700'
+                  }`}
                 >
-                  <span>Text kopieren</span>
+                  <Copy className="h-4 w-4 mr-2" />
+                  {copySuccess ? 'Kopiert!' : 'Text kopieren'}
                 </motion.button>
+                
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -856,6 +1000,7 @@ function MainContent() {
         isOpen={showFlowingTextDialog}
         onClose={() => setShowFlowingTextDialog(false)}
         output={output}
+        user={user}
       />
     </>
   );
