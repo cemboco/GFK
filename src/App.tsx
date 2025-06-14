@@ -68,6 +68,24 @@ function Header({ user, handleSignOut }: { user: any; handleSignOut: () => void 
               className="relative"
             >
               <Link
+                to="/about"
+                className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                  location.pathname === '/about'
+                    ? 'bg-purple-100 text-purple-700 shadow-sm'
+                    : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50 hover:shadow-sm'
+                }`}
+              >
+                <Info className="h-5 w-5 mr-2" />
+                <span>Über GFK</span>
+              </Link>
+            </motion.div>
+            
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative"
+            >
+              <Link
                 to="/contact"
                 className={`flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                   location.pathname === '/contact'
@@ -161,6 +179,19 @@ function Header({ user, handleSignOut }: { user: any; handleSignOut: () => void 
               >
                 <Sparkles className="h-5 w-5 mr-3" />
                 <span>GFK Transform</span>
+              </Link>
+              
+              <Link
+                to="/about"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+                  location.pathname === '/about'
+                    ? 'bg-purple-100 text-purple-700 shadow-sm'
+                    : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                }`}
+              >
+                <Info className="h-5 w-5 mr-3" />
+                <span>Über GFK</span>
               </Link>
               
               <Link
@@ -514,9 +545,76 @@ function FlowingTextDialog({
   );
 }
 
+// About GFK Content Component
+const AboutContent = () => (
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -20 }}
+    className="max-w-3xl mx-auto"
+  >
+    <div className="bg-white shadow-xl rounded-2xl p-8">
+      
+      <h2 className="text-3xl font-bold text-gray-900 mb-6">Über Gewaltfreie Kommunikation</h2>
+      
+      <div className="space-y-6 text-gray-700">
+        <p className="text-lg">
+          Gewaltfreie Kommunikation (GFK) ist ein von Marshall B. Rosenberg entwickelter Ansatz, 
+          der Menschen dabei hilft, selbst in herausfordernden Situationen einfühlsam und authentisch 
+          zu kommunizieren.
+        </p>
+
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold text-purple-600">Die vier Komponenten der GFK:</h3>
+          <div className="grid gap-4">
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="bg-purple-50 p-4 rounded-lg transition-shadow hover:shadow-md"
+            >
+              <h4 className="font-semibold text-purple-700">1. Beobachtung</h4>
+              <p>Beschreiben Sie die Situation objektiv, ohne zu bewerten oder zu interpretieren.</p>
+            </motion.div>
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="bg-purple-50 p-4 rounded-lg transition-shadow hover:shadow-md"
+            >
+              <h4 className="font-semibold text-purple-700">2. Gefühl</h4>
+              <p>Drücken Sie Ihre Gefühle aus, die durch die Situation entstehen.</p>
+            </motion.div>
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="bg-purple-50 p-4 rounded-lg transition-shadow hover:shadow-md"
+            >
+              <h4 className="font-semibold text-purple-700">3. Bedürfnis</h4>
+              <p>Benennen Sie die Bedürfnisse, die hinter Ihren Gefühlen stehen.</p>
+            </motion.div>
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="bg-purple-50 p-4 rounded-lg transition-shadow hover:shadow-md"
+            >
+              <h4 className="font-semibold text-purple-700">4. Bitte</h4>
+              <p>Formulieren Sie eine konkrete, positive und machbare Bitte.</p>
+            </motion.div>
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <h3 className="text-xl font-semibold text-purple-600 mb-3">Vorteile der GFK:</h3>
+          <ul className="list-disc list-inside space-y-2 ml-4">
+            <li>Verbessert zwischenmenschliche Beziehungen</li>
+            <li>Reduziert Konflikte und Missverständnisse</li>
+            <li>Fördert empathisches Zuhören und Verstehen</li>
+            <li>Ermöglicht konstruktive Konfliktlösung</li>
+            <li>Stärkt emotionale Intelligenz und Selbstausdruck</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </motion.div>
+);
+
 // Main page content component
 function MainContent() {
-  const [activeTab, setActiveTab] = useState<'gfk' | 'about'>('gfk');
   const [input, setInput] = useState('');
   const [output, setOutput] = useState<{
     observation: string;
@@ -732,303 +830,297 @@ function MainContent() {
       <UsageIndicator />
       
       <main className="max-w-7xl mx-auto px-4 py-6 sm:py-10 sm:px-6 lg:px-8">
-        <AnimatePresence mode="wait">
-          {activeTab === 'about' ? (
-            <AboutContent />
-          ) : (
-            <motion.div
-              key="gfk"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              <div className="text-center mb-8 sm:mb-16">
-                <h2 className="text-3xl sm:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600 sm:text-5xl">
-                  Verbessere deine Kommunikation mit KI
-                </h2>
-                <p className="mt-4 text-lg sm:text-xl text-gray-600">
-                  Wandle alltägliche Nachrichten in gewaltfreie Kommunikation um - mit nur einem Klick.
-                </p>
-              </div>
+        <motion.div
+          key="gfk"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+        >
+          <div className="text-center mb-8 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600 sm:text-5xl">
+              Verbessere deine Kommunikation mit KI
+            </h2>
+            <p className="mt-4 text-lg sm:text-xl text-gray-600">
+              Wandle alltägliche Nachrichten in gewaltfreie Kommunikation um - mit nur einem Klick.
+            </p>
+          </div>
 
-              <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl p-4 sm:p-8 mb-8">
-                <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-6">Beispiele:</h3>
-                <div className="grid gap-4 sm:gap-6 md:grid-cols-2 mb-8">
-                  <motion.div 
-                    whileHover={{ scale: 1.02 }}
-                    className="bg-gradient-to-br from-purple-50 to-indigo-50 p-4 sm:p-6 rounded-xl shadow-sm"
-                  >
-                    <p className="font-medium text-purple-800 mb-2">Ursprüngliche Nachricht:</p>
-                    <p className="text-gray-700">"Du kommst schon wieder zu spät!"</p>
-                    <p className="font-medium text-purple-800 mt-4 mb-2">GFK-Version:</p>
-                    <p className="text-gray-700">
-                      "Wenn ich sehe, dass du 15 Minuten nach der vereinbarten Zeit kommst, bin ich frustriert, 
-                      weil mir Verlässlichkeit wichtig ist. Könntest du mir bitte Bescheid geben, wenn du dich verspätest?"
-                    </p>
-                  </motion.div>
-                  <motion.div 
-                    whileHover={{ scale: 1.02 }}
-                    className="bg-gradient-to-br from-purple-50 to-indigo-50 p-4 sm:p-6 rounded-xl shadow-sm"
-                  >
-                    <p className="font-medium text-purple-800 mb-2">Ursprüngliche Nachricht:</p>
-                    <p className="text-gray-700">"Du hörst mir nie richtig zu!"</p>
-                    <p className="font-medium text-purple-800 mt-4 mb-2">GFK-Version:</p>
-                    <p className="text-gray-700">
-                      "Wenn ich merke, dass du während unseres Gesprächs auf dein Handy schaust, 
-                      fühle ich mich traurig, weil mir der Austausch mit dir wichtig ist. 
-                      Wärst du bereit, dir Zeit für ein ungestörtes Gespräch zu nehmen?"
-                    </p>
-                  </motion.div>
-                </div>
-              </div>
-
-              <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl p-8 mb-16">
-                <form onSubmit={handleSubmit}>
-                  <div className="mb-6">
-                    <label htmlFor="input" className="block text-lg font-medium text-gray-700 mb-2">
-                      Was möchtest du sagen?
-                    </label>
-                    <textarea
-                      id="input"
-                      rows={4}
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      className="shadow-sm block w-full border-2 border-gray-200 rounded-xl p-4 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition duration-150 ease-in-out bg-white"
-                      placeholder="Schreibe deine Nachricht hier..."
-                    />
-                  </div>
-
-                  <div className="flex justify-center">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      type="submit"
-                      disabled={isGfkLoading || !input.trim() || !canUseService()}
-                      className={`px-6 py-3 border border-transparent text-lg font-medium rounded-xl text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out flex items-center ${
-                        (isGfkLoading || !input.trim() || !canUseService()) && 'opacity-50 cursor-not-allowed'
-                      }`}
-                    >
-                      <Sparkles className="h-5 w-5 mr-2" />
-                      {isGfkLoading ? 'Verarbeite...' : 'In GFK umformulieren'}
-                    </motion.button>
-                  </div>
-
-                  {error && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="mt-4 p-4 bg-red-50 rounded-xl border border-red-200 text-red-700"
-                    >
-                      {error}
-                    </motion.div>
-                  )}
-                </form>
-
-                <AnimatePresence>
-                  {output && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      className="mt-8 space-y-6"
-                    >
-                      <h3 className="text-xl font-semibold text-gray-900 mb-4">GFK-Formulierung:</h3>
-                      <div className="space-y-4">
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.2 }}
-                          className="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-xl shadow-sm"
-                        >
-                          <p className="text-gray-800 leading-relaxed mb-4">
-                            <span className="font-medium text-purple-700">Beobachtung:</span>{' '}
-                            <span dangerouslySetInnerHTML={{ __html: output.observation }} />
-                          </p>
-                          <p className="text-gray-800 leading-relaxed mb-4">
-                            <span className="font-medium text-purple-700">Gefühl:</span>{' '}
-                            <span dangerouslySetInnerHTML={{ __html: output.feeling }} />
-                          </p>
-                          <p className="text-gray-800 leading-relaxed mb-4">
-                            <span className="font-medium text-purple-700">Bedürfnis:</span>{' '}
-                            <span dangerouslySetInnerHTML={{ __html: output.need }} />
-                          </p>
-                          <p className="text-gray-800 leading-relaxed">
-                            <span className="font-medium text-purple-700">Bitte:</span>{' '}
-                            <span dangerouslySetInnerHTML={{ __html: output.request }} />
-                          </p>
-                        </motion.div>
-
-                        {/* Action Buttons */}
-                        <div className="flex flex-wrap justify-center gap-4">
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => setShowFlowingTextDialog(true)}
-                            className="flex items-center px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
-                          >
-                            <FileText className="h-5 w-5 mr-2" />
-                            Als Fließtext anzeigen
-                          </motion.button>
-
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => user ? setShowChatDialog(true) : null}
-                            disabled={!user}
-                            className={`flex items-center px-6 py-3 rounded-xl transition-colors shadow-sm ${
-                              user 
-                                ? 'bg-green-600 text-white hover:bg-green-700' 
-                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            }`}
-                            title={!user ? 'Nur für registrierte Benutzer verfügbar' : ''}
-                          >
-                            <Bot className="h-5 w-5 mr-2" />
-                            GFK-Coach fragen
-                          </motion.button>
-                        </div>
-
-                        {!user && (
-                          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-center">
-                            <p className="text-yellow-800 text-sm">
-                              💡 <strong>Tipp:</strong> Melden Sie sich an, um den GFK-Coach zu nutzen und Ihre Transformationen zu speichern!
-                            </p>
-                          </div>
-                        )}
-
-                        <div className="mt-6 border-t border-gray-200 pt-6">
-                          <p className="text-gray-700 mb-4">War diese Umformulierung hilfreich?</p>
-                          <div className="flex justify-center gap-4">
-                            <motion.button
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={() => handleFeedback(true)}
-                              disabled={feedbackGiven}
-                              className={`flex items-center px-4 py-2 rounded-lg border ${
-                                feedbackGiven ? 'border-gray-200 text-gray-400' : 'border-green-500 text-green-600 hover:bg-green-50'
-                              }`}
-                            >
-                              <ThumbsUp className="h-5 w-5 mr-2" />
-                              Ja
-                            </motion.button>
-                            <motion.button
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={() => handleFeedback(false)}
-                              disabled={feedbackGiven}
-                              className={`flex items-center px-4 py-2 rounded-lg border ${
-                                feedbackGiven ? 'border-gray-200 text-gray-400' : 'border-red-500 text-red-600 hover:bg-red-50'
-                              }`}
-                            >
-                              <ThumbsDown className="h-5 w-5 mr-2" />
-                              Nein
-                            </motion.button>
-                          </div>
-                          {feedbackGiven && (
-                            <motion.p
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              className="text-gray-600 text-center mt-4"
-                            >
-                              Danke für dein Feedback!
-                            </motion.p>
-                          )}
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              <CTAForm
-                onSubmit={handleEmailSubmit}
-                isLoading={isEmailLoading}
-                error={error}
-                subscribeSuccess={subscribeSuccess}
-              />
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl shadow-xl p-10 text-white text-center mt-16 relative overflow-hidden"
+          <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl p-4 sm:p-8 mb-8">
+            <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-6">Beispiele:</h3>
+            <div className="grid gap-4 sm:gap-6 md:grid-cols-2 mb-8">
+              <motion.div 
+                whileHover={{ scale: 1.02 }}
+                className="bg-gradient-to-br from-purple-50 to-indigo-50 p-4 sm:p-6 rounded-xl shadow-sm"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 backdrop-blur-sm"></div>
-                <div className="relative z-10">
-                  <Heart className="h-12 w-12 mx-auto mb-6 text-white opacity-90" />
-                  <h2 className="text-3xl font-bold mb-4">Hilf uns, GFKCoach zu verbessern!</h2>
-                  <p className="mb-8 text-lg text-purple-100">
-                    Damit wir die App weiterentwickeln können, würden wir uns freuen, dich kontaktieren zu dürfen.
-                  </p>
-                  <form onSubmit={(e) => {
-                    e.preventDefault();
-                    handleEmailSubmit(email, name);
-                  }} className="max-w-md mx-auto space-y-4">
-                    <div>
-                      <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Dein Name"
-                        className="w-full px-6 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/90 backdrop-blur-sm"
-                        required
-                      />
-                    </div>
-                    <div className="flex">
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Deine E-Mail"
-                        className="flex-1 px-6 py-3 rounded-l-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/90 backdrop-blur-sm"
-                        required
-                      />
-                      <motion.button 
+                <p className="font-medium text-purple-800 mb-2">Ursprüngliche Nachricht:</p>
+                <p className="text-gray-700">"Du kommst schon wieder zu spät!"</p>
+                <p className="font-medium text-purple-800 mt-4 mb-2">GFK-Version:</p>
+                <p className="text-gray-700">
+                  "Wenn ich sehe, dass du 15 Minuten nach der vereinbarten Zeit kommst, bin ich frustriert, 
+                  weil mir Verlässlichkeit wichtig ist. Könntest du mir bitte Bescheid geben, wenn du dich verspätest?"
+                </p>
+              </motion.div>
+              <motion.div 
+                whileHover={{ scale: 1.02 }}
+                className="bg-gradient-to-br from-purple-50 to-indigo-50 p-4 sm:p-6 rounded-xl shadow-sm"
+              >
+                <p className="font-medium text-purple-800 mb-2">Ursprüngliche Nachricht:</p>
+                <p className="text-gray-700">"Du hörst mir nie richtig zu!"</p>
+                <p className="font-medium text-purple-800 mt-4 mb-2">GFK-Version:</p>
+                <p className="text-gray-700">
+                  "Wenn ich merke, dass du während unseres Gesprächs auf dein Handy schaust, 
+                  fühle ich mich traurig, weil mir der Austausch mit dir wichtig ist. 
+                  Wärst du bereit, dir Zeit für ein ungestörtes Gespräch zu nehmen?"
+                </p>
+              </motion.div>
+            </div>
+          </div>
+
+          <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl p-8 mb-16">
+            <form onSubmit={handleSubmit}>
+              <div className="mb-6">
+                <label htmlFor="input" className="block text-lg font-medium text-gray-700 mb-2">
+                  Was möchtest du sagen?
+                </label>
+                <textarea
+                  id="input"
+                  rows={4}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  className="shadow-sm block w-full border-2 border-gray-200 rounded-xl p-4 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition duration-150 ease-in-out bg-white"
+                  placeholder="Schreibe deine Nachricht hier..."
+                />
+              </div>
+
+              <div className="flex justify-center">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  type="submit"
+                  disabled={isGfkLoading || !input.trim() || !canUseService()}
+                  className={`px-6 py-3 border border-transparent text-lg font-medium rounded-xl text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out flex items-center ${
+                    (isGfkLoading || !input.trim() || !canUseService()) && 'opacity-50 cursor-not-allowed'
+                  }`}
+                >
+                  <Sparkles className="h-5 w-5 mr-2" />
+                  {isGfkLoading ? 'Verarbeite...' : 'In GFK umformulieren'}
+                </motion.button>
+              </div>
+
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 p-4 bg-red-50 rounded-xl border border-red-200 text-red-700"
+                >
+                  {error}
+                </motion.div>
+              )}
+            </form>
+
+            <AnimatePresence>
+              {output && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="mt-8 space-y-6"
+                >
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">GFK-Formulierung:</h3>
+                  <div className="space-y-4">
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                      className="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-xl shadow-sm"
+                    >
+                      <p className="text-gray-800 leading-relaxed mb-4">
+                        <span className="font-medium text-purple-700">Beobachtung:</span>{' '}
+                        <span dangerouslySetInnerHTML={{ __html: output.observation }} />
+                      </p>
+                      <p className="text-gray-800 leading-relaxed mb-4">
+                        <span className="font-medium text-purple-700">Gefühl:</span>{' '}
+                        <span dangerouslySetInnerHTML={{ __html: output.feeling }} />
+                      </p>
+                      <p className="text-gray-800 leading-relaxed mb-4">
+                        <span className="font-medium text-purple-700">Bedürfnis:</span>{' '}
+                        <span dangerouslySetInnerHTML={{ __html: output.need }} />
+                      </p>
+                      <p className="text-gray-800 leading-relaxed">
+                        <span className="font-medium text-purple-700">Bitte:</span>{' '}
+                        <span dangerouslySetInnerHTML={{ __html: output.request }} />
+                      </p>
+                    </motion.div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-wrap justify-center gap-4">
+                      <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        type="submit"
-                        disabled={isEmailLoading}
-                        className={`bg-white text-purple-600 px-6 py-3 rounded-r-xl font-medium hover:bg-gray-50 transition duration-150 ease-in-out flex items-center ${
-                          isEmailLoading && 'opacity-50 cursor-not-allowed'
-                        }`}
+                        onClick={() => setShowFlowingTextDialog(true)}
+                        className="flex items-center px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
                       >
-                        <Send className="h-5 w-5 mr-2" />
-                        {isEmailLoading ? 'Wird gesendet...' : 'Anmelden'}
+                        <FileText className="h-5 w-5 mr-2" />
+                        Als Fließtext anzeigen
+                      </motion.button>
+
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => user ? setShowChatDialog(true) : null}
+                        disabled={!user}
+                        className={`flex items-center px-6 py-3 rounded-xl transition-colors shadow-sm ${
+                          user 
+                            ? 'bg-green-600 text-white hover:bg-green-700' 
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
+                        title={!user ? 'Nur für registrierte Benutzer verfügbar' : ''}
+                      >
+                        <Bot className="h-5 w-5 mr-2" />
+                        GFK-Coach fragen
                       </motion.button>
                     </div>
-                  </form>
-                  {error && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="mt-4 p-4 bg-red-800/20 rounded-xl text-white max-w-md mx-auto"
-                    >
-                      {error}
-                    </motion.div>
-                  )}
-                  {subscribeSuccess && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="mt-4 p-4 bg-green-800/20 rounded-xl text-white max-w-md mx-auto"
-                    >
-                      Danke für deine Bereitschaft.
-                    </motion.div>
-                  )}
-                </div>
-              </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-white/90 backdrop-blur-sm shadow-lg rounded-full px-6 py-3 flex items-center justify-center mx-auto mt-8 max-w-max"
-              >
-                <MessageCircle className="h-5 w-5 text-purple-600 mr-2" />
-                <span className="font-medium text-purple-600">
-                  49 Nutzer haben bereits getestet
-                </span>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                    {!user && (
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-center">
+                        <p className="text-yellow-800 text-sm">
+                          💡 <strong>Tipp:</strong> Melden Sie sich an, um den GFK-Coach zu nutzen und Ihre Transformationen zu speichern!
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="mt-6 border-t border-gray-200 pt-6">
+                      <p className="text-gray-700 mb-4">War diese Umformulierung hilfreich?</p>
+                      <div className="flex justify-center gap-4">
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => handleFeedback(true)}
+                          disabled={feedbackGiven}
+                          className={`flex items-center px-4 py-2 rounded-lg border ${
+                            feedbackGiven ? 'border-gray-200 text-gray-400' : 'border-green-500 text-green-600 hover:bg-green-50'
+                          }`}
+                        >
+                          <ThumbsUp className="h-5 w-5 mr-2" />
+                          Ja
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => handleFeedback(false)}
+                          disabled={feedbackGiven}
+                          className={`flex items-center px-4 py-2 rounded-lg border ${
+                            feedbackGiven ? 'border-gray-200 text-gray-400' : 'border-red-500 text-red-600 hover:bg-red-50'
+                          }`}
+                        >
+                          <ThumbsDown className="h-5 w-5 mr-2" />
+                          Nein
+                        </motion.button>
+                      </div>
+                      {feedbackGiven && (
+                        <motion.p
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="text-gray-600 text-center mt-4"
+                        >
+                          Danke für dein Feedback!
+                        </motion.p>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <CTAForm
+            onSubmit={handleEmailSubmit}
+            isLoading={isEmailLoading}
+            error={error}
+            subscribeSuccess={subscribeSuccess}
+          />
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl shadow-xl p-10 text-white text-center mt-16 relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 backdrop-blur-sm"></div>
+            <div className="relative z-10">
+              <Heart className="h-12 w-12 mx-auto mb-6 text-white opacity-90" />
+              <h2 className="text-3xl font-bold mb-4">Hilf uns, GFKCoach zu verbessern!</h2>
+              <p className="mb-8 text-lg text-purple-100">
+                Damit wir die App weiterentwickeln können, würden wir uns freuen, dich kontaktieren zu dürfen.
+              </p>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                handleEmailSubmit(email, name);
+              }} className="max-w-md mx-auto space-y-4">
+                <div>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Dein Name"
+                    className="w-full px-6 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/90 backdrop-blur-sm"
+                    required
+                  />
+                </div>
+                <div className="flex">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Deine E-Mail"
+                    className="flex-1 px-6 py-3 rounded-l-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/90 backdrop-blur-sm"
+                    required
+                  />
+                  <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    type="submit"
+                    disabled={isEmailLoading}
+                    className={`bg-white text-purple-600 px-6 py-3 rounded-r-xl font-medium hover:bg-gray-50 transition duration-150 ease-in-out flex items-center ${
+                      isEmailLoading && 'opacity-50 cursor-not-allowed'
+                    }`}
+                  >
+                    <Send className="h-5 w-5 mr-2" />
+                    {isEmailLoading ? 'Wird gesendet...' : 'Anmelden'}
+                  </motion.button>
+                </div>
+              </form>
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 p-4 bg-red-800/20 rounded-xl text-white max-w-md mx-auto"
+                >
+                  {error}
+                </motion.div>
+              )}
+              {subscribeSuccess && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 p-4 bg-green-800/20 rounded-xl text-white max-w-md mx-auto"
+                >
+                  Danke für deine Bereitschaft.
+                </motion.div>
+              )}
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white/90 backdrop-blur-sm shadow-lg rounded-full px-6 py-3 flex items-center justify-center mx-auto mt-8 max-w-max"
+          >
+            <MessageCircle className="h-5 w-5 text-purple-600 mr-2" />
+            <span className="font-medium text-purple-600">
+              49 Nutzer haben bereits getestet
+            </span>
+          </motion.div>
+        </motion.div>
       </main>
 
       <FeedbackDialog
@@ -1105,6 +1197,7 @@ function App() {
         <Routes>
           <Route path="/auth" element={user ? <Navigate to="/profile" /> : <Auth />} />
           <Route path="/profile" element={user ? <Profile /> : <Navigate to="/auth" />} />
+          <Route path="/about" element={<AboutContent />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/" element={<MainContent />} />
         </Routes>
@@ -1130,72 +1223,5 @@ function App() {
     </Router>
   );
 }
-
-const AboutContent = () => (
-  <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -20 }}
-    className="max-w-3xl mx-auto"
-  >
-    <div className="bg-white shadow-xl rounded-2xl p-8">
-      
-      <h2 className="text-3xl font-bold text-gray-900 mb-6">Über Gewaltfreie Kommunikation</h2>
-      
-      <div className="space-y-6 text-gray-700">
-        <p className="text-lg">
-          Gewaltfreie Kommunikation (GFK) ist ein von Marshall B. Rosenberg entwickelter Ansatz, 
-          der Menschen dabei hilft, selbst in herausfordernden Situationen einfühlsam und authentisch 
-          zu kommunizieren.
-        </p>
-
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-purple-600">Die vier Komponenten der GFK:</h3>
-          <div className="grid gap-4">
-            <motion.div 
-              whileHover={{ scale: 1.02 }}
-              className="bg-purple-50 p-4 rounded-lg transition-shadow hover:shadow-md"
-            >
-              <h4 className="font-semibold text-purple-700">1. Beobachtung</h4>
-              <p>Beschreiben Sie die Situation objektiv, ohne zu bewerten oder zu interpretieren.</p>
-            </motion.div>
-            <motion.div 
-              whileHover={{ scale: 1.02 }}
-              className="bg-purple-50 p-4 rounded-lg transition-shadow hover:shadow-md"
-            >
-              <h4 className="font-semibold text-purple-700">2. Gefühl</h4>
-              <p>Drücken Sie Ihre Gefühle aus, die durch die Situation entstehen.</p>
-            </motion.div>
-            <motion.div 
-              whileHover={{ scale: 1.02 }}
-              className="bg-purple-50 p-4 rounded-lg transition-shadow hover:shadow-md"
-            >
-              <h4 className="font-semibold text-purple-700">3. Bedürfnis</h4>
-              <p>Benennen Sie die Bedürfnisse, die hinter Ihren Gefühlen stehen.</p>
-            </motion.div>
-            <motion.div 
-              whileHover={{ scale: 1.02 }}
-              className="bg-purple-50 p-4 rounded-lg transition-shadow hover:shadow-md"
-            >
-              <h4 className="font-semibold text-purple-700">4. Bitte</h4>
-              <p>Formulieren Sie eine konkrete, positive und machbare Bitte.</p>
-            </motion.div>
-          </div>
-        </div>
-
-        <div className="mt-6">
-          <h3 className="text-xl font-semibold text-purple-600 mb-3">Vorteile der GFK:</h3>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Verbessert zwischenmenschliche Beziehungen</li>
-            <li>Reduziert Konflikte und Missverständnisse</li>
-            <li>Fördert empathisches Zuhören und Verstehen</li>
-            <li>Ermöglicht konstruktive Konfliktlösung</li>
-            <li>Stärkt emotionale Intelligenz und Selbstausdruck</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </motion.div>
-);
 
 export default App;
