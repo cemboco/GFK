@@ -299,27 +299,40 @@ function FlowingTextDialog({
     const observation = stripHtml(output.observation);
     const request = stripHtml(output.request);
     
-    // Ensure proper grammar and sentence structure
+    // Start with observation
     let flowingText = observation;
     
-    // Add feeling with proper connection
+    // Remove period from observation if it exists
+    if (flowingText.endsWith('.')) {
+      flowingText = flowingText.slice(0, -1);
+    }
+    
+    // Add feeling with proper grammatical connection
     if (feeling) {
-      if (flowingText.endsWith('.')) {
-        flowingText = flowingText.slice(0, -1); // Remove period
+      // Check if feeling already starts with "ich" or similar
+      const feelingLower = feeling.toLowerCase();
+      if (feelingLower.startsWith('ich ') || feelingLower.startsWith('fühle ') || feelingLower.startsWith('bin ')) {
+        flowingText += `. ${feeling.charAt(0).toUpperCase() + feeling.slice(1)}`;
+      } else {
+        // Add proper connection: "So etwas macht mich..." or "Das macht mich..."
+        flowingText += `. So etwas ${feeling}`;
       }
-      flowingText += `, ${feeling}`;
     }
     
     // Add need with proper connection
     if (need) {
       flowingText += `, weil mir ${need} wichtig ist.`;
     } else {
-      flowingText += '.';
+      // If no need, just end the feeling sentence
+      if (!flowingText.endsWith('.')) {
+        flowingText += '.';
+      }
     }
     
     // Add request as separate sentence
     if (request) {
       flowingText += ` ${request}`;
+      // Ensure request ends with proper punctuation
       if (!request.endsWith('.') && !request.endsWith('?') && !request.endsWith('!')) {
         flowingText += '.';
       }
@@ -405,7 +418,7 @@ function FlowingTextDialog({
                       value={editedFeeling}
                       onChange={(e) => setEditedFeeling(e.target.value)}
                       className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                      placeholder="z.B. fühle ich mich frustriert"
+                      placeholder="z.B. frustriert mich oder macht mich traurig"
                     />
                   </div>
                   
