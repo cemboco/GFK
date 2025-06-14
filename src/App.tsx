@@ -10,6 +10,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import Contact from './components/Contact';
 import Auth from './components/Auth';
 import Profile from './components/Profile';
+import { useUserTracking } from './hooks/useUserTracking';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -221,6 +222,40 @@ function Header({ user, handleSignOut }: { user: any; handleSignOut: () => void 
   );
 }
 
+// Usage indicator component
+function UsageIndicator() {
+  const { getUsageInfo, isLoading } = useUserTracking();
+  const usageInfo = getUsageInfo();
+
+  if (isLoading || !usageInfo) return null;
+
+  if (usageInfo.type === 'authenticated') {
+    return (
+      <div className="fixed top-4 left-4 z-40">
+        <div className="bg-green-100 border border-green-300 rounded-full px-4 py-2">
+          <span className="font-medium text-green-800">
+            ✓ Angemeldet - Unbegrenzte Nutzung
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  const isLowUsage = usageInfo.remaining <= 1;
+  const bgColor = isLowUsage ? 'bg-red-100 border-red-300' : 'bg-blue-100 border-blue-300';
+  const textColor = isLowUsage ? 'text-red-800' : 'text-blue-800';
+
+  return (
+    <div className="fixed top-4 left-4 z-40">
+      <div className={`${bgColor} border rounded-full px-4 py-2`}>
+        <span className={`font-medium ${textColor}`}>
+          {usageInfo.remaining} von {usageInfo.max} Nutzungen verfügbar
+        </span>
+      </div>
+    </div>
+  );
+}
+
 // Main page content component
 function MainContent() {
   const [activeTab, setActiveTab] = useState<'gfk' | 'about'>('gfk');
@@ -245,6 +280,9 @@ function MainContent() {
   const [showPositiveFeedbackDialog, setShowPositiveFeedbackDialog] = useState(false);
   const [user, setUser] = useState(null);
 
+  // User tracking
+  const { canUseService, incrementUsage, getUsageInfo } = useUserTracking();
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
@@ -261,6 +299,17 @@ function MainContent() {
     e.preventDefault();
     if (!input.trim()) {
       setError('Bitte geben Sie einen Text ein.');
+      return;
+    }
+
+    // Check if user can use the service
+    if (!canUseService()) {
+      const usageInfo = getUsageInfo();
+      if (usageInfo?.type === 'authenticated') {
+        setError('Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
+      } else {
+        setError('Sie haben das Limit für kostenlose Nutzungen erreicht. Bitte melden Sie sich an für unbegrenzte Nutzung.');
+      }
       return;
     }
 
@@ -283,6 +332,9 @@ function MainContent() {
       }
 
       setOutput(data);
+
+      // Increment usage count
+      await incrementUsage();
 
       // Only save to database if user is authenticated
       if (user) {
@@ -401,6 +453,8 @@ function MainContent() {
 
   return (
     <>
+      <UsageIndicator />
+      
       <main className="max-w-7xl mx-auto px-4 py-6 sm:py-10 sm:px-6 lg:px-8">
         <AnimatePresence mode="wait">
           {activeTab === 'about' ? (
@@ -473,9 +527,9 @@ function MainContent() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       type="submit"
-                      disabled={isGfkLoading || !input.trim()}
+                      disabled={isGfkLoading || !input.trim() || !canUseService()}
                       className={`px-6 py-3 border border-transparent text-lg font-medium rounded-xl text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out flex items-center ${
-                        (isGfkLoading || !input.trim()) && 'opacity-50 cursor-not-allowed'
+                        (isGfkLoading || !input.trim() || !canUseService()) && 'opacity-50 cursor-not-allowed'
                       }`}
                     >
                       <Sparkles className="h-5 w-5 mr-2" />
