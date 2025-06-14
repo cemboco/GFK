@@ -70,30 +70,30 @@ serve(async (req) => {
     
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      temperature: 0.3,
+      temperature: 0.2,
       messages: [
         {
           "role": "system",
           "content": `Du bist ein Experte für Gewaltfreie Kommunikation (GFK). 
 
+KRITISCH WICHTIG - ANTI-HALLUZINATION:
+- Schreibe NIEMALS doppelte Wörter oder Satzfragmente
+- Jede Komponente ist EIN vollständiger, korrekter deutscher Satz
+- Keine Wiederholungen, keine Fragmente, keine Fehler
+- Überprüfe jeden Satz auf korrekte deutsche Grammatik
+- Verwende NIEMALS "So etwas" oder ähnliche Füllwörter
+
 AUFGABE: Wandle den Input in 4 GFK-Komponenten um.
 
 REGELN:
-1. Jede Komponente ist EIN vollständiger deutscher Satz
-2. Keine doppelten Wörter oder Satzanfänge
-3. Perfekte deutsche Grammatik
-4. Natürliche, abwechslungsreiche Formulierungen
+1. BEOBACHTUNG: Ein objektiver, beschreibender Satz ohne Bewertung
+2. GEFÜHL: Ein Satz, der ein echtes Gefühl ausdrückt
+3. BEDÜRFNIS: Ein Satz über ein universelles menschliches Bedürfnis
+4. BITTE: Ein Satz mit einer konkreten, positiven Handlungsaufforderung
 
-KOMPONENTEN:
-1. BEOBACHTUNG: Objektive Beschreibung ohne Bewertung
-2. GEFÜHL: Echtes Gefühl (nicht "Ich fühle mich wie...")
-3. BEDÜRFNIS: Universelles menschliches Bedürfnis
-4. BITTE: Konkrete, positive Handlungsaufforderung
-
-BEISPIEL:
+BEISPIEL KORREKT:
 Input: "Du kommst schon wieder zu spät!"
 
-Korrekte Ausgabe:
 {
   "observation": "Mir ist aufgefallen, dass du heute 15 Minuten nach der vereinbarten Zeit angekommen bist",
   "feeling": "Das macht mich frustriert",
@@ -101,7 +101,13 @@ Korrekte Ausgabe:
   "request": "Könntest du mir beim nächsten Mal Bescheid geben, wenn du dich verspätest?"
 }
 
-Antworte NUR im JSON-Format ohne zusätzlichen Text.`
+VERBOTEN:
+- Doppelte Wörter wie "So etwas Das macht..."
+- Satzfragmente wie "weil mir weil mir wichtig ist"
+- Unvollständige Sätze
+- Grammatikfehler
+
+Antworte NUR im JSON-Format. Jeder Wert muss ein grammatikalisch korrekter deutscher Satz sein.`
         },
         {
           role: "user",
@@ -112,6 +118,24 @@ Antworte NUR im JSON-Format ohne zusätzlichen Text.`
 
     try {
       const parsedResponse = JSON.parse(completion.choices[0].message.content);
+      
+      // Validate that each field is a proper sentence
+      const fields = ['observation', 'feeling', 'need', 'request'];
+      for (const field of fields) {
+        if (!parsedResponse[field] || typeof parsedResponse[field] !== 'string') {
+          throw new Error(`Ungültiges Format: ${field} fehlt oder ist kein String`);
+        }
+        
+        // Check for common hallucination patterns
+        const text = parsedResponse[field];
+        if (text.includes('So etwas') || 
+            text.includes('weil mir weil mir') || 
+            text.match(/\b(\w+)\s+\1\b/) || // repeated words
+            text.includes('..') ||
+            text.length < 10) {
+          throw new Error(`Ungültiger Text in ${field}: ${text}`);
+        }
+      }
       
       // Add HTML spans for styling
       const styledResponse = {
