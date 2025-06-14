@@ -70,75 +70,38 @@ serve(async (req) => {
     
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      temperature: 0.8,
-      presence_penalty: 0.3,
-      frequency_penalty: 0.2,
+      temperature: 0.3,
       messages: [
         {
           "role": "system",
-          "content": `Du bist ein Experte für Gewaltfreie Kommunikation (GFK) nach Marshall B. Rosenberg. 
+          "content": `Du bist ein Experte für Gewaltfreie Kommunikation (GFK). 
 
-WICHTIGE REGELN:
-1. Achte auf perfekte deutsche Grammatik und Rechtschreibung
-2. Verwende abwechslungsreiche, natürliche Formulierungen
-3. Jede Komponente muss ein vollständiger, korrekter Satz sein
-4. Keine doppelten Satzanfänge oder unvollständige Sätze
+AUFGABE: Wandle den Input in 4 GFK-Komponenten um.
 
-SATZANFÄNGE (wähle passende aus):
+REGELN:
+1. Jede Komponente ist EIN vollständiger deutscher Satz
+2. Keine doppelten Wörter oder Satzanfänge
+3. Perfekte deutsche Grammatik
+4. Natürliche, abwechslungsreiche Formulierungen
 
-BEOBACHTUNG:
-- "Mir ist aufgefallen, dass..."
-- "Ich habe bemerkt, dass..."
-- "Ich sehe, dass..."
-- "Mir fällt auf, dass..."
-- "Ich nehme wahr, dass..."
-- "Ich stelle fest, dass..."
-- "Als ich sah, dass..."
-- "Wenn ich beobachte, dass..."
+KOMPONENTEN:
+1. BEOBACHTUNG: Objektive Beschreibung ohne Bewertung
+2. GEFÜHL: Echtes Gefühl (nicht "Ich fühle mich wie...")
+3. BEDÜRFNIS: Universelles menschliches Bedürfnis
+4. BITTE: Konkrete, positive Handlungsaufforderung
 
-GEFÜHL:
-- "Das macht mich..."
-- "Ich fühle mich..."
-- "Ich bin..."
-- "Das löst in mir ... aus"
-- "Dabei empfinde ich..."
-- "Ich spüre..."
-- "Das bereitet mir..."
-- "In mir entsteht..."
-
-BEDÜRFNIS:
-- "weil mir ... wichtig ist"
-- "da ich ... brauche"
-- "weil ich ... schätze"
-- "da mir ... am Herzen liegt"
-- "weil ... für mich bedeutsam ist"
-- "da ... einen hohen Stellenwert für mich hat"
-
-BITTE:
-- "Könntest du bitte..."
-- "Wärst du bereit..."
-- "Würdest du..."
-- "Magst du..."
-- "Wäre es möglich..."
-- "Könntest du dir vorstellen..."
-
-BEISPIEL für korrekte Ausgabe:
+BEISPIEL:
 Input: "Du kommst schon wieder zu spät!"
-Korrekte Antwort:
-- Beobachtung: "Mir ist aufgefallen, dass du heute 15 Minuten nach der vereinbarten Zeit angekommen bist"
-- Gefühl: "Das macht mich frustriert"
-- Bedürfnis: "weil mir Verlässlichkeit wichtig ist"
-- Bitte: "Könntest du mir bitte beim nächsten Mal Bescheid geben, wenn du dich verspätest?"
 
-Transformiere die Eingabe in die 4 GFK-Komponenten. Jede Komponente muss grammatikalisch korrekt und vollständig sein.
-
-Antworte AUSSCHLIESSLICH im JSON-Format:
+Korrekte Ausgabe:
 {
-  "observation": "<span class='text-blue-600'>[vollständiger Beobachtungssatz]</span>",
-  "feeling": "<span class='text-green-600'>[vollständiger Gefühlssatz]</span>",
-  "need": "<span class='text-orange-600'>[vollständiger Bedürfnissatz]</span>",
-  "request": "<span class='text-purple-600'>[vollständiger Bittensatz]</span>"
-}`
+  "observation": "Mir ist aufgefallen, dass du heute 15 Minuten nach der vereinbarten Zeit angekommen bist",
+  "feeling": "Das macht mich frustriert",
+  "need": "weil mir Verlässlichkeit wichtig ist",
+  "request": "Könntest du mir beim nächsten Mal Bescheid geben, wenn du dich verspätest?"
+}
+
+Antworte NUR im JSON-Format ohne zusätzlichen Text.`
         },
         {
           role: "user",
@@ -149,8 +112,17 @@ Antworte AUSSCHLIESSLICH im JSON-Format:
 
     try {
       const parsedResponse = JSON.parse(completion.choices[0].message.content);
+      
+      // Add HTML spans for styling
+      const styledResponse = {
+        observation: `<span class='text-blue-600'>${parsedResponse.observation}</span>`,
+        feeling: `<span class='text-green-600'>${parsedResponse.feeling}</span>`,
+        need: `<span class='text-orange-600'>${parsedResponse.need}</span>`,
+        request: `<span class='text-purple-600'>${parsedResponse.request}</span>`
+      };
+      
       return new Response(
-        JSON.stringify(parsedResponse),
+        JSON.stringify(styledResponse),
         { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
