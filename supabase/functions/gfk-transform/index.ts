@@ -68,8 +68,8 @@ serve(async (req) => {
 
     const openai = new OpenAI({ apiKey });
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
-      temperature: 0.7,
+      model: "04-mini",
+      temperature: 1,
       messages: [
         {
           "role": "system",
