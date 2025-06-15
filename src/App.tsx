@@ -29,9 +29,11 @@ function App() {
   } | null>(null);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [subscribeSuccess, setSubscribeSuccess] = useState(false);
+  const [messageSuccess, setMessageSuccess] = useState(false);
   const [feedbackGiven, setFeedbackGiven] = useState(false);
   const [showNegativeFeedbackDialog, setShowNegativeFeedbackDialog] = useState(false);
   const [showPositiveFeedbackDialog, setShowPositiveFeedbackDialog] = useState(false);
@@ -201,6 +203,42 @@ function App() {
       setSubscribeSuccess(true);
       setName('');
       setEmail('');
+    } catch (err) {
+      console.error('Error:', err);
+      setError(
+        err instanceof Error 
+          ? err.message 
+          : 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleMessageSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !email.trim() || !message.trim()) {
+      setError('Bitte füllen Sie alle Felder aus.');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+    setMessageSuccess(false);
+
+    try {
+      const { error: messageError } = await supabase
+        .from('newsletter_messages')
+        .insert([{ name: name.trim(), email: email.trim(), message: message.trim() }]);
+
+      if (messageError) {
+        throw new Error('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
+      }
+
+      setMessageSuccess(true);
+      setName('');
+      setEmail('');
+      setMessage('');
     } catch (err) {
       console.error('Error:', err);
       setError(
@@ -718,10 +756,7 @@ function App() {
                         <p className="mb-8 text-lg text-purple-100">
                           Damit wir die App weiterentwickeln können, würden wir uns freuen, dich kontaktieren zu dürfen.
                         </p>
-                        <form onSubmit={(e) => {
-                          e.preventDefault();
-                          handleEmailSubmit(email, name);
-                        }} className="max-w-md mx-auto space-y-4">
+                        <form onSubmit={handleMessageSubmit} className="max-w-md mx-auto space-y-4">
                           <div>
                             <input
                               type="text"
@@ -732,28 +767,38 @@ function App() {
                               required
                             />
                           </div>
-                          <div className="flex">
+                          <div>
                             <input
                               type="email"
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
                               placeholder="Deine E-Mail"
-                              className="flex-1 px-6 py-3 rounded-l-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/90 backdrop-blur-sm"
+                              className="w-full px-6 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/90 backdrop-blur-sm"
                               required
                             />
-                            <motion.button 
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              type="submit"
-                              disabled={isLoading}
-                              className={`bg-white text-purple-600 px-6 py-3 rounded-r-xl font-medium hover:bg-gray-50 transition duration-150 ease-in-out flex items-center ${
-                                isLoading && 'opacity-50 cursor-not-allowed'
-                              }`}
-                            >
-                              <Send className="h-5 w-5 mr-2" />
-                              {isLoading ? 'Wird gesendet...' : 'Anmelden'}
-                            </motion.button>
                           </div>
+                          <div>
+                            <textarea
+                              value={message}
+                              onChange={(e) => setMessage(e.target.value)}
+                              placeholder="Deine Nachricht oder Feedback"
+                              rows={4}
+                              className="w-full px-6 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/90 backdrop-blur-sm resize-none"
+                              required
+                            />
+                          </div>
+                          <motion.button 
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            type="submit"
+                            disabled={isLoading}
+                            className={`w-full bg-white text-purple-600 px-6 py-3 rounded-xl font-medium hover:bg-gray-50 transition duration-150 ease-in-out flex items-center justify-center ${
+                              isLoading && 'opacity-50 cursor-not-allowed'
+                            }`}
+                          >
+                            <Send className="h-5 w-5 mr-2" />
+                            {isLoading ? 'Wird gesendet...' : 'Eintrag speichern'}
+                          </motion.button>
                         </form>
                         {error && (
                           <motion.div
@@ -764,16 +809,15 @@ function App() {
                             {error}
                           </motion.div>
                         )}
-                        {subscribeSuccess && (
+                        {messageSuccess && (
                           <motion.div
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             className="mt-4 p-4 bg-green-800/20 rounded-xl text-white max-w-md mx-auto"
                           >
-                            Danke für deine Bereitschaft.
+                            Vielen Dank für deine Nachricht! Wir haben sie erhalten.
                           </motion.div>
                         )}
-                
                       </div>
                     </motion.div>
 
