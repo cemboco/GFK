@@ -828,7 +828,7 @@ function App() {
                     >
                       <MessageCircle className="h-5 w-5 text-purple-600 mr-2" />
                       <span className="font-medium text-purple-600">
-                        49 Nutzer haben bereits getestet
+                        64 Nutzer haben bereits getestet
                       </span>
                     </motion.div>
                   </motion.div>
