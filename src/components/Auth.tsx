@@ -57,23 +57,7 @@ export default function Auth() {
       }
 
       if (user) {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: user.id,
-              full_name: name,
-              username: email.split('@')[0],
-              created_at: new Date().toISOString()
-            }
-          ]);
-
-        if (profileError) {
-          console.error('Error creating profile:', profileError.message);
-          setError('Fehler beim Erstellen des Profils. Bitte versuchen Sie es später erneut.');
-          return;
-        }
-
+        // Profile creation is handled by database trigger
         navigate('/profile');
       }
     } catch (err) {
