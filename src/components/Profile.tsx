@@ -206,27 +206,6 @@ export default function Profile() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-      {/* Header mit Navigation zur Landing Page */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between">
-          <Link 
-            to="/" 
-            className="flex items-center text-purple-600 hover:text-purple-700 transition-colors group"
-          >
-            <ArrowLeft className="h-5 w-5 mr-2 group-hover:-translate-x-1 transition-transform" />
-            <span className="font-medium">Zurück zur Hauptseite</span>
-          </Link>
-          
-          <Link 
-            to="/" 
-            className="flex items-center px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors"
-          >
-            <Home className="h-5 w-5 mr-2" />
-            <span className="font-medium">GFKCoach</span>
-          </Link>
-        </div>
-      </div>
-
       <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
         <div className="flex flex-col md:flex-row">
           {/* Sidebar */}
