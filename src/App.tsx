@@ -430,10 +430,10 @@ function App() {
                               </div>
                             </div>
 
-                            {/* Mobile-optimierte Feedback-Buttons */}
+                            {/* Mobile-optimierte Feedback-Buttons - NUR DIESER BEREICH WURDE GEÄNDERT */}
                             <div className="border-t border-gray-200 pt-6">
                               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-                                <p className="text-gray-700 font-medium text-center sm:text-left mb-2 sm:mb-0">
+                                <p className="text-gray-700 font-medium text-center sm:text-left">
                                   War diese Transformation hilfreich?
                                 </p>
                                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
@@ -441,7 +441,7 @@ function App() {
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     onClick={() => handleFeedback(true)}
-                                    className="flex items-center justify-center px-6 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors font-medium min-h-[48px] touch-manipulation"
+                                    className="flex items-center justify-center w-full sm:w-auto px-6 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors font-medium min-h-[48px] touch-manipulation"
                                   >
                                     <ThumbsUp className="h-5 w-5 mr-2 flex-shrink-0" />
                                     <span>Ja, hilfreich</span>
@@ -451,7 +451,7 @@ function App() {
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     onClick={() => handleFeedback(false)}
-                                    className="flex items-center justify-center px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors font-medium min-h-[48px] touch-manipulation"
+                                    className="flex items-center justify-center w-full sm:w-auto px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors font-medium min-h-[48px] touch-manipulation"
                                   >
                                     <ThumbsDown className="h-5 w-5 mr-2 flex-shrink-0" />
                                     <span>Verbesserung</span>
