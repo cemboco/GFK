@@ -68,75 +68,63 @@ serve(async (req) => {
 
     const openai = new OpenAI({ apiKey });
     
+    const GFKTransform = async (input) => {
+  try {
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      temperature: 0.4, // Erhöht für mehr Nuance und Natürlichkeit
+      temperature: 0.3,  // Leicht reduziert für konsistentere Ergebnisse
+      response_format: { type: "json_object" }, // JSON-Ausgabe erzwingen
       messages: [
         {
-          "role": "system",
-          "content": `Du bist ein einfühlsamer und erfahrener GFK-Experte (Gewaltfreie Kommunikation nach Marshall Rosenberg). 
+          role: "system",
+          content: `Du bist ein GFK-Experte nach Marshall Rosenberg. Transformiere Eingaben in die 4 GFK-Komponenten:
 
-DEINE AUFGABE:
-Transformiere den gegebenen Text in die vier GFK-Komponenten mit maximaler Empathie, Präzision und menschlicher Wärme.
-
-PRINZIPIEN FÜR HOCHWERTIGE GFK-TRANSFORMATION:
-
-1. BEOBACHTUNG - Objektive Wahrnehmung ohne Interpretation:
-   - Beschreibe konkrete, beobachtbare Handlungen oder Situationen
-   - Vermeide Bewertungen, Interpretationen oder Verallgemeinerungen
-   - Nutze spezifische Details statt vager Aussagen
-   - Beispiel: "Als ich sah, dass du 20 Minuten nach unserem vereinbarten Termin ankamst"
-
-2. GEFÜHL - Authentische emotionale Wahrnehmung:
-   - Verwende echte Gefühlswörter (nicht Gedanken oder Interpretationen)
-   - Unterscheide zwischen Gefühlen und Pseudo-Gefühlen ("Ich fühle mich ignoriert" ist ein Gedanke)
-   - Wähle präzise Gefühlswörter, die die Nuance der Emotion erfassen
-   - Beispiel: "empfinde ich Enttäuschung und Unsicherheit"
-
-3. BEDÜRFNIS - Universelle menschliche Werte:
-   - Identifiziere das zugrundeliegende universelle Bedürfnis
-   - Verwende positive Formulierungen (was gebraucht wird, nicht was fehlt)
-   - Wähle das Kernbedürfnis, das wirklich berührt wurde
-   - Beispiel: "weil mir Verlässlichkeit und gegenseitiger Respekt wichtig sind"
-
-4. BITTE - Konkrete, positive Handlungsaufforderung:
-   - Formuliere eine spezifische, umsetzbare Bitte
-   - Verwende positive Sprache (was gewünscht wird, nicht was vermieden werden soll)
-   - Mache die Bitte zu einer echten Bitte, nicht zu einer Forderung
-   - Beispiel: "Könntest du mir beim nächsten Mal kurz Bescheid geben, wenn sich deine Ankunftszeit ändert?"
-
-QUALITÄTSSTANDARDS:
-- Jede Komponente ist ein vollständiger, grammatikalisch korrekter deutscher Satz
-- Die Sprache ist warm, menschlich und authentisch
-- Die Transformation respektiert die ursprüngliche Intention des Sprechers
-- Die Formulierung lädt zur Verbindung ein, statt zu konfrontieren
-- Berücksichtige den emotionalen Kontext und die Beziehungsdynamik
-
-KRITISCH WICHTIG - ANTI-HALLUZINATION:
-- Schreibe NIEMALS doppelte Wörter oder Satzfragmente
-- Jede Komponente ist EIN vollständiger, korrekter deutscher Satz
-- Keine Wiederholungen, keine Fragmente, keine Fehler
-- Überprüfe jeden Satz auf korrekte deutsche Grammatik
-- Verwende NIEMALS "So etwas" oder ähnliche Füllwörter
-
-BEISPIEL EINER HOCHWERTIGEN TRANSFORMATION:
-Input: "Du hörst mir nie zu!"
-
+STRUKTUR:
 {
-  "observation": "Mir ist aufgefallen, dass du während unseres Gesprächs mehrmals auf dein Handy geschaut hast",
-  "feeling": "Das löst in mir Frustration und ein Gefühl der Einsamkeit aus",
-  "need": "weil mir echte Verbindung und Aufmerksamkeit in unseren Gesprächen wichtig sind",
-  "request": "Könntest du dein Handy zur Seite legen, damit wir uns ganz aufeinander konzentrieren können?"
+  "observation": "Neutrale Beobachtung (konkret, messbar)",
+  "feeling": "Gefühl mit konjugiertem Verb (Ich-Botschaft)",
+  "need": "Universelles Bedürfnis (positiv formuliert)",
+  "request": "Konkrete Bitte (als Frage formuliert)"
 }
 
-VERBOTEN:
-- Doppelte Wörter wie "So etwas Das macht..."
-- Satzfragmente wie "weil mir weil mir wichtig ist"
-- Unvollständige Sätze oder Grammatikfehler
-- Bewertende oder vorwurfsvolle Sprache
-- Vage oder unspezifische Formulierungen
+REGELN:
+1. Beobachtung: 
+   - 100% objektiv ("3 Bücher auf dem Boden", nicht "Chaos")
+   - Keine Verallgemeinerungen ("nie", "immer")
+   - Zeitangaben wenn möglich ("heute um 14 Uhr")
 
-Antworte NUR im JSON-Format. Jeder Wert muss ein grammatikalisch korrekter, empathischer deutscher Satz sein, der die Prinzipien der Gewaltfreien Kommunikation verkörpert.`
+2. Gefühl:
+   - Nur echte Gefühle (keine Gedanken wie "ignoriert")
+   - Korrekt konjugiert ("Ich bin frustriert", nicht "Ich Frustration")
+   - Maximal 2 Gefühle pro Satz
+
+3. Bedürfnis:
+   - Universelle menschliche Bedürfnisse benennen
+   - Positiv formulieren ("Sicherheit", nicht "keine Unsicherheit")
+   - Mit "weil ich... brauche" beginnen
+
+4. Bitte:
+   - Konkret und umsetzbar ("Könntest du...?" nicht "Sei besser")
+   - Als Frage formulieren
+   - Zeitrahmen angeben wenn möglich
+
+QUALITÄTSSICHERUNG:
+- KEINE Halluzinationen (keine erfundenen Details)
+- KEINE doppelten Wörter/Sätze
+- KEINE unvollendeten Sätze
+- Jedes Feld muss ein vollständiger deutscher Satz sein
+- Grammatikfehler strikt vermeiden
+
+BEISPIEL:
+Input: "Du kommst immer zu spät!"
+{
+  "observation": "Unser Treffen heute begann um 15:05 Uhr, 15 Minuten nach der vereinbarten Zeit",
+  "feeling": "Ich bin enttäuscht",
+  "need": "weil ich Verlässlichkeit in unseren Absprachen brauche",
+  "request": "Könntest du mir nächste Woche eine Nachricht senden, wenn du später als 5 Minuten kommst?"
+}
+
+ANTWORTFORMAT: NUR JSON`
         },
         {
           role: "user",
@@ -145,25 +133,68 @@ Antworte NUR im JSON-Format. Jeder Wert muss ein grammatikalisch korrekter, empa
       ]
     });
 
+    const responseContent = completion.choices[0].message.content;
+    
+    // Versuche direkte JSON-Parsung und handle potentielle Markdown
+    let parsedResponse;
     try {
-      const parsedResponse = JSON.parse(completion.choices[0].message.content);
-      
-      // Validate that each field is a proper sentence
-      const fields = ['observation', 'feeling', 'need', 'request'];
-      for (const field of fields) {
-        if (!parsedResponse[field] || typeof parsedResponse[field] !== 'string') {
-          throw new Error(`Ungültiges Format: ${field} fehlt oder ist kein String`);
-        }
-        
-        // Check for common hallucination patterns
+      parsedResponse = JSON.parse(responseContent);
+    } catch (e) {
+      // Fallback: Entferne Markdown-Codeblöcke
+      const cleanedJson = responseContent.replace(/```json/g, '').replace(/```/g, '').trim();
+      parsedResponse = JSON.parse(cleanedJson);
+    }
+
+    // Validierung der Felder
+    const requiredFields = ['observation', 'feeling', 'need', 'request'];
+    const validationErrors = [];
+    
+    requiredFields.forEach(field => {
+      if (!parsedResponse[field] || typeof parsedResponse[field] !== 'string') {
+        validationErrors.push(`Feld '${field}' fehlt oder ist kein String`);
+      } else {
         const text = parsedResponse[field];
-        if (text.includes('So etwas') || 
-            text.includes('weil mir weil mir') || 
-            text.match(/\b(\w+)\s+\1\b/) || // repeated words
-            text.includes('..') ||
-            text.length < 10) {
-          throw new Error(`Ungültiger Text in ${field}: ${text}`);
-        }
+        
+        // Anti-Halluzinations-Checks
+        const errorPatterns = [
+          { pattern: /(\b\w+\b)\s+\1\b/, msg: 'Doppelte Wörter' }, // Wiederholte Wörter
+          { pattern: /\.\./, msg: 'Unvollständige Sätze' },
+          { pattern: /(?:so etwas|dass das)/i, msg: 'Füllwörter' },
+          { pattern: /(?:weil mir weil|dass weil)/i, msg: 'Grammatikfehler' }
+        ];
+        
+        errorPatterns.forEach(({ pattern, msg }) => {
+          if (pattern.test(text)) {
+            validationErrors.push(`Feld '${field}' enthält '${msg}': ${text}`);
+          }
+        });
+      }
+    });
+
+    if (validationErrors.length > 0) {
+      throw new Error(`Validierungsfehler:\n${validationErrors.join('\n')}`);
+    }
+
+    return parsedResponse;
+
+  } catch (error) {
+    console.error("GFK-Transformationsfehler:", error);
+    
+    // Automatischer Wiederholungsmechanismus
+    if (error.message.includes('Validierungsfehler') && retryCount < 2) {
+      console.log(`Wiederholungsversuch ${retryCount + 1}/2`);
+      return GFKTransform(input, retryCount + 1);
+    }
+    
+    throw new Error("GFK-Transformation fehlgeschlagen. Bitte Eingabe überprüfen oder neu formulieren.");
+  }
+};
+
+// Verwendungsbeispiel
+GFKTransform("Mein Sohn räumt sein Zimmer nie auf!")
+  .then(response => console.log(response))
+  .catch(error => console.error(error));
+    response_format: { type: "json_object" }
       }
       
       // Add HTML spans for styling
