@@ -9,71 +9,12 @@ const corsHeaders = {
 
 const MAX_INPUTS_PER_IP = 5;
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      headers: corsHeaders
-    });
-  }
-
-  try {
-    const { input } = await req.json();
-    
-    if (!input?.trim()) {
-      throw new Error('Bitte geben Sie einen Text ein.');
-    }
-
-    // Get client IP
-    const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
-
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-
-    // Check IP usage
-    const { data: ipData, error: ipError } = await supabase
-      .from('ip_usage')
-      .select('usage_count')
-      .eq('ip', clientIP)
-      .single();
-
-    if (ipError && ipError.code !== 'PGRST116') { // PGRST116 means no rows found
-      throw new Error('Fehler beim Überprüfen der IP-Nutzung.');
-    }
-
-    const currentCount = ipData?.usage_count || 0;
-
-    if (currentCount >= MAX_INPUTS_PER_IP) {
-      throw new Error('Sie haben das Limit für Eingaben erreicht.');
-    }
-
-    // Update IP usage
-    const { error: updateError } = await supabase
-      .from('ip_usage')
-      .upsert({
-        ip: clientIP,
-        usage_count: currentCount + 1,
-        last_used: new Date().toISOString()
-      });
-
-    if (updateError) {
-      throw new Error('Fehler beim Aktualisieren der IP-Nutzung.');
-    }
-
-    const apiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!apiKey) {
-      throw new Error('OpenAI API Konfigurationsfehler.');
-    }
-
-    const openai = new OpenAI({ apiKey });
-    
-    const GFKTransform = async (input) => {
+const GFKTransform = async (input: string, openai: OpenAI, retryCount = 0): Promise<any> => {
   try {
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      temperature: 0.3,  // Leicht reduziert für konsistentere Ergebnisse
-      response_format: { type: "json_object" }, // JSON-Ausgabe erzwingen
+      temperature: 0.3,
+      response_format: { type: "json_object" },
       messages: [
         {
           role: "system",
@@ -147,7 +88,7 @@ ANTWORTFORMAT: NUR JSON`
 
     // Validierung der Felder
     const requiredFields = ['observation', 'feeling', 'need', 'request'];
-    const validationErrors = [];
+    const validationErrors: string[] = [];
     
     requiredFields.forEach(field => {
       if (!parsedResponse[field] || typeof parsedResponse[field] !== 'string') {
@@ -183,37 +124,88 @@ ANTWORTFORMAT: NUR JSON`
     // Automatischer Wiederholungsmechanismus
     if (error.message.includes('Validierungsfehler') && retryCount < 2) {
       console.log(`Wiederholungsversuch ${retryCount + 1}/2`);
-      return GFKTransform(input, retryCount + 1);
+      return GFKTransform(input, openai, retryCount + 1);
     }
     
     throw new Error("GFK-Transformation fehlgeschlagen. Bitte Eingabe überprüfen oder neu formulieren.");
   }
 };
 
-// Verwendungsbeispiel
-GFKTransform("Mein Sohn räumt sein Zimmer nie auf!")
-  .then(response => console.log(response))
-  .catch(error => console.error(error));
-    response_format: { type: "json_object" }
-      }
-      
-      // Add HTML spans for styling
-      const styledResponse = {
-        observation: `<span class='text-blue-600'>${parsedResponse.observation}</span>`,
-        feeling: `<span class='text-green-600'>${parsedResponse.feeling}</span>`,
-        need: `<span class='text-orange-600'>${parsedResponse.need}</span>`,
-        request: `<span class='text-purple-600'>${parsedResponse.request}</span>`
-      };
-      
-      return new Response(
-        JSON.stringify(styledResponse),
-        { 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
-    } catch (parseError) {
-      throw new Error('Fehler beim Parsen der API-Antwort.');
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, {
+      headers: corsHeaders
+    });
+  }
+
+  try {
+    const { input } = await req.json();
+    
+    if (!input?.trim()) {
+      throw new Error('Bitte geben Sie einen Text ein.');
     }
+
+    // Get client IP
+    const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // Check IP usage
+    const { data: ipData, error: ipError } = await supabase
+      .from('ip_usage')
+      .select('usage_count')
+      .eq('ip', clientIP)
+      .single();
+
+    if (ipError && ipError.code !== 'PGRST116') { // PGRST116 means no rows found
+      throw new Error('Fehler beim Überprüfen der IP-Nutzung.');
+    }
+
+    const currentCount = ipData?.usage_count || 0;
+
+    if (currentCount >= MAX_INPUTS_PER_IP) {
+      throw new Error('Sie haben das Limit für Eingaben erreicht.');
+    }
+
+    // Update IP usage
+    const { error: updateError } = await supabase
+      .from('ip_usage')
+      .upsert({
+        ip: clientIP,
+        usage_count: currentCount + 1,
+        last_used: new Date().toISOString()
+      });
+
+    if (updateError) {
+      throw new Error('Fehler beim Aktualisieren der IP-Nutzung.');
+    }
+
+    const apiKey = Deno.env.get('OPENAI_API_KEY');
+    if (!apiKey) {
+      throw new Error('OpenAI API Konfigurationsfehler.');
+    }
+
+    const openai = new OpenAI({ apiKey });
+    
+    const parsedResponse = await GFKTransform(input, openai);
+    
+    // Add HTML spans for styling
+    const styledResponse = {
+      observation: `<span class='text-blue-600'>${parsedResponse.observation}</span>`,
+      feeling: `<span class='text-green-600'>${parsedResponse.feeling}</span>`,
+      need: `<span class='text-orange-600'>${parsedResponse.need}</span>`,
+      request: `<span class='text-purple-600'>${parsedResponse.request}</span>`
+    };
+    
+    return new Response(
+      JSON.stringify(styledResponse),
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    );
   } catch (error) {
     return new Response(
       JSON.stringify({ error: error.message || 'Ein unerwarteter Fehler ist aufgetreten.' }), 
