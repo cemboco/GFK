@@ -463,20 +463,6 @@ export default function Profile() {
                 <h2 className="text-2xl font-bold text-gray-900">Einstellungen</h2>
                 <div className="bg-gray-50 p-6 rounded-xl space-y-6">
                   <div>
-                    <h3 className="text-lg font-medium text-gray-900">Benachrichtigungen</h3>
-                    <div className="mt-4 space-y-4">
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                          defaultChecked
-                        />
-                        <span className="ml-2 text-gray-700">E-Mail-Benachrichtigungen</span>
-                      </label>
-                    </div>
-                  </div>
-                  
-                  <div>
                     <h3 className="text-lg font-medium text-gray-900">Datenschutz</h3>
                     <div className="mt-4 space-y-4">
                       <label className="flex items-center">
