@@ -1136,7 +1136,7 @@ const AboutContent = () => (
               >
                 <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
                 <span className="text-gray-700">{benefit}</span>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
