@@ -118,9 +118,9 @@ ANTWORTFORMAT: NUR JSON mit folgender Struktur:
   } catch (error) {
     console.error("GFK-Transformationsfehler:", error);
     
-    // Automatischer Wiederholungsmechanismus
-    if (error.message.includes('Validierungsfehler') && retryCount < 2) {
-      console.log(`Wiederholungsversuch ${retryCount + 1}/2`);
+    // Broadened retry mechanism - retry for any error up to 2 times
+    if (retryCount < 2) {
+      console.log(`Wiederholungsversuch ${retryCount + 1}/2 für Fehler: ${error.message}`);
       return GFKTransform(input, openai, retryCount + 1);
     }
     
