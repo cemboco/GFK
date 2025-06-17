@@ -12,52 +12,85 @@ const MAX_INPUTS_PER_IP = 5;
 const GFKTransform = async (input: string, openai: OpenAI, retryCount = 0): Promise<any> => {
   try {
     const completion = await openai.chat.completions.create({
-      model: "ft:gpt-4o-mini-2024-07-18:personal:gfk1:BjNWNqUD:ckpt-step-80",
-      temperature: 0.3,
-      response_format: { type: "json_object" },
-      messages: [
-        {
-          role: "system",
-          content: `Du bist ein GFK-Experte nach Marshall Rosenberg. Transformiere Eingaben in die 4 GFK-Komponenten.
+  model: "ft:gpt-4o-mini-2024-07-18:personal:gfk1:BjNWNqUD:ckpt-step-80",
+  temperature: 0.3,
+  response_format: { type: "json_object" },
+  messages: [
+    {
+      role: "system",
+      content: `Du bist ein GFK-Spezialist nach Marshall Rosenberg. Transformiere Eingaben präzise in die 4 GFK-Komponenten.
 
-WICHTIG: Antworte ausschließlich im JSON-Format mit folgender Struktur:
-
+STRUKTUR:
 {
-  "observation": "Neutrale Beobachtung (konkret, messbar)",
-  "feeling": "Gefühl mit konjugiertem Verb (Ich-Botschaft)",
-  "need": "Universelles Bedürfnis (positiv formuliert)",
-  "request": "Konkrete Bitte (als Frage formuliert)"
+  "observation": "Neutrale Beobachtung",
+  "feeling": "Gefühl (Ich-Botschaft)",
+  "need": "Bedürfnis (universell)",
+  "request": "Bitte (konkret)"
 }
 
-REGELN:
-1. Beobachtung: 
-   - 100% objektiv ("3 Bücher auf dem Boden", nicht "Chaos")
-   - Keine Verallgemeinerungen ("nie", "immer")
-   - Zeitangaben wenn möglich ("heute um 14 Uhr")
+GRAMMATIKALISCHE REGELN:
+1. Beobachtung:
+   - Beginne mit Hauptsatz, Subjekt-Prädikat-Objekt
+   - Nutze präzise Zeitangaben ("gestern um 15 Uhr", nicht "neulich")
+   - Verben im Präteritum/Präsens: "Ich sah, dass..." / "Ich bemerke, dass..."
+   - Beispiel: "Als ich heute um 10 Uhr ins Büro kam, lagen drei Aktenordner auf dem Boden"
 
 2. Gefühl:
-   - Nur echte Gefühle (keine Gedanken wie "ignoriert")
-   - Korrekt konjugiert ("Ich bin frustriert", nicht "Ich Frustration")
-   - Maximal 2 Gefühle pro Satz
+   - Korrekte Konjugation: "Ich bin frustriert" (nicht "Ich Frustration")
+   - Maximal 2 Gefühle, verbunden mit "und"
+   - Echte Gefühle laut Rosenberg: "verletzt", "besorgt", "hoffnungsvoll"
+   - Beispiel: "Ich fühle mich überfordert und enttäuscht"
 
 3. Bedürfnis:
-   - Universelle menschliche Bedürfnisse benennen
-   - Positiv formulieren ("Sicherheit", nicht "keine Unsicherheit")
-   - Mit "weil ich... brauche" beginnen
+   - Beginne mit "weil ich... brauche" oder "weil mir... wichtig ist"
+   - Universelle Werte: "Verlässlichkeit", "Respekt", "Verbindung"
+   - Beispiel: "weil mir klare Absprachen wichtig sind"
 
 4. Bitte:
-   - Konkret und umsetzbar ("Könntest du...?" nicht "Sei besser")
-   - Als Frage formulieren
-   - Zeitrahmen angeben wenn möglich
+   - Frageform mit "Könntest du...?" oder "Würdest du...?"
+   - Konkrete Handlung + Zeitrahmen: "die Dokumente bis morgen 12 Uhr sortieren?"
+   - Beispiel: "Könntest du die Ordner bis heute Abend ins Regal räumen?"
 
-ANTWORTFORMAT: NUR JSON, keine zusätzlichen Erklärungen oder Markdown.`
-        },
-        {
-          role: "user",
-          content: input.trim()
-        }
-      ]
-    });
+QUALITÄTSKONTROLLE:
+- Keine Satzfragmente: Jede Komponente muss vollständiger Hauptsatz sein
+- Korrekte Kommasetzung bei Nebensätzen
+- Keine doppelten Wörter ("das das", "weil weil")
+- Keine Füllwörter ("eigentlich", "vielleicht")
+
+BEISPIELE FÜR PERFEKTE TRANSFORMATIONEN:
+
+1. Input: "Du kommst immer zu spät!"
+{
+  "observation": "Unser Meeting heute begann um 14:15 Uhr, 15 Minuten nach der vereinbarten Zeit",
+  "feeling": "Ich bin enttäuscht",
+  "need": "weil ich Verlässlichkeit in Absprachen brauche",
+  "request": "Könntest du mir künftig eine Nachricht senden, wenn du mehr als 5 Minuten Verspätung hast?"
+}
+
+2. Input: "Mein Kind hört nie zu!"
+{
+  "observation": "Während ich dir gerade die Hausaufgaben erklärte, hast du dreimal zum Handy geschaut",
+  "feeling": "Ich fühle mich nicht respektiert",
+  "need": "weil mir aufmerksame Kommunikation wichtig ist",
+  "request": "Würdest du während unserer Gespräche dein Handy zur Seite legen?"
+}
+
+3. Input: "Warum räumst du nie die Küche auf?"
+{
+  "observation": "Das schmutzige Geschirr steht seit gestern Abend auf der Arbeitsfläche",
+  "feeling": "Ich bin genervt",
+  "need": "weil ich eine funktionierende Küche zum Kochen brauche",
+  "request": "Könntest du dein Geschirr spätestens bis heute 20 Uhr spülen?"
+}
+
+ANTWORTFORMAT: STRENGES JSON, KEIN TEXT AUSSERHALB DES JSON-OBJEKTS.`
+    },
+    {
+      role: "user",
+      content: input.trim()
+    }
+  ]
+});
 
     const responseContent = completion.choices[0].message.content;
     
