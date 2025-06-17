@@ -26,6 +26,8 @@ function App() {
     feeling: string;
     need: string;
     request: string;
+    variant1: string;
+    variant2: string;
   } | null>(null);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -49,6 +51,8 @@ function App() {
     feeling: string;
     need: string;
     request: string;
+    variant1: string;
+    variant2: string;
   } | null>(null);
 
   const { session, canUseService, incrementUsage, getRemainingUsage, getUsageInfo } = useUserTracking();
@@ -111,14 +115,8 @@ function App() {
         throw new Error(functionError.message);
       }
 
-      // Check if the response contains an error
-      if (data && data.error) {
+      if (data.error) {
         throw new Error(data.error);
-      }
-
-      // Validate that we have the required fields
-      if (!data || !data.observation || !data.feeling || !data.need || !data.request) {
-        throw new Error('Unvollständige Antwort vom Server. Bitte versuchen Sie es erneut.');
       }
 
       // Strip HTML for live typing
@@ -126,7 +124,9 @@ function App() {
         observation: data.observation.replace(/<[^>]*>/g, ''),
         feeling: data.feeling.replace(/<[^>]*>/g, ''),
         need: data.need.replace(/<[^>]*>/g, ''),
-        request: data.request.replace(/<[^>]*>/g, '')
+        request: data.request.replace(/<[^>]*>/g, ''),
+        variant1: data.variant1 || '',
+        variant2: data.variant2 || ''
       };
 
       // Initialize live output
@@ -134,7 +134,9 @@ function App() {
         observation: '',
         feeling: '',
         need: '',
-        request: ''
+        request: '',
+        variant1: '',
+        variant2: ''
       });
 
       // Type each component with delays
@@ -160,13 +162,22 @@ function App() {
         setLiveOutput(prev => prev ? { ...prev, request: text } : null);
       }, 20);
 
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Type variant1
+      await typeText(cleanData.variant1, (text) => {
+        setLiveOutput(prev => prev ? { ...prev, variant1: text } : null);
+      }, 15);
+
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Type variant2
+      await typeText(cleanData.variant2, (text) => {
+        setLiveOutput(prev => prev ? { ...prev, variant2: text } : null);
+      }, 15);
+
       // Set final output with HTML styling
-      setOutput({
-        observation: data.observation,
-        feeling: data.feeling,
-        need: data.need,
-        request: data.request
-      });
+      setOutput(data);
       setIsTyping(false);
 
       // Track usage
@@ -177,12 +188,7 @@ function App() {
         await supabase.from('messages').insert([{
           user_id: user.id,
           input_text: input,
-          output_text: {
-            observation: data.observation,
-            feeling: data.feeling,
-            need: data.need,
-            request: data.request
-          }
+          output_text: data
         }]);
       }
 
@@ -194,7 +200,6 @@ function App() {
           : 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.'
       );
       setIsTyping(false);
-      setLiveOutput(null);
     } finally {
       setIsLoading(false);
     }
@@ -754,6 +759,69 @@ function App() {
                                   </div>
                                 </motion.div>
                               ))}
+
+                              {/* GFK Variants Section */}
+                              {(liveOutput?.variant1 || output?.variant1) && (
+                                <motion.div
+                                  initial={{ opacity: 0, y: 20 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  className="border-t border-gray-200 pt-6 space-y-6"
+                                >
+                                  <h4 className="text-xl font-bold text-gray-900 mb-4">
+                                    Vollständige GFK-Formulierungen:
+                                  </h4>
+                                  
+                                  {/* Variant 1 */}
+                                  <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-6">
+                                    <div className="flex items-start space-x-4">
+                                      <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <span className="text-purple-600 font-bold text-lg">1</span>
+                                      </div>
+                                      <div className="flex-1">
+                                        <h5 className="font-semibold text-purple-700 mb-2">Variante 1:</h5>
+                                        <p className="text-gray-800 text-lg leading-relaxed">
+                                          {isTyping && liveOutput ? (
+                                            <span className="inline-block">
+                                              {liveOutput.variant1}
+                                              {liveOutput.request && !liveOutput.variant1 ? (
+                                                <span className="animate-pulse text-purple-600">|</span>
+                                              ) : null}
+                                            </span>
+                                          ) : (
+                                            output?.variant1
+                                          )}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Variant 2 */}
+                                  {(liveOutput?.variant2 || output?.variant2) && (
+                                    <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-6">
+                                      <div className="flex items-start space-x-4">
+                                        <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                          <span className="text-indigo-600 font-bold text-lg">2</span>
+                                        </div>
+                                        <div className="flex-1">
+                                          <h5 className="font-semibold text-indigo-700 mb-2">Variante 2:</h5>
+                                          <p className="text-gray-800 text-lg leading-relaxed">
+                                            {isTyping && liveOutput ? (
+                                              <span className="inline-block">
+                                                {liveOutput.variant2}
+                                                {liveOutput.variant1 && !liveOutput.variant2 ? (
+                                                  <span className="animate-pulse text-purple-600">|</span>
+                                                ) : null}
+                                              </span>
+                                            ) : (
+                                              output?.variant2
+                                            )}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </motion.div>
+                              )}
 
                               {output && !isTyping && (
                                 <motion.div
