@@ -124,7 +124,9 @@ ANTWORTFORMAT: NUR JSON mit folgender Struktur:
       return GFKTransform(input, openai, retryCount + 1);
     }
     
-    throw new Error("GFK-Transformation fehlgeschlagen. Bitte Eingabe überprüfen oder neu formulieren.");
+    // Include specific error details in the thrown error
+    const errorMessage = error.message || error.toString();
+    throw new Error(`GFK-Transformation fehlgeschlagen nach ${retryCount + 1} Versuchen. Letzter Fehler: ${errorMessage}`);
   }
 };
 
