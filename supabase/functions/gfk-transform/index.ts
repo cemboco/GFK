@@ -12,60 +12,61 @@ const MAX_INPUTS_PER_IP = 5;
 const GFKTransform = async (input: string, openai: OpenAI, retryCount = 0): Promise<any> => {
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4",
       temperature: 0.3,
       response_format: { type: "json_object" },
       messages: [
         {
           role: "system",
-          content: `Du bist ein GFK-Experte nach Marshall Rosenberg. Transformiere Eingaben in die 4 GFK-Komponenten:
+          content: `Du bist ein professioneller Coach für Gewaltfreie Kommunikation (GfK). 
+Deine Aufgabe ist es, Aussagen in zwei gelingende GfK-Formulierungen umzuschreiben. 
+Nutze immer die 4 Schritte der GfK:
+1. Beobachtung (ohne Bewertung)
+2. Gefühl (authentisch, kein Pseudo-Gefühl)
+3. Bedürfnis (grundlegend, keine Strategie)
+4. Bitte (konkret, erfüllbar, freiwillig)
+Vermeide Schuldzuweisungen, Interpretationen oder moralische Urteile. 
+Sprich in Alltagssprache. Gib immer zwei Varianten aus, getrennt durch [Variante 1] und [Variante 2].
 
-STRUKTUR:
+ANTWORTFORMAT: NUR JSON mit folgender Struktur:
 {
   "observation": "Neutrale Beobachtung (konkret, messbar)",
   "feeling": "Gefühl mit konjugiertem Verb (Ich-Botschaft)",
   "need": "Universelles Bedürfnis (positiv formuliert)",
-  "request": "Konkrete Bitte (als Frage formuliert)"
-}
-
-REGELN:
-1. Beobachtung: 
-   - 100% objektiv ("3 Bücher auf dem Boden", nicht "Chaos")
-   - Keine Verallgemeinerungen ("nie", "immer")
-   - Zeitangaben wenn möglich ("heute um 14 Uhr")
-
-2. Gefühl:
-   - Nur echte Gefühle (keine Gedanken wie "ignoriert")
-   - Korrekt konjugiert ("Ich bin frustriert", nicht "Ich Frustration")
-   - Maximal 2 Gefühle pro Satz
-
-3. Bedürfnis:
-   - Universelle menschliche Bedürfnisse benennen
-   - Positiv formulieren ("Sicherheit", nicht "keine Unsicherheit")
-   - Mit "weil ich... brauche" beginnen
-
-4. Bitte:
-   - Konkret und umsetzbar ("Könntest du...?" nicht "Sei besser")
-   - Als Frage formulieren
-   - Zeitrahmen angeben wenn möglich
-
-QUALITÄTSSICHERUNG:
-- KEINE Halluzinationen (keine erfundenen Details)
-- KEINE doppelten Wörter/Sätze
-- KEINE unvollendeten Sätze
-- Jedes Feld muss ein vollständiger deutscher Satz sein
-- Grammatikfehler strikt vermeiden
-
-BEISPIEL:
-Input: "Du kommst immer zu spät!"
-{
-  "observation": "Unser Treffen heute begann um 15:05 Uhr, 15 Minuten nach der vereinbarten Zeit",
-  "feeling": "Ich bin enttäuscht",
-  "need": "weil ich Verlässlichkeit in unseren Absprachen brauche",
-  "request": "Könntest du mir nächste Woche eine Nachricht senden, wenn du später als 5 Minuten kommst?"
-}
-
-ANTWORTFORMAT: NUR JSON`
+  "request": "Konkrete Bitte (als Frage formuliert)",
+  "variant1": "Vollständige GfK-Formulierung Variante 1",
+  "variant2": "Vollständige GfK-Formulierung Variante 2"
+}`
+        },
+        {
+          role: "user",
+          content: "Du hörst mir nie zu."
+        },
+        {
+          role: "assistant",
+          content: `{
+  "observation": "Wenn ich mit dir rede und keine Reaktion bekomme",
+  "feeling": "fühle ich mich traurig",
+  "need": "weil mir Aufmerksamkeit wichtig ist",
+  "request": "Könntest du mir sagen, ob du gerade Kapazität hast zuzuhören?",
+  "variant1": "Wenn ich mit dir rede und keine Reaktion bekomme, fühle ich mich traurig, weil mir Aufmerksamkeit wichtig ist. Könntest du mir sagen, ob du gerade Kapazität hast zuzuhören?",
+  "variant2": "Ich habe den Eindruck, dass du oft still bleibst, wenn ich etwas erzähle. Das verunsichert mich, weil ich mir Verbindung wünsche. Wäre es möglich, dass du mir rückmeldest, was du gehört hast?"
+}`
+        },
+        {
+          role: "user",
+          content: "Immer lässt du deine Sachen überall rumliegen."
+        },
+        {
+          role: "assistant",
+          content: `{
+  "observation": "Wenn ich deine Sachen auf dem Boden sehe",
+  "feeling": "fühle ich mich genervt",
+  "need": "weil mir Ordnung und gegenseitige Rücksicht wichtig sind",
+  "request": "Wärst du bereit, deine Sachen direkt wegzuräumen?",
+  "variant1": "Wenn ich deine Sachen auf dem Boden sehe, fühle ich mich genervt, weil mir Ordnung und gegenseitige Rücksicht wichtig sind. Wärst du bereit, deine Sachen direkt wegzuräumen?",
+  "variant2": "Heute lagen wieder deine Jacke und Tasche im Flur. Ich bin angespannt, weil ich mir mehr Struktur im Alltag wünsche. Wie können wir das gemeinsam anders organisieren?"
+}`
         },
         {
           role: "user",
@@ -87,7 +88,7 @@ ANTWORTFORMAT: NUR JSON`
     }
 
     // Validierung der Felder
-    const requiredFields = ['observation', 'feeling', 'need', 'request'];
+    const requiredFields = ['observation', 'feeling', 'need', 'request', 'variant1', 'variant2'];
     const validationErrors: string[] = [];
     
     requiredFields.forEach(field => {
@@ -197,7 +198,9 @@ serve(async (req) => {
       observation: `<span class='text-blue-600'>${parsedResponse.observation}</span>`,
       feeling: `<span class='text-green-600'>${parsedResponse.feeling}</span>`,
       need: `<span class='text-orange-600'>${parsedResponse.need}</span>`,
-      request: `<span class='text-purple-600'>${parsedResponse.request}</span>`
+      request: `<span class='text-purple-600'>${parsedResponse.request}</span>`,
+      variant1: parsedResponse.variant1,
+      variant2: parsedResponse.variant2
     };
     
     return new Response(
