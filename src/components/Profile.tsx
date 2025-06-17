@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, History, Settings, LogOut, MessageSquare, ArrowLeft, Edit2, Save, X, Home, AlertTriangle } from 'lucide-react';
+import { User, History, Settings, LogOut, MessageSquare, ArrowLeft, Edit2, Save, X, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const supabase = createClient(
@@ -37,7 +37,7 @@ export default function Profile() {
   const [editedUsername, setEditedUsername] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
-  // Account deletion states
+  // Delete confirmation states
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -190,16 +190,6 @@ export default function Profile() {
     setError(null);
   };
 
-  const handleSignOut = async () => {
-    try {
-      await supabase.auth.signOut();
-      navigate('/');
-    } catch (err) {
-      console.error('Error signing out:', err);
-      setError('Fehler beim Abmelden');
-    }
-  };
-
   const handleDeleteAccount = async () => {
     if (!user) return;
 
@@ -207,21 +197,45 @@ export default function Profile() {
     setError(null);
 
     try {
-      // Delete user account (this will cascade delete all related data)
-      const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
+      // First delete all user data from our tables
+      // The foreign key constraints with CASCADE will handle most of this automatically
+      
+      // Delete user profile (this will cascade to related data)
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', user.id);
 
-      if (deleteError) {
-        throw new Error('Fehler beim Löschen des Accounts');
+      if (profileError) {
+        throw new Error('Fehler beim Löschen der Profildaten');
       }
 
-      // Sign out and redirect
+      // Sign out the user (this effectively "deletes" their session)
+      const { error: signOutError } = await supabase.auth.signOut();
+      
+      if (signOutError) {
+        throw new Error('Fehler beim Abmelden');
+      }
+
+      // Navigate to home page
+      navigate('/');
+      
+    } catch (err) {
+      console.error('Error deleting account:', err);
+      setError(err instanceof Error ? err.message : 'Fehler beim Löschen des Accounts');
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteConfirmation(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
       await supabase.auth.signOut();
       navigate('/');
     } catch (err) {
-      console.error('Error deleting account:', err);
-      setError(err instanceof Error ? err.message : 'Ein unerwarteter Fehler ist aufgetreten');
-      setIsDeleting(false);
-      setShowDeleteConfirmation(false);
+      console.error('Error signing out:', err);
+      setError('Fehler beim Abmelden');
     }
   };
 
@@ -240,62 +254,46 @@ export default function Profile() {
           {/* Sidebar */}
           <div className="md:w-64 bg-gray-50 p-6">
             <div className="space-y-4">
-              {/* Navigation zur Hauptseite in der Sidebar */}
-              <Link
-                to="/"
-                className="w-full flex items-center px-4 py-2 rounded-lg text-purple-600 hover:bg-purple-50 transition-colors border border-purple-200"
+              <button
+                onClick={() => setActiveTab('profile')}
+                className={`w-full flex items-center px-4 py-2 rounded-lg transition-colors ${
+                  activeTab === 'profile'
+                    ? 'bg-purple-100 text-purple-700'
+                    : 'text-gray-600 hover:bg-purple-50'
+                }`}
               >
-                <Home className="h-5 w-5 mr-2" />
-                Zur Hauptseite
-              </Link>
-              
-              <div className="border-t border-gray-200 pt-4">
-                <button
-                  onClick={() => setActiveTab('profile')}
-                  className={`w-full flex items-center px-4 py-2 rounded-lg transition-colors ${
-                    activeTab === 'profile'
-                      ? 'bg-purple-100 text-purple-700'
-                      : 'text-gray-600 hover:bg-purple-50'
-                  }`}
-                >
-                  <User className="h-5 w-5 mr-2" />
-                  Profil
-                </button>
-                <button
-                  onClick={() => setActiveTab('messages')}
-                  className={`w-full flex items-center px-4 py-2 rounded-lg transition-colors ${
-                    activeTab === 'messages'
-                      ? 'bg-purple-100 text-purple-700'
-                      : 'text-gray-600 hover:bg-purple-50'
-                  }`}
-                >
-                  <MessageSquare className="h-5 w-5 mr-2" />
-                  Meine GFK-Texte
-                  {messages.length > 0 && (
-                    <span className="ml-auto bg-purple-600 text-white text-xs rounded-full px-2 py-1">
-                      {messages.length}
-                    </span>
-                  )}
-                </button>
-                <button
-                  onClick={() => setActiveTab('settings')}
-                  className={`w-full flex items-center px-4 py-2 rounded-lg transition-colors ${
-                    activeTab === 'settings'
-                      ? 'bg-purple-100 text-purple-700'
-                      : 'text-gray-600 hover:bg-purple-50'
-                  }`}
-                >
-                  <Settings className="h-5 w-5 mr-2" />
-                  Einstellungen
-                </button>
-                <button
-                  onClick={handleSignOut}
-                  className="w-full flex items-center px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
-                >
-                  <LogOut className="h-5 w-5 mr-2" />
-                  Abmelden
-                </button>
-              </div>
+                <User className="h-5 w-5 mr-2" />
+                Profil
+              </button>
+              <button
+                onClick={() => setActiveTab('messages')}
+                className={`w-full flex items-center px-4 py-2 rounded-lg transition-colors ${
+                  activeTab === 'messages'
+                    ? 'bg-purple-100 text-purple-700'
+                    : 'text-gray-600 hover:bg-purple-50'
+                }`}
+              >
+                <MessageSquare className="h-5 w-5 mr-2" />
+                Meine GFK-Texte
+              </button>
+              <button
+                onClick={() => setActiveTab('settings')}
+                className={`w-full flex items-center px-4 py-2 rounded-lg transition-colors ${
+                  activeTab === 'settings'
+                    ? 'bg-purple-100 text-purple-700'
+                    : 'text-gray-600 hover:bg-purple-50'
+                }`}
+              >
+                <Settings className="h-5 w-5 mr-2" />
+                Einstellungen
+              </button>
+              <button
+                onClick={handleSignOut}
+                className="w-full flex items-center px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+              >
+                <LogOut className="h-5 w-5 mr-2" />
+                Abmelden
+              </button>
             </div>
           </div>
 
@@ -425,16 +423,7 @@ export default function Profile() {
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-6"
               >
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-gray-900">Meine GFK-Texte</h2>
-                  <Link
-                    to="/"
-                    className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                  >
-                    <Home className="h-4 w-4 mr-2" />
-                    Neue GFK-Transformation
-                  </Link>
-                </div>
+                <h2 className="text-2xl font-bold text-gray-900">Meine GFK-Texte</h2>
                 <div className="space-y-6">
                   {messages.map((message) => (
                     <div key={message.id} className="bg-gray-50 rounded-xl p-6">
@@ -470,13 +459,6 @@ export default function Profile() {
                       <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-300" />
                       <p>Noch keine GFK-Texte vorhanden.</p>
                       <p className="text-sm mt-2">Besuchen Sie die Hauptseite, um Ihre erste GFK-Transformation zu erstellen.</p>
-                      <Link
-                        to="/"
-                        className="inline-flex items-center mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                      >
-                        <Home className="h-4 w-4 mr-2" />
-                        Zur Hauptseite
-                      </Link>
                     </div>
                   )}
                 </div>
@@ -491,6 +473,20 @@ export default function Profile() {
               >
                 <h2 className="text-2xl font-bold text-gray-900">Einstellungen</h2>
                 <div className="bg-gray-50 p-6 rounded-xl space-y-6">
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900">Benachrichtigungen</h3>
+                    <div className="mt-4 space-y-4">
+                      <label className="flex items-center">
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                          defaultChecked
+                        />
+                        <span className="ml-2 text-gray-700">E-Mail-Benachrichtigungen</span>
+                      </label>
+                    </div>
+                  </div>
+                  
                   <div>
                     <h3 className="text-lg font-medium text-gray-900">Datenschutz</h3>
                     <div className="mt-4 space-y-4">
@@ -521,7 +517,7 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* Account Deletion Confirmation Modal */}
+      {/* Delete Confirmation Modal */}
       <AnimatePresence>
         {showDeleteConfirmation && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
@@ -532,33 +528,23 @@ export default function Profile() {
               className="relative w-full max-w-md bg-white rounded-2xl shadow-xl p-6"
             >
               <div className="text-center">
-                <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-                  <AlertTriangle className="h-6 w-6 text-red-600" />
-                </div>
-                
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <AlertTriangle className="h-12 w-12 text-red-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">
                   Account wirklich löschen?
                 </h3>
-                
                 <p className="text-gray-600 mb-6">
                   Diese Aktion kann nicht rückgängig gemacht werden. Alle Ihre Daten, 
                   einschließlich Profil und GFK-Texte, werden permanent gelöscht.
                 </p>
-                
                 <div className="flex space-x-3">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                  <button
                     onClick={() => setShowDeleteConfirmation(false)}
                     disabled={isDeleting}
                     className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
                   >
                     Abbrechen
-                  </motion.button>
-                  
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                  </button>
+                  <button
                     onClick={handleDeleteAccount}
                     disabled={isDeleting}
                     className={`flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors ${
@@ -566,7 +552,7 @@ export default function Profile() {
                     }`}
                   >
                     {isDeleting ? 'Lösche...' : 'Ja, löschen'}
-                  </motion.button>
+                  </button>
                 </div>
               </div>
             </motion.div>
