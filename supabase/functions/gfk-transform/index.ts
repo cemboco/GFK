@@ -12,61 +12,45 @@ const MAX_INPUTS_PER_IP = 5;
 const GFKTransform = async (input: string, openai: OpenAI, retryCount = 0): Promise<any> => {
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo-0125",
       temperature: 0.3,
       response_format: { type: "json_object" },
       messages: [
         {
           role: "system",
-          content: `Du bist ein professioneller Coach für Gewaltfreie Kommunikation (GfK). 
-Deine Aufgabe ist es, Aussagen in zwei gelingende GfK-Formulierungen umzuschreiben. 
-Nutze immer die 4 Schritte der GfK:
-1. Beobachtung (ohne Bewertung)
-2. Gefühl (authentisch, kein Pseudo-Gefühl)
-3. Bedürfnis (grundlegend, keine Strategie)
-4. Bitte (konkret, erfüllbar, freiwillig)
-Vermeide Schuldzuweisungen, Interpretationen oder moralische Urteile. 
-Sprich in Alltagssprache. Gib immer zwei Varianten aus, getrennt durch [Variante 1] und [Variante 2].
+          content: `Du bist ein GFK-Experte nach Marshall Rosenberg. Transformiere Eingaben in die 4 GFK-Komponenten.
 
-ANTWORTFORMAT: NUR JSON mit folgender Struktur:
+WICHTIG: Antworte ausschließlich im JSON-Format mit folgender Struktur:
+
 {
   "observation": "Neutrale Beobachtung (konkret, messbar)",
   "feeling": "Gefühl mit konjugiertem Verb (Ich-Botschaft)",
   "need": "Universelles Bedürfnis (positiv formuliert)",
-  "request": "Konkrete Bitte (als Frage formuliert)",
-  "variant1": "Vollständige GfK-Formulierung Variante 1",
-  "variant2": "Vollständige GfK-Formulierung Variante 2"
-}`
-        },
-        {
-          role: "user",
-          content: "Du hörst mir nie zu."
-        },
-        {
-          role: "assistant",
-          content: `{
-  "observation": "Wenn ich mit dir rede und keine Reaktion bekomme",
-  "feeling": "fühle ich mich traurig",
-  "need": "weil mir Aufmerksamkeit wichtig ist",
-  "request": "Könntest du mir sagen, ob du gerade Kapazität hast zuzuhören?",
-  "variant1": "Wenn ich mit dir rede und keine Reaktion bekomme, fühle ich mich traurig, weil mir Aufmerksamkeit wichtig ist. Könntest du mir sagen, ob du gerade Kapazität hast zuzuhören?",
-  "variant2": "Ich habe den Eindruck, dass du oft still bleibst, wenn ich etwas erzähle. Das verunsichert mich, weil ich mir Verbindung wünsche. Wäre es möglich, dass du mir rückmeldest, was du gehört hast?"
-}`
-        },
-        {
-          role: "user",
-          content: "Immer lässt du deine Sachen überall rumliegen."
-        },
-        {
-          role: "assistant",
-          content: `{
-  "observation": "Wenn ich deine Sachen auf dem Boden sehe",
-  "feeling": "fühle ich mich genervt",
-  "need": "weil mir Ordnung und gegenseitige Rücksicht wichtig sind",
-  "request": "Wärst du bereit, deine Sachen direkt wegzuräumen?",
-  "variant1": "Wenn ich deine Sachen auf dem Boden sehe, fühle ich mich genervt, weil mir Ordnung und gegenseitige Rücksicht wichtig sind. Wärst du bereit, deine Sachen direkt wegzuräumen?",
-  "variant2": "Heute lagen wieder deine Jacke und Tasche im Flur. Ich bin angespannt, weil ich mir mehr Struktur im Alltag wünsche. Wie können wir das gemeinsam anders organisieren?"
-}`
+  "request": "Konkrete Bitte (als Frage formuliert)"
+}
+
+REGELN:
+1. Beobachtung: 
+   - 100% objektiv ("3 Bücher auf dem Boden", nicht "Chaos")
+   - Keine Verallgemeinerungen ("nie", "immer")
+   - Zeitangaben wenn möglich ("heute um 14 Uhr")
+
+2. Gefühl:
+   - Nur echte Gefühle (keine Gedanken wie "ignoriert")
+   - Korrekt konjugiert ("Ich bin frustriert", nicht "Ich Frustration")
+   - Maximal 2 Gefühle pro Satz
+
+3. Bedürfnis:
+   - Universelle menschliche Bedürfnisse benennen
+   - Positiv formulieren ("Sicherheit", nicht "keine Unsicherheit")
+   - Mit "weil ich... brauche" beginnen
+
+4. Bitte:
+   - Konkret und umsetzbar ("Könntest du...?" nicht "Sei besser")
+   - Als Frage formulieren
+   - Zeitrahmen angeben wenn möglich
+
+ANTWORTFORMAT: NUR JSON, keine zusätzlichen Erklärungen oder Markdown.`
         },
         {
           role: "user",
@@ -87,25 +71,29 @@ ANTWORTFORMAT: NUR JSON mit folgender Struktur:
       parsedResponse = JSON.parse(cleanedJson);
     }
 
-    // Validierung der Felder - nur grundlegende Checks
-    const requiredFields = ['observation', 'feeling', 'need', 'request', 'variant1', 'variant2'];
+    // Validierung der Felder
+    const requiredFields = ['observation', 'feeling', 'need', 'request'];
     const validationErrors: string[] = [];
     
     requiredFields.forEach(field => {
       if (!parsedResponse[field] || typeof parsedResponse[field] !== 'string') {
         validationErrors.push(`Feld '${field}' fehlt oder ist kein String`);
       } else {
-        const text = parsedResponse[field].trim();
+        const text = parsedResponse[field];
         
-        // Nur kritische Validierungen - weniger restriktiv
-        if (text.length === 0) {
-          validationErrors.push(`Feld '${field}' ist leer`);
-        }
+        // Anti-Halluzinations-Checks
+        const errorPatterns = [
+          { pattern: /(\b\w+\b)\s+\1\b/, msg: 'Doppelte Wörter' }, // Wiederholte Wörter
+          { pattern: /\.\./, msg: 'Unvollständige Sätze' },
+          { pattern: /(?:so etwas|dass das)/i, msg: 'Füllwörter' },
+          { pattern: /(?:weil mir weil|dass weil)/i, msg: 'Grammatikfehler' }
+        ];
         
-        // Nur sehr offensichtliche Probleme prüfen
-        if (text.length > 1000) {
-          validationErrors.push(`Feld '${field}' ist zu lang`);
-        }
+        errorPatterns.forEach(({ pattern, msg }) => {
+          if (pattern.test(text)) {
+            validationErrors.push(`Feld '${field}' enthält '${msg}': ${text}`);
+          }
+        });
       }
     });
 
@@ -118,15 +106,13 @@ ANTWORTFORMAT: NUR JSON mit folgender Struktur:
   } catch (error) {
     console.error("GFK-Transformationsfehler:", error);
     
-    // Broadened retry mechanism - retry for any error up to 2 times
-    if (retryCount < 2) {
-      console.log(`Wiederholungsversuch ${retryCount + 1}/2 für Fehler: ${error.message}`);
+    // Automatischer Wiederholungsmechanismus
+    if (error.message.includes('Validierungsfehler') && retryCount < 2) {
+      console.log(`Wiederholungsversuch ${retryCount + 1}/2`);
       return GFKTransform(input, openai, retryCount + 1);
     }
     
-    // Include specific error details in the thrown error
-    const errorMessage = error.message || error.toString();
-    throw new Error(`GFK-Transformation fehlgeschlagen nach ${retryCount + 1} Versuchen. Letzter Fehler: ${errorMessage}`);
+    throw new Error("GFK-Transformation fehlgeschlagen. Bitte Eingabe überprüfen oder neu formulieren.");
   }
 };
 
@@ -196,9 +182,7 @@ serve(async (req) => {
       observation: `<span class='text-blue-600'>${parsedResponse.observation}</span>`,
       feeling: `<span class='text-green-600'>${parsedResponse.feeling}</span>`,
       need: `<span class='text-orange-600'>${parsedResponse.need}</span>`,
-      request: `<span class='text-purple-600'>${parsedResponse.request}</span>`,
-      variant1: parsedResponse.variant1,
-      variant2: parsedResponse.variant2
+      request: `<span class='text-purple-600'>${parsedResponse.request}</span>`
     };
     
     return new Response(
