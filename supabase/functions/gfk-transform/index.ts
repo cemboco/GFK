@@ -87,7 +87,7 @@ ANTWORTFORMAT: NUR JSON mit folgender Struktur:
       parsedResponse = JSON.parse(cleanedJson);
     }
 
-    // Validierung der Felder
+    // Validierung der Felder - nur grundlegende Checks
     const requiredFields = ['observation', 'feeling', 'need', 'request', 'variant1', 'variant2'];
     const validationErrors: string[] = [];
     
@@ -95,21 +95,17 @@ ANTWORTFORMAT: NUR JSON mit folgender Struktur:
       if (!parsedResponse[field] || typeof parsedResponse[field] !== 'string') {
         validationErrors.push(`Feld '${field}' fehlt oder ist kein String`);
       } else {
-        const text = parsedResponse[field];
+        const text = parsedResponse[field].trim();
         
-        // Anti-Halluzinations-Checks
-        const errorPatterns = [
-          { pattern: /(\b\w+\b)\s+\1\b/, msg: 'Doppelte Wörter' }, // Wiederholte Wörter
-          { pattern: /\.\./, msg: 'Unvollständige Sätze' },
-          { pattern: /(?:so etwas|dass das)/i, msg: 'Füllwörter' },
-          { pattern: /(?:weil mir weil|dass weil)/i, msg: 'Grammatikfehler' }
-        ];
+        // Nur kritische Validierungen - weniger restriktiv
+        if (text.length === 0) {
+          validationErrors.push(`Feld '${field}' ist leer`);
+        }
         
-        errorPatterns.forEach(({ pattern, msg }) => {
-          if (pattern.test(text)) {
-            validationErrors.push(`Feld '${field}' enthält '${msg}': ${text}`);
-          }
-        });
+        // Nur sehr offensichtliche Probleme prüfen
+        if (text.length > 1000) {
+          validationErrors.push(`Feld '${field}' ist zu lang`);
+        }
       }
     });
 
