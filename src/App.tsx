@@ -111,8 +111,14 @@ function App() {
         throw new Error(functionError.message);
       }
 
-      if (data.error) {
+      // Check if the response contains an error
+      if (data && data.error) {
         throw new Error(data.error);
+      }
+
+      // Validate that we have the required fields
+      if (!data || !data.observation || !data.feeling || !data.need || !data.request) {
+        throw new Error('Unvollständige Antwort vom Server. Bitte versuchen Sie es erneut.');
       }
 
       // Strip HTML for live typing
@@ -155,7 +161,12 @@ function App() {
       }, 20);
 
       // Set final output with HTML styling
-      setOutput(data);
+      setOutput({
+        observation: data.observation,
+        feeling: data.feeling,
+        need: data.need,
+        request: data.request
+      });
       setIsTyping(false);
 
       // Track usage
@@ -166,7 +177,12 @@ function App() {
         await supabase.from('messages').insert([{
           user_id: user.id,
           input_text: input,
-          output_text: data
+          output_text: {
+            observation: data.observation,
+            feeling: data.feeling,
+            need: data.need,
+            request: data.request
+          }
         }]);
       }
 
@@ -178,6 +194,7 @@ function App() {
           : 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.'
       );
       setIsTyping(false);
+      setLiveOutput(null);
     } finally {
       setIsLoading(false);
     }
@@ -1119,7 +1136,7 @@ const AboutContent = () => (
               >
                 <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
                 <span className="text-gray-700">{benefit}</span>
-              </motion.div>
+              </div>
             ))}
           </div>
         </motion.div>
