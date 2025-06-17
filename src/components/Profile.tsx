@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, History, Settings, LogOut, MessageSquare, ArrowLeft, Edit2, Save, X, Home } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { User, History, Settings, LogOut, MessageSquare, ArrowLeft, Edit2, Save, X, Home, AlertTriangle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -36,6 +36,10 @@ export default function Profile() {
   const [editedName, setEditedName] = useState('');
   const [editedUsername, setEditedUsername] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+
+  // Account deletion states
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchUserData();
@@ -193,6 +197,31 @@ export default function Profile() {
     } catch (err) {
       console.error('Error signing out:', err);
       setError('Fehler beim Abmelden');
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+
+    setIsDeleting(true);
+    setError(null);
+
+    try {
+      // Delete user account (this will cascade delete all related data)
+      const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
+
+      if (deleteError) {
+        throw new Error('Fehler beim Löschen des Accounts');
+      }
+
+      // Sign out and redirect
+      await supabase.auth.signOut();
+      navigate('/');
+    } catch (err) {
+      console.error('Error deleting account:', err);
+      setError(err instanceof Error ? err.message : 'Ein unerwarteter Fehler ist aufgetreten');
+      setIsDeleting(false);
+      setShowDeleteConfirmation(false);
     }
   };
 
@@ -477,8 +506,9 @@ export default function Profile() {
                   </div>
 
                   <div className="pt-6 border-t border-gray-200">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4">Gefährliche Aktionen</h3>
                     <button
-                      onClick={handleSignOut}
+                      onClick={() => setShowDeleteConfirmation(true)}
                       className="px-4 py-2 border border-red-500 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
                     >
                       Account löschen
@@ -490,6 +520,59 @@ export default function Profile() {
           </div>
         </div>
       </div>
+
+      {/* Account Deletion Confirmation Modal */}
+      <AnimatePresence>
+        {showDeleteConfirmation && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative w-full max-w-md bg-white rounded-2xl shadow-xl p-6"
+            >
+              <div className="text-center">
+                <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                  <AlertTriangle className="h-6 w-6 text-red-600" />
+                </div>
+                
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Account wirklich löschen?
+                </h3>
+                
+                <p className="text-gray-600 mb-6">
+                  Diese Aktion kann nicht rückgängig gemacht werden. Alle Ihre Daten, 
+                  einschließlich Profil und GFK-Texte, werden permanent gelöscht.
+                </p>
+                
+                <div className="flex space-x-3">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setShowDeleteConfirmation(false)}
+                    disabled={isDeleting}
+                    className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                  >
+                    Abbrechen
+                  </motion.button>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleDeleteAccount}
+                    disabled={isDeleting}
+                    className={`flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors ${
+                      isDeleting && 'opacity-50 cursor-not-allowed'
+                    }`}
+                  >
+                    {isDeleting ? 'Lösche...' : 'Ja, löschen'}
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
