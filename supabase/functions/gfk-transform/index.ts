@@ -12,7 +12,7 @@ const MAX_INPUTS_PER_IP = 5;
 const GFKTransform = async (input: string, openai: OpenAI, retryCount = 0): Promise<any> => {
   try {
     const completion = await openai.chat.completions.create({
-  model: "ft:gpt-4o-mini-2024-07-18:personal:gfk1:BjNWNqUD:ckpt-step-80",
+  model: "ft:gpt-3.5-turbo-0125:personal:gfk2:BjtkeU8m",
   temperature: 0.3,
   response_format: { type: "json_object" },
   messages: [
