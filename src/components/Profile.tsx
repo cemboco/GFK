@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, History, Settings, LogOut, MessageSquare, ArrowLeft, Edit2, Save, X, Home } from 'lucide-react';
+import { User, History, Settings, LogOut, MessageSquare, Edit2, Save, X, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const supabase = createClient(
@@ -211,14 +211,6 @@ export default function Profile() {
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link 
-                to="/" 
-                className="flex items-center text-purple-600 hover:text-purple-700 transition-colors"
-              >
-                <ArrowLeft className="h-5 w-5 mr-2" />
-                Zurück zur Hauptseite
-              </Link>
-              <div className="h-6 w-px bg-gray-300"></div>
               <h1 className="text-xl font-semibold text-gray-900">Mein Profil</h1>
             </div>
             <Link
