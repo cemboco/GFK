@@ -213,13 +213,6 @@ export default function Profile() {
             <div className="flex items-center space-x-4">
               <h1 className="text-xl font-semibold text-gray-900">Mein Profil</h1>
             </div>
-            <Link
-              to="/"
-              className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-            >
-              <Home className="h-4 w-4 mr-2" />
-              Neue GFK-Transformation
-            </Link>
           </div>
         </div>
       </div>
