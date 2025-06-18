@@ -119,14 +119,14 @@ function App() {
         throw new Error(data.error);
       }
 
-      // Strip HTML for live typing
+      // Strip HTML for live typing - safely handle undefined values
       const cleanData = {
-        observation: data.observation.replace(/<[^>]*>/g, ''),
-        feeling: data.feeling.replace(/<[^>]*>/g, ''),
-        need: data.need.replace(/<[^>]*>/g, ''),
-        request: data.request.replace(/<[^>]*>/g, ''),
-        variant1: data.variant1 || '',
-        variant2: data.variant2 || ''
+        observation: (data.observation || '').replace(/<[^>]*>/g, ''),
+        feeling: (data.feeling || '').replace(/<[^>]*>/g, ''),
+        need: (data.need || '').replace(/<[^>]*>/g, ''),
+        request: (data.request || '').replace(/<[^>]*>/g, ''),
+        variant1: (data.variant1 || '').replace(/<[^>]*>/g, ''),
+        variant2: (data.variant2 || '').replace(/<[^>]*>/g, '')
       };
 
       // Initialize live output
@@ -176,8 +176,15 @@ function App() {
         setLiveOutput(prev => prev ? { ...prev, variant2: text } : null);
       }, 15);
 
-      // Set final output with HTML styling
-      setOutput(data);
+      // Set final output with HTML styling - ensure all fields exist
+      setOutput({
+        observation: data.observation || '',
+        feeling: data.feeling || '',
+        need: data.need || '',
+        request: data.request || '',
+        variant1: data.variant1 || '',
+        variant2: data.variant2 || ''
+      });
       setIsTyping(false);
 
       // Track usage
