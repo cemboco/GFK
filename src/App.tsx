@@ -13,6 +13,7 @@ import Profile from './components/Profile';
 import ChatDialog from './components/ChatDialog';
 import { useUserTracking } from './hooks/useUserTracking';
 import Header from './components/Header';
+import UsageIndicator from './components/UsageIndicator';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -344,21 +345,8 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
-        
-        {/* Usage indicator for non-authenticated users */}
-        {session && session.type !== 'authenticated' && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="fixed top-4 left-4 z-40"
-          >
-            <div className="bg-white/95 backdrop-blur-md shadow-lg rounded-2xl px-4 py-2 border border-purple-100">
-              <span className="font-medium text-purple-700 text-sm">
-                {usageInfo?.remaining || 0} von {usageInfo?.max || 5} Eingaben übrig
-              </span>
-            </div>
-          </motion.div>
-        )}
+        {/* UsageIndicator-Komponente */}
+        <UsageIndicator session={session} usageInfo={usageInfo} />
 
         {/* Neuer Header */}
         <Header
