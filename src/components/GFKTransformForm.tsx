@@ -37,6 +37,7 @@ const GFKTransformForm: React.FC<GFKTransformFormProps> = (props) => {
         error={props.error}
         context={props.context}
         setContext={props.setContext}
+        user={props.user}
       />
 
       {/* Results */}

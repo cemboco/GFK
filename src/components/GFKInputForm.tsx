@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, ChevronDown } from 'lucide-react';
+import { Sparkles, ChevronDown, Crown, AlertCircle } from 'lucide-react';
+import { useChatUsage } from '../hooks/useChatUsage';
 
 interface GFKInputFormProps {
   input: string;
@@ -11,6 +12,7 @@ interface GFKInputFormProps {
   error: string | null;
   context?: string;
   setContext?: (context: string) => void;
+  user: any;
 }
 
 const GFKInputForm: React.FC<GFKInputFormProps> = ({
@@ -21,8 +23,11 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
   handleSubmit,
   error,
   context = 'general',
-  setContext
+  setContext,
+  user
 }) => {
+  const { chatUsage, isLoading: chatUsageLoading } = useChatUsage(user);
+  
   const contextOptions = [
     { value: 'general', label: 'Allgemein', description: 'Für verschiedene Situationen' },
     { value: 'child', label: 'Kind/Jugendliche', description: 'Einfühlsame Kommunikation mit Kindern' },
@@ -48,7 +53,7 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
           Gib deinen Text ein und erlebe die Transformation in Echtzeit
         </p>
         <p className="text-sm text-gray-500 mt-2">
-          Je genauer der Text, desto besser.
+          Je genauer der Text, desto besser ist die Transformation..
         </p>
       </div>
 
@@ -81,9 +86,30 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
         )}
 
         <div>
-          <label htmlFor="input" className="block text-lg font-semibold text-gray-800 mb-3">
-            Was möchtest du sagen?
-          </label>
+          <div className="flex items-center justify-between mb-3">
+            <label htmlFor="input" className="block text-lg font-semibold text-gray-800">
+              Was möchtest du sagen?
+            </label>
+            
+            {/* Chat Usage Display */}
+            {user && chatUsage && !chatUsageLoading && (
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 bg-white rounded-lg px-3 py-2 shadow-sm border border-gray-200">
+                  <Crown className="h-4 w-4 text-yellow-600" />
+                  <span className="text-sm text-gray-700 font-medium">
+                    {chatUsage.remainingMessages}/{chatUsage.maxMessages} Chat-Nachrichten
+                  </span>
+                </div>
+                {chatUsage.remainingMessages === 0 && (
+                  <div className="flex items-center space-x-2 bg-red-100 rounded-lg px-3 py-2">
+                    <AlertCircle className="h-4 w-4 text-red-600" />
+                    <span className="text-sm text-red-700 font-medium">Limit erreicht</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          
           <textarea
             id="input"
             rows={4}
@@ -92,6 +118,14 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
             className="w-full border-2 border-gray-200 rounded-2xl p-6 text-lg focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white shadow-sm resize-none"
             placeholder="Schreibe hier deine Nachricht..."
           />
+          
+          {/* Usage Info for non-authenticated users */}
+          {!user && (
+            <div className="mt-3 flex items-center space-x-2 text-sm text-gray-600">
+              <Crown className="h-4 w-4 text-yellow-600" />
+              <span>Melde dich an, um den GFK-Coach zu nutzen (3 Nachrichten/Monat)</span>
+            </div>
+          )}
         </div>
 
         <div className="flex justify-center">
