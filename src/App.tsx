@@ -111,7 +111,17 @@ function App() {
 
     try {
       const { data, error: functionError } = await supabase.functions.invoke('gfk-transform', {
-        body: { input: input.trim() }
+        body: { 
+          input: input.trim(),
+          context: {
+            userLevel: 'beginner',
+            preferredStyle: 'empathetic',
+            includeExamples: true,
+            focusOn: 'clarity',
+            relationship: 'general',
+            situation: 'general'
+          }
+        }
       });
 
       if (functionError) {
