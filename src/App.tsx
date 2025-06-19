@@ -24,6 +24,7 @@ const supabase = createClient(
 function App() {
   const [activeTab, setActiveTab] = useState<'gfk' | 'about' | 'contact'>('gfk');
   const [input, setInput] = useState('');
+  const [context, setContext] = useState('general');
   const [output, setOutput] = useState<{
     observation: string;
     feeling: string;
@@ -118,7 +119,7 @@ function App() {
             preferredStyle: 'empathetic',
             includeExamples: true,
             focusOn: 'clarity',
-            relationship: 'general',
+            relationship: context,
             situation: 'general'
           }
         }
@@ -518,6 +519,8 @@ function App() {
                       setShowChatDialog={setShowChatDialog}
                       feedbackGiven={feedbackGiven}
                       handleFeedback={handleFeedback}
+                      context={context}
+                      setContext={setContext}
                     />
 
                     {/* Features Section */}

@@ -19,6 +19,8 @@ interface GFKTransformFormProps {
   setShowChatDialog: (open: boolean) => void;
   feedbackGiven: boolean;
   handleFeedback: (isHelpful: boolean) => void;
+  context?: string;
+  setContext?: (context: string) => void;
 }
 
 const GFKTransformForm: React.FC<GFKTransformFormProps> = (props) => {
@@ -33,6 +35,8 @@ const GFKTransformForm: React.FC<GFKTransformFormProps> = (props) => {
         canUseService={props.canUseService}
         handleSubmit={props.handleSubmit}
         error={props.error}
+        context={props.context}
+        setContext={props.setContext}
       />
 
       {/* Results */}
