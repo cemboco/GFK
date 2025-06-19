@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Send, MessageCircle, Bot, User } from 'lucide-react';
+import { X, Send, MessageCircle, Bot, User, AlertCircle, Crown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@supabase/supabase-js';
+import { useChatUsage } from '../hooks/useChatUsage';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -39,6 +40,8 @@ export default function ChatDialog({
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const { chatUsage, isLoading: chatUsageLoading, incrementMessageCount, getUpgradeMessage } = useChatUsage(user);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -61,12 +64,14 @@ export default function ChatDialog({
 • Gibt es alternative Formulierungen?
 • Wie würde das in einem anderen Kontext klingen?
 
+${chatUsage ? `Du hast noch ${chatUsage.remainingMessages} von ${chatUsage.maxMessages} Nachrichten übrig.` : ''}
+
 Was möchtest du über deine GFK-Transformation wissen?`,
         timestamp: new Date()
       };
       setMessages([welcomeMessage]);
     }
-  }, [isOpen]);
+  }, [isOpen, chatUsage]);
 
   const stripHtml = (html: string) => {
     const tmp = document.createElement('div');
@@ -76,6 +81,19 @@ Was möchtest du über deine GFK-Transformation wissen?`,
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
+    
+    // Check if user can send message
+    if (chatUsage && !chatUsage.canSendMessage) {
+      const limitMessage: Message = {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: getUpgradeMessage(),
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, limitMessage]);
+      setInputMessage('');
+      return;
+    }
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
@@ -89,6 +107,9 @@ Was möchtest du über deine GFK-Transformation wissen?`,
     setIsLoading(true);
 
     try {
+      // Increment message count
+      await incrementMessageCount();
+
       // Prepare context for the AI
       const context = {
         originalInput,
@@ -215,6 +236,25 @@ Was möchtest du über deine GFK-Transformation wissen?`,
                   GFK-Coach fragen
                 </h3>
               </div>
+              
+              {/* Usage Display */}
+              {chatUsage && !chatUsageLoading && (
+                <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2">
+                    <Crown className="h-4 w-4 text-yellow-600" />
+                    <span className="text-sm text-gray-700">
+                      {chatUsage.remainingMessages}/{chatUsage.maxMessages} Nachrichten
+                    </span>
+                  </div>
+                  {chatUsage.remainingMessages === 0 && (
+                    <div className="flex items-center space-x-2 bg-red-100 rounded-lg px-3 py-2">
+                      <AlertCircle className="h-4 w-4 text-red-600" />
+                      <span className="text-sm text-red-700">Limit erreicht</span>
+                    </div>
+                  )}
+                </div>
+              )}
+              
               <button
                 onClick={onClose}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
