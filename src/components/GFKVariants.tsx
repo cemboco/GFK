@@ -41,7 +41,9 @@ const GFKVariants: React.FC<GFKVariantsProps> = ({
                   ) : null}
                 </span>
               ) : (
-                output?.variant1
+                <span dangerouslySetInnerHTML={{ 
+                  __html: output?.variant1 || '' 
+                }} />
               )}
             </p>
           </div>
@@ -65,7 +67,9 @@ const GFKVariants: React.FC<GFKVariantsProps> = ({
                   ) : null}
                 </span>
               ) : (
-                output?.variant2
+                <span dangerouslySetInnerHTML={{ 
+                  __html: output?.variant2 || '' 
+                }} />
               )}
             </p>
           </div>
