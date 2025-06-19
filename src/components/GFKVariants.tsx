@@ -12,7 +12,7 @@ const GFKVariants: React.FC<GFKVariantsProps> = ({
   output,
   isTyping
 }) => {
-  if (!liveOutput?.variant1 && !output?.variant1) return null;
+  if (!liveOutput && !output) return null;
 
   return (
     <motion.div
@@ -31,7 +31,7 @@ const GFKVariants: React.FC<GFKVariantsProps> = ({
             <span className="text-purple-600 font-bold text-lg">1</span>
           </div>
           <div className="flex-1">
-            <h5 className="font-semibold text-purple-700 mb-2">Variante 1:</h5>
+            <h5 className="font-semibold text-purple-700 mb-2">Variante 1 (Direkt):</h5>
             <p className="text-gray-800 text-lg leading-relaxed">
               {isTyping && liveOutput ? (
                 <span className="inline-block">
@@ -49,30 +49,28 @@ const GFKVariants: React.FC<GFKVariantsProps> = ({
       </div>
       
       {/* Variant 2 */}
-      {(liveOutput?.variant2 || output?.variant2) && (
-        <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-6">
-          <div className="flex items-start space-x-4">
-            <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
-              <span className="text-indigo-600 font-bold text-lg">2</span>
-            </div>
-            <div className="flex-1">
-              <h5 className="font-semibold text-indigo-700 mb-2">Variante 2:</h5>
-              <p className="text-gray-800 text-lg leading-relaxed">
-                {isTyping && liveOutput ? (
-                  <span className="inline-block">
-                    {liveOutput.variant2}
-                    {liveOutput.variant1 && !liveOutput.variant2 ? (
-                      <span className="animate-pulse text-purple-600">|</span>
-                    ) : null}
-                  </span>
-                ) : (
-                  output?.variant2
-                )}
-              </p>
-            </div>
+      <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-6">
+        <div className="flex items-start space-x-4">
+          <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
+            <span className="text-indigo-600 font-bold text-lg">2</span>
+          </div>
+          <div className="flex-1">
+            <h5 className="font-semibold text-indigo-700 mb-2">Variante 2 (Einfühlsam):</h5>
+            <p className="text-gray-800 text-lg leading-relaxed">
+              {isTyping && liveOutput ? (
+                <span className="inline-block">
+                  {liveOutput.variant2}
+                  {liveOutput.variant1 && !liveOutput.variant2 ? (
+                    <span className="animate-pulse text-purple-600">|</span>
+                  ) : null}
+                </span>
+              ) : (
+                output?.variant2
+              )}
+            </p>
           </div>
         </div>
-      )}
+      </div>
     </motion.div>
   );
 };
