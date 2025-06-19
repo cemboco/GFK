@@ -32,6 +32,9 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
       <p className="text-lg text-gray-600">
         Gib deinen Text ein und erlebe die Transformation in Echtzeit
       </p>
+      <p className="text-sm text-gray-500 mt-2">
+        Je genauer der Text, desto besser.
+      </p>
     </div>
 
     <form onSubmit={handleSubmit} className="space-y-6">
