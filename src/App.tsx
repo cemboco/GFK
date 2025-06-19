@@ -15,6 +15,7 @@ import { useUserTracking } from './hooks/useUserTracking';
 import Header from './components/Header';
 import UsageIndicator from './components/UsageIndicator';
 import GFKTransformForm from './components/GFKTransformForm';
+import { getContextPrompt, getContextStyle } from './utils/contextHelpers';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -116,11 +117,12 @@ function App() {
           input: input.trim(),
           context: {
             userLevel: 'beginner',
-            preferredStyle: 'empathetic',
+            preferredStyle: getContextStyle(context),
             includeExamples: true,
             focusOn: 'clarity',
             relationship: context,
-            situation: 'general'
+            situation: 'general',
+            contextExamples: getContextPrompt(context)
           }
         }
       });
