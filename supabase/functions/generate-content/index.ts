@@ -82,7 +82,7 @@ serve(async (req) => {
     - Deutsche Rechtschreibung und Grammatik`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "ft:gpt-3.5-turbo-0125:personal:gfk2:BjtkeU8m",
       temperature: 0.8,
       max_tokens: 400,
       messages: [
