@@ -37,25 +37,41 @@ export default function AnonFeedbackModal({ isOpen, onClose, onSubmit }: AnonFee
         >
           ×
         </button>
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Feedback geben</h2>
-        <p className="mb-4 text-gray-700">Du hast dein kostenloses Kontingent genutzt. Bitte gib uns ein kurzes Feedback, um weitere 5 Nutzungen zu erhalten.</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Ihr Feedback ist wertvoll</h2>
+        <p className="mb-4 text-gray-700">Helfen Sie uns, unseren Service zu verbessern und erhalten Sie 5 zusätzliche kostenlose Umformulierungen.</p>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <textarea
-            value={feedback}
-            onChange={e => setFeedback(e.target.value)}
-            rows={4}
-            className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition"
-            placeholder="Dein Feedback..."
-            required
-          />
+          <div>
+            <label className="block text-gray-800 font-medium mb-1">Was können wir verbessern?</label>
+            <textarea
+              value={feedback}
+              onChange={e => setFeedback(e.target.value)}
+              rows={4}
+              className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition"
+              placeholder="Teilen Sie uns Ihre Gedanken mit..."
+              required
+            />
+          </div>
           {error && <div className="text-red-600 text-sm">{error}</div>}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3 px-4 rounded-xl text-white bg-purple-600 hover:bg-purple-700 font-medium transition"
-          >
-            {isSubmitting ? 'Wird gesendet...' : 'Feedback absenden'}
-          </button>
+          <div className="flex gap-2 mt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 py-3 px-4 rounded-xl border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 font-medium transition"
+            >
+              Später
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 py-3 px-4 rounded-xl text-white bg-green-200 hover:bg-green-300 font-medium transition disabled:opacity-60"
+            >
+              {isSubmitting ? 'Wird gesendet...' : 'Feedback senden'}
+            </button>
+          </div>
+          <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded text-sm text-orange-800 flex items-center gap-2">
+            <span role="img" aria-label="Belohnung">🎁</span>
+            <span><b>Belohnung für Ihr Feedback</b>: Nach dem Absenden erhalten Sie 5 zusätzliche kostenlose Umformulierungen als Dankeschön.</span>
+          </div>
         </form>
       </div>
     </div>
