@@ -84,7 +84,7 @@ serve(async (req) => {
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       temperature: 0.8,
-      max_tokens: 500,
+      max_tokens: 400,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: prompts[type] + (context ? `\n\nZusätzlicher Kontext: ${context}` : '') }
