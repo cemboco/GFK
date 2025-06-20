@@ -5,6 +5,11 @@ import GFKResults from './GFKResults';
 import GFKVariants from './GFKVariants';
 import FeedbackSection from './FeedbackSection';
 
+interface UsageInfo {
+  remaining: number;
+  max: number;
+}
+
 interface GFKTransformFormProps {
   input: string;
   setInput: (value: string) => void;
@@ -21,6 +26,7 @@ interface GFKTransformFormProps {
   handleFeedback: (isHelpful: boolean) => void;
   context?: string;
   setContext?: (context: string) => void;
+  usageInfo?: UsageInfo | null;
 }
 
 const GFKTransformForm: React.FC<GFKTransformFormProps> = (props) => {
@@ -38,6 +44,7 @@ const GFKTransformForm: React.FC<GFKTransformFormProps> = (props) => {
         context={props.context}
         setContext={props.setContext}
         user={props.user}
+        usageInfo={props.usageInfo}
       />
 
       {/* Results */}

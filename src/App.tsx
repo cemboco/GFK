@@ -13,7 +13,6 @@ import Profile from './components/Profile';
 import ChatDialog from './components/ChatDialog';
 import { useUserTracking } from './hooks/useUserTracking';
 import Header from './components/Header';
-import UsageIndicator from './components/UsageIndicator';
 import GFKTransformForm from './components/GFKTransformForm';
 import { getContextPrompt, getContextStyle } from './utils/contextHelpers';
 
@@ -370,9 +369,6 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
-      {/* UsageIndicator-Komponente */}
-      <UsageIndicator session={session} usageInfo={usageInfo} />
-
       {/* Neuer Header */}
       <Header
         user={user}
@@ -534,6 +530,7 @@ function AppContent() {
                     handleFeedback={handleFeedback}
                     context={context}
                     setContext={setContext}
+                    usageInfo={usageInfo}
                   />
 
                   {/* Features Section */}

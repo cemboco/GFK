@@ -3,6 +3,11 @@ import { motion } from 'framer-motion';
 import { Sparkles, ChevronDown, Crown, AlertCircle } from 'lucide-react';
 import { useChatUsage } from '../hooks/useChatUsage';
 
+interface UsageInfo {
+  remaining: number;
+  max: number;
+}
+
 interface GFKInputFormProps {
   input: string;
   setInput: (value: string) => void;
@@ -13,6 +18,7 @@ interface GFKInputFormProps {
   context?: string;
   setContext?: (context: string) => void;
   user: any;
+  usageInfo?: UsageInfo | null;
 }
 
 const GFKInputForm: React.FC<GFKInputFormProps> = ({
@@ -24,7 +30,8 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
   error,
   context = 'general',
   setContext,
-  user
+  user,
+  usageInfo
 }) => {
   const { chatUsage, isLoading: chatUsageLoading } = useChatUsage(user);
   
@@ -91,23 +98,44 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
               Was möchtest du sagen?
             </label>
             
-            {/* Chat Usage Display */}
-            {user && chatUsage && !chatUsageLoading && (
-              <div className="flex items-center space-x-2">
-                <div className="flex items-center space-x-2 bg-white rounded-lg px-3 py-2 shadow-sm border border-gray-200">
-                  <Crown className="h-4 w-4 text-yellow-600" />
-                  <span className="text-sm text-gray-700 font-medium">
-                    {chatUsage.remainingMessages}/{chatUsage.maxMessages} Chat-Nachrichten
-                  </span>
-                </div>
-                {chatUsage.remainingMessages === 0 && (
-                  <div className="flex items-center space-x-2 bg-red-100 rounded-lg px-3 py-2">
-                    <AlertCircle className="h-4 w-4 text-red-600" />
-                    <span className="text-sm text-red-700 font-medium">Limit erreicht</span>
+            {/* Usage Display */}
+            <div className="flex items-center space-x-2">
+              {/* Chat Usage Display for authenticated users */}
+              {user && chatUsage && !chatUsageLoading && (
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 bg-white rounded-lg px-3 py-2 shadow-sm border border-gray-200">
+                    <Crown className="h-4 w-4 text-yellow-600" />
+                    <span className="text-sm text-gray-700 font-medium">
+                      {chatUsage.remainingMessages}/{chatUsage.maxMessages} Chat-Nachrichten
+                    </span>
                   </div>
-                )}
-              </div>
-            )}
+                  {chatUsage.remainingMessages === 0 && (
+                    <div className="flex items-center space-x-2 bg-red-100 rounded-lg px-3 py-2">
+                      <AlertCircle className="h-4 w-4 text-red-600" />
+                      <span className="text-sm text-red-700 font-medium">Limit erreicht</span>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* GFK Transformation Usage Display for non-authenticated users */}
+              {!user && usageInfo && (
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 bg-white rounded-lg px-3 py-2 shadow-sm border border-gray-200">
+                    <Crown className="h-4 w-4 text-yellow-600" />
+                    <span className="text-sm text-gray-700 font-medium">
+                      {usageInfo.remaining}/{usageInfo.max} Transformationen
+                    </span>
+                  </div>
+                  {usageInfo.remaining === 0 && (
+                    <div className="flex items-center space-x-2 bg-red-100 rounded-lg px-3 py-2">
+                      <AlertCircle className="h-4 w-4 text-red-600" />
+                      <span className="text-sm text-red-700 font-medium">Limit erreicht</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
           
           <textarea
@@ -123,7 +151,7 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
           {!user && (
             <div className="mt-3 flex items-center space-x-2 text-sm text-gray-600">
               <Crown className="h-4 w-4 text-yellow-600" />
-              <span>Melde dich an, um den GFK-Coach zu nutzen (3 Nachrichten/Monat)</span>
+              <span>Melde dich an für unbegrenzte Transformationen und den GFK-Coach (3 Nachrichten/Monat)</span>
             </div>
           )}
         </div>
