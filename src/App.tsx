@@ -664,22 +664,7 @@ function AppContent() {
                       )}
                     </div>
                   </motion.section>
-
-                  {/* Social Proof */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1.2 }}
-                    className="flex justify-center"
-                  >
-                    <div className="bg-white/90 backdrop-blur-sm shadow-lg rounded-2xl px-8 py-4 flex items-center space-x-4">
-                      <div className="flex items-center space-x-2">
-                        <MessageCircle className="h-6 w-6 text-purple-600" />
-                      </div>
-                      <span className="text-gray-600"> 1.300 Menschen nutzen bereits GFKCoach</span>
-                    </div>
-                  </motion.div>
-
+                  
                   {/* FAQ Section */}
                   <motion.section
                     initial={{ opacity: 0, y: 30 }}
