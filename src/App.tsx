@@ -756,13 +756,21 @@ function AppContent() {
               </span>
             </div>
             <p className="text-gray-600">© {new Date().getFullYear()} GFKCoach - Empathische Kommunikation für alle</p>
-            <button
-              onClick={() => setShowPrivacyPolicy(true)}
-              className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center mx-auto space-x-2 hover:underline"
-            >
-              <Shield className="h-4 w-4" />
-              <span>Datenschutz</span>
-            </button>
+            <div className="flex justify-center items-center gap-6">
+              <button
+                onClick={() => setShowPrivacyPolicy(true)}
+                className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline"
+              >
+                <Shield className="h-4 w-4" />
+                <span>Datenschutz</span>
+              </button>
+              <button
+                onClick={() => setShowTermsModal(true)}
+                className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline"
+              >
+                <span>AGB</span>
+              </button>
+            </div>
           </div>
         </footer>
 
