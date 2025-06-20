@@ -217,14 +217,12 @@ function AppContent() {
       // Track usage
       await incrementUsage();
 
-      // Save to database if user is authenticated
-      if (user) {
-        await supabase.from('messages').insert([{
-          user_id: user.id,
-          input_text: input,
-          output_text: data
-        }]);
-      }
+      // Save to database (auch für anonyme Nutzer)
+      await supabase.from('messages').insert([{
+        user_id: user ? user.id : null,
+        input_text: input,
+        output_text: data
+      }]);
 
     } catch (err) {
       console.error('Error:', err);

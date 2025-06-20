@@ -107,6 +107,8 @@ export default function PrivacyPolicy({ isOpen, onClose }: PrivacyPolicyProps) {
                 entspricht oder um Änderungen unserer Leistungen in der Datenschutzerklärung umzusetzen, z.B. bei der Einführung 
                 neuer Services.
               </p>
+
+              <p>Wenn Sie den GFKCoach nutzen, werden Ihre eingegebenen Texte und die KI-Umformulierungen sowohl bei eingeloggten als auch bei anonymen Nutzern temporär in unserer Datenbank gespeichert. Dies dient ausschließlich der Verbesserung des Dienstes und der statistischen Auswertung. Es erfolgt keine personenbezogene Auswertung bei anonymen Nutzern.</p>
             </div>
           </motion.div>
         </div>
