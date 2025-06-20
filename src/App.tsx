@@ -676,7 +676,6 @@ function AppContent() {
                       <div className="flex items-center space-x-2">
                         <MessageCircle className="h-6 w-6 text-purple-600" />
                       </div>
-                      <span className="text-gray-600"> Viele Menschen nutzen bereits GFKCoach</span>
                     </div>
                   </motion.div>
 
