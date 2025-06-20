@@ -16,6 +16,7 @@ import Header from './components/Header';
 import GFKTransformForm from './components/GFKTransformForm';
 import { getContextPrompt, getContextStyle } from './utils/contextHelpers';
 import TermsModal from './components/TermsModal';
+import AnonFeedbackModal from './components/AnonFeedbackModal';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -108,6 +109,14 @@ function AppContent() {
 
     if (!canUseService()) {
       const remaining = getRemainingUsage();
+      if (remaining === 0 && !user && !anonFeedbackGiven) {
+        setShowAnonFeedbackModal(true);
+        return;
+      }
+      if (remaining === 0 && !user && anonFeedbackGiven) {
+        setError('Du hast das maximale kostenlose Kontingent erreicht. Bitte registriere dich für weitere Nutzung.');
+        return;
+      }
       if (remaining === 0) {
         setError('Sie haben das Limit für Eingaben erreicht. Bitte registrieren Sie sich für unbegrenzte Nutzung.');
       } else {
@@ -367,6 +376,10 @@ function AppContent() {
   const usageInfo = getUsageInfo();
 
   const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showAnonFeedbackModal, setShowAnonFeedbackModal] = useState(false);
+  const [anonFeedbackGiven, setAnonFeedbackGiven] = useState(() => {
+    return localStorage.getItem('anonFeedbackGiven') === 'true';
+  });
 
   return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
@@ -786,6 +799,20 @@ function AppContent() {
         />
 
         <TermsModal isOpen={showTermsModal} onClose={() => setShowTermsModal(false)} />
+
+        <AnonFeedbackModal
+          isOpen={showAnonFeedbackModal}
+          onClose={() => setShowAnonFeedbackModal(false)}
+          onSubmit={async (feedback) => {
+            // Feedback in Supabase speichern
+            await supabase.from('anon_feedback').insert([{ feedback }]);
+            // Limit zurücksetzen (einmalig)
+            localStorage.setItem('anonFeedbackGiven', 'true');
+            setAnonFeedbackGiven(true);
+            // Setze Usage auf 5 (z.B. in localStorage, je nach Implementierung von useUserTracking)
+            localStorage.setItem('anonUsage', '5');
+          }}
+        />
       </div>
   );
 }
