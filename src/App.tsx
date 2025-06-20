@@ -680,6 +680,63 @@ function AppContent() {
                       <span className="text-gray-600">Menschen nutzen bereits GFKCoach</span>
                     </div>
                   </motion.div>
+
+                  {/* FAQ Section */}
+                  <motion.section
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.3 }}
+                    className="bg-white rounded-3xl shadow-xl p-8 lg:p-12"
+                  >
+                    <div className="text-center mb-12">
+                      <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                        Häufig gestellte Fragen
+                      </h2>
+                      <p className="text-lg text-gray-600">
+                        Finde Antworten auf die wichtigsten Fragen zu GFKCoach
+                      </p>
+                    </div>
+
+                    <div className="space-y-6 max-w-4xl mx-auto">
+                      {[
+                        {
+                          question: "Was ist Gewaltfreie Kommunikation (GFK) und warum ist sie wichtig?",
+                          answer: "Gewaltfreie Kommunikation nach Marshall B. Rosenberg ist ein Ansatz, der Menschen dabei hilft, selbst in schwierigen Situationen einfühlsam und authentisch zu kommunizieren. Sie basiert auf vier Schritten: Beobachtung, Gefühl, Bedürfnis und Bitte. GFK reduziert Konflikte, verbessert Beziehungen und fördert gegenseitiges Verständnis."
+                        },
+                        {
+                          question: "Wie funktioniert die KI-Transformation bei GFKCoach?",
+                          answer: "Unsere KI analysiert deinen Text und erkennt automatisch die vier GFK-Komponenten. Sie formuliert dann eine empathische Version, die deine Beobachtungen, Gefühle, Bedürfnisse und Bitten klar ausdrückt. Du kannst verschiedene Kontexte wählen (Familie, Arbeit, Partnerschaft), um maßgeschneiderte Formulierungen zu erhalten."
+                        },
+                        {
+                          question: "Ist GFKCoach kostenlos und gibt es Nutzungslimits?",
+                          answer: "GFKCoach bietet 5 kostenlose Transformationen für nicht-registrierte Nutzer. Nach der kostenlosen Registrierung erhältst du unbegrenzte Transformationen und zusätzlich 3 Chat-Nachrichten pro Monat für persönliche GFK-Beratung. Premium-Pläne mit erweiterten Features sind in Planung."
+                        },
+                        {
+                          question: "Kann ich meine transformierten Texte speichern und später wiederfinden?",
+                          answer: "Ja! Nach der Registrierung werden alle deine Transformationen automatisch in deinem Profil gespeichert. Du kannst sie jederzeit in deinem persönlichen Bereich einsehen, bearbeiten oder als Referenz für zukünftige Gespräche verwenden."
+                        },
+                        {
+                          question: "Wie kann ich GFK in meinem Alltag am besten üben?",
+                          answer: "Beginne mit einfachen Situationen und übe regelmäßig. Nutze GFKCoach für verschiedene Kontexte und beobachte die Reaktionen. Der GFK-Coach (Chat-Funktion) kann dir bei spezifischen Fragen helfen. Wichtig ist, dass du authentisch bleibst - GFK ist ein Prozess, der Zeit und Übung braucht."
+                        }
+                      ].map((faq, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 1.4 + index * 0.1 }}
+                          className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition-shadow"
+                        >
+                          <h3 className="text-xl font-bold text-purple-600 mb-3">
+                            {faq.question}
+                          </h3>
+                          <p className="text-gray-700 leading-relaxed">
+                            {faq.answer}
+                          </p>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.section>
                 </motion.div>
               )}
             </AnimatePresence>
