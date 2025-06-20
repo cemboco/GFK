@@ -234,11 +234,12 @@ function AppContent() {
           output_text: data
         }]);
 
-      if (!firstTransformDone.current && !showFirstTransformNotification) {
+      if (!firstTransformDone.current && !showFirstTransformSnackbar) {
         setTimeout(() => {
-          setShowFirstTransformNotification(true);
+          setShowFirstTransformSnackbar(true);
           localStorage.setItem('firstTransformNotified', 'true');
-        }, 500); // kleine Verzögerung für bessere UX
+          setTimeout(() => setShowFirstTransformSnackbar(false), 8000); // 8 Sekunden sichtbar
+        }, 500);
         firstTransformDone.current = true;
       }
 
@@ -389,9 +390,7 @@ function AppContent() {
     return localStorage.getItem('anonFeedbackGiven') === 'true';
   });
 
-  const [showFirstTransformNotification, setShowFirstTransformNotification] = useState(() => {
-    return localStorage.getItem('firstTransformNotified') === 'true';
-  });
+  const [showFirstTransformSnackbar, setShowFirstTransformSnackbar] = useState(false);
   const firstTransformDone = useRef(false);
 
   return (
@@ -827,26 +826,11 @@ function AppContent() {
           }}
         />
 
-        {showFirstTransformNotification && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-            <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 relative text-center">
-              <button
-                onClick={() => setShowFirstTransformNotification(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-purple-600 text-2xl font-bold"
-                aria-label="Schließen"
-              >
-                ×
-              </button>
-              <div className="text-4xl mb-2">🎉</div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Danke fürs Beta-Testen!</h2>
-              <p className="mb-2 text-gray-700">Hilf uns zu verbessern:</p>
-              <ul className="mb-2 text-gray-700 list-disc list-inside text-left">
-                <li>Was liebst du?</li>
-                <li>Was fehlt?</li>
-              </ul>
-              <p className="mb-2 text-gray-700">Sag's uns: <a href="mailto:info@gfkcoach.com" className="text-purple-600 underline">info@gfkcoach.com</a></p>
-              <div className="text-2xl mt-2">Belohnung warten! ✨</div>
-            </div>
+        {showFirstTransformSnackbar && (
+          <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-white border border-purple-200 shadow-xl rounded-xl px-6 py-4 flex items-center space-x-3 animate-fade-in">
+            <span className="text-purple-700 text-lg font-medium">Gerne Feedback geben:</span>
+            <a href="mailto:info@gfkcoach.com" className="text-purple-600 underline font-medium">info@gfkcoach.com</a>
+            <button onClick={() => setShowFirstTransformSnackbar(false)} className="ml-2 text-gray-400 hover:text-purple-600 text-2xl font-bold" aria-label="Schließen">×</button>
           </div>
         )}
       </div>
