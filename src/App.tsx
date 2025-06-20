@@ -675,10 +675,7 @@ function AppContent() {
                     <div className="bg-white/90 backdrop-blur-sm shadow-lg rounded-2xl px-8 py-4 flex items-center space-x-4">
                       <div className="flex items-center space-x-2">
                         <MessageCircle className="h-6 w-6 text-purple-600" />
-                      </div>
-                    </div>
-                  </motion.div>
-
+                 
                   {/* FAQ Section */}
                   <motion.section
                     initial={{ opacity: 0, y: 30 }}
