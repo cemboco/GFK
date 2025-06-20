@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon, Bot, ArrowRight, CheckCircle, Star, Users, Zap, Target, User } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import CTAForm from './components/CTAForm';
 import FeedbackDialog from './components/FeedbackDialog';
 import PositiveFeedbackDialog from './components/PositiveFeedbackDialog';
@@ -61,6 +61,17 @@ function App() {
   } | null>(null);
 
   const { session, canUseService, incrementUsage, getRemainingUsage, getUsageInfo } = useUserTracking();
+
+  const location = useLocation();
+
+  // Handle navigation state from Header component
+  useEffect(() => {
+    if (location.state?.activeTab) {
+      setActiveTab(location.state.activeTab);
+      // Clear the state to prevent it from persisting
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
