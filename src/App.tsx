@@ -458,7 +458,7 @@ function AppContent() {
                       >
                         {[
                           { icon: Users, value: '1.200+', label: 'Aktive Nutzer' },
-                          { icon: MessageCircle, value: '15.000+', label: 'Transformationen' },
+                          { icon: MessageCircle, value: '4.000+', label: 'Transformationen' },
                         ].map((stat, index) => (
                           <div key={index} className="flex items-center space-x-3">
                             <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
