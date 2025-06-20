@@ -15,6 +15,7 @@ import { useUserTracking } from './hooks/useUserTracking';
 import Header from './components/Header';
 import GFKTransformForm from './components/GFKTransformForm';
 import { getContextPrompt, getContextStyle } from './utils/contextHelpers';
+import TermsModal from './components/TermsModal';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -364,6 +365,8 @@ function AppContent() {
   };
 
   const usageInfo = getUsageInfo();
+
+  const [showTermsModal, setShowTermsModal] = useState(false);
 
   return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
@@ -797,6 +800,8 @@ function AppContent() {
           gfkOutput={output || { observation: '', feeling: '', need: '', request: '' }}
           user={user}
         />
+
+        <TermsModal isOpen={showTermsModal} onClose={() => setShowTermsModal(false)} />
       </div>
   );
 }
