@@ -37,7 +37,7 @@ const GFKTransform = async (input: string, openai: OpenAI, context?: any, retryC
     }
 
     const completion = await openai.chat.completions.create({
-  model: "o4-mini",
+  model: "ft:gpt-3.5-turbo-0125:personal:gfk2:BjtkeU8m",
   temperature: 0.3,
   response_format: { type: "json_object" },
   messages: [
