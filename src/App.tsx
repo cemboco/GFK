@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon, Bot, ArrowRight, CheckCircle, Star, Users, Zap, Target, User } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -228,11 +228,19 @@ function AppContent() {
       await incrementUsage();
 
       // Save to database (auch für anonyme Nutzer)
-      await supabase.from('messages').insert([{
+        await supabase.from('messages').insert([{
         user_id: user ? user.id : null,
-        input_text: input,
-        output_text: data
-      }]);
+          input_text: input,
+          output_text: data
+        }]);
+
+      if (!firstTransformDone.current && !showFirstTransformNotification) {
+        setTimeout(() => {
+          setShowFirstTransformNotification(true);
+          localStorage.setItem('firstTransformNotified', 'true');
+        }, 500); // kleine Verzögerung für bessere UX
+        firstTransformDone.current = true;
+      }
 
     } catch (err) {
       console.error('Error:', err);
@@ -380,6 +388,11 @@ function AppContent() {
   const [anonFeedbackGiven, setAnonFeedbackGiven] = useState(() => {
     return localStorage.getItem('anonFeedbackGiven') === 'true';
   });
+
+  const [showFirstTransformNotification, setShowFirstTransformNotification] = useState(() => {
+    return localStorage.getItem('firstTransformNotified') === 'true';
+  });
+  const firstTransformDone = useRef(false);
 
   return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
@@ -718,7 +731,7 @@ function AppContent() {
                           answer: "Beginne mit einfachen Situationen und übe regelmäßig. Nutze GFKCoach für verschiedene Kontexte und beobachte die Reaktionen. Der GFK-Coach (Chat-Funktion) kann dir bei spezifischen Fragen helfen. Wichtig ist, dass du authentisch bleibst - GFK ist ein Prozess, der Zeit und Übung braucht."
                         }
                       ].map((faq, index) => (
-                        <motion.div
+                    <motion.div
                           key={index}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
@@ -733,7 +746,7 @@ function AppContent() {
                           </p>
                         </motion.div>
                       ))}
-                    </div>
+                        </div>
                   </motion.section>
                   </motion.div>
                 )}
@@ -755,13 +768,13 @@ function AppContent() {
             </div>
             <p className="text-gray-600">© {new Date().getFullYear()} GFKCoach - Empathische Kommunikation für alle</p>
             <div className="flex justify-center items-center gap-6">
-              <button
-                onClick={() => setShowPrivacyPolicy(true)}
+            <button
+              onClick={() => setShowPrivacyPolicy(true)}
                 className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline"
-              >
-                <Shield className="h-4 w-4" />
-                <span>Datenschutz</span>
-              </button>
+            >
+              <Shield className="h-4 w-4" />
+              <span>Datenschutz</span>
+            </button>
               <button
                 onClick={() => setShowTermsModal(true)}
                 className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline"
@@ -813,6 +826,29 @@ function AppContent() {
             localStorage.setItem('anonUsage', '5');
           }}
         />
+
+        {showFirstTransformNotification && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+            <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 relative text-center">
+              <button
+                onClick={() => setShowFirstTransformNotification(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-purple-600 text-2xl font-bold"
+                aria-label="Schließen"
+              >
+                ×
+              </button>
+              <div className="text-4xl mb-2">🎉</div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Danke fürs Beta-Testen!</h2>
+              <p className="mb-2 text-gray-700">Hilf uns zu verbessern:</p>
+              <ul className="mb-2 text-gray-700 list-disc list-inside text-left">
+                <li>Was liebst du?</li>
+                <li>Was fehlt?</li>
+              </ul>
+              <p className="mb-2 text-gray-700">Sag's uns: <a href="mailto:info@gfkcoach.com" className="text-purple-600 underline">info@gfkcoach.com</a></p>
+              <div className="text-2xl mt-2">Belohnung warten! ✨</div>
+            </div>
+          </div>
+        )}
       </div>
   );
 }
