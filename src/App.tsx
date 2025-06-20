@@ -431,7 +431,7 @@ function AppContent() {
                       className="flex flex-wrap justify-center gap-8 text-center"
                     >
                       {[
-                        { icon: Users, value: '450+', label: 'Aktive Nutzer' },
+                        { icon: Users, value: '1300+', label: 'Aktive Nutzer' },
                         { icon: MessageCircle, value: '8000+', label: 'Transformationen' },
                       ].map((stat, index) => (
                         <div key={index} className="flex items-center space-x-3">
