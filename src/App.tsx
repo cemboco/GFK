@@ -675,7 +675,6 @@ function AppContent() {
                     <div className="bg-white/90 backdrop-blur-sm shadow-lg rounded-2xl px-8 py-4 flex items-center space-x-4">
                       <div className="flex items-center space-x-2">
                         <MessageCircle className="h-6 w-6 text-purple-600" />
-                        <span className="font-semibold text-purple-600 text-lg">1.100</span>
                       </div>
                       <span className="text-gray-600">Menschen nutzen bereits GFKCoach</span>
                     </div>
