@@ -31,7 +31,7 @@ serve(async (req) => {
       : '';
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "ft:gpt-3.5-turbo-0125:personal:gfk2:Bjtkeygt:ckpt-step-10",
       temperature: 0.7,
       messages: [
         {
