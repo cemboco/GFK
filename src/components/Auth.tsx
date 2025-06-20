@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import TermsModal from './TermsModal';
+import PrivacyPolicy from './PrivacyPolicy';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -14,6 +16,9 @@ export default function Auth() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [view, setView] = useState<'sign_in' | 'sign_up'>('sign_in');
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
@@ -31,6 +36,11 @@ export default function Auth() {
     event.preventDefault();
     setError('');
     setIsLoading(true);
+    if (!acceptedTerms) {
+      setError('Bitte akzeptieren Sie die AGB und die Datenschutzerklärung.');
+      setIsLoading(false);
+      return;
+    }
     
     const formData = new FormData(event.currentTarget);
     const email = formData.get('email') as string;
@@ -160,6 +170,22 @@ export default function Auth() {
                   minLength={6}
                 />
               </div>
+              <div>
+                <label className="flex items-center space-x-2 text-sm text-gray-700">
+                  <input
+                    type="checkbox"
+                    checked={acceptedTerms}
+                    onChange={e => setAcceptedTerms(e.target.checked)}
+                    required
+                  />
+                  <span>
+                    Ich akzeptiere die{' '}
+                    <button type="button" className="text-purple-600 underline" onClick={() => setShowTermsModal(true)}>AGB</button>
+                    {' '}und die{' '}
+                    <button type="button" className="text-purple-600 underline" onClick={() => setShowPrivacyModal(true)}>Datenschutzerklärung</button>
+                  </span>
+                </label>
+              </div>
               <button
                 type="submit"
                 disabled={isLoading}
@@ -229,6 +255,10 @@ export default function Auth() {
           </div>
         </div>
       </div>
+
+      {/* Modals für AGB und Datenschutz */}
+      <TermsModal isOpen={showTermsModal} onClose={() => setShowTermsModal(false)} />
+      <PrivacyPolicy isOpen={showPrivacyModal} onClose={() => setShowPrivacyModal(false)} />
     </div>
   );
 }
