@@ -9,8 +9,8 @@
   - messages
   - profiles
   - chat_usage
-  - user_payments
-  - user_credit_history
+  - anonymous_usage
+  - ip_usage
 */
 
 -- Add index for feedback.user_id foreign key
@@ -21,17 +21,9 @@ CREATE INDEX IF NOT EXISTS idx_feedback_user_id
 CREATE INDEX IF NOT EXISTS idx_messages_user_id 
     ON public.messages(user_id);
 
--- Add index for chat_usage.user_id foreign key
+-- Add index for chat_usage.user_id foreign key (if table exists)
 CREATE INDEX IF NOT EXISTS idx_chat_usage_user_id 
     ON public.chat_usage(user_id);
-
--- Add index for user_payments.user_id foreign key (if table exists)
-CREATE INDEX IF NOT EXISTS idx_user_payments_user_id 
-    ON public.user_payments(user_id);
-
--- Add index for user_credit_history.user_id foreign key (if table exists)
-CREATE INDEX IF NOT EXISTS idx_user_credit_history_user_id 
-    ON public.user_credit_history(user_id);
 
 -- Add composite indexes for better performance on common queries
 CREATE INDEX IF NOT EXISTS idx_messages_user_created 
