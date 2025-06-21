@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, ChevronDown, Crown, AlertCircle } from 'lucide-react';
+import { Sparkles, ChevronDown, Crown, AlertCircle, Lock } from 'lucide-react';
 import { useChatUsage } from '../hooks/useChatUsage';
 
 interface UsageInfo {
@@ -71,23 +71,34 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
             <label htmlFor="context" className="block text-lg font-semibold text-gray-800 mb-3">
               Kontext auswählen
             </label>
-            <div className="relative">
-              <select
-                id="context"
-                value={context}
-                onChange={(e) => setContext(e.target.value)}
-                className="w-full border-2 border-gray-200 rounded-2xl p-4 text-lg focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white shadow-sm appearance-none pr-12"
-              >
-                {contextOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label} - {option.description}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
-            </div>
+            {user ? (
+              <div className="relative">
+                <select
+                  id="context"
+                  value={context}
+                  onChange={(e) => setContext(e.target.value)}
+                  className="w-full border-2 border-gray-200 rounded-2xl p-4 text-lg focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white shadow-sm appearance-none pr-12"
+                >
+                  {contextOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label} - {option.description}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+              </div>
+            ) : (
+              <div className="relative">
+                <div className="w-full border-2 border-gray-200 rounded-2xl p-4 text-lg bg-gray-100 text-gray-500 shadow-sm flex items-center justify-between">
+                  <span>Allgemein - Für verschiedene Situationen</span>
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
+              </div>
+            )}
             <p className="text-sm text-gray-600 mt-2">
-              Wähle den passenden Kontext für bessere, angepasste Formulierungen.
+              {user 
+                ? "Wähle den passenden Kontext für bessere, angepasste Formulierungen."
+                : "Registriere dich, um weitere Kontexte freizuschalten."}
             </p>
           </div>
         )}
