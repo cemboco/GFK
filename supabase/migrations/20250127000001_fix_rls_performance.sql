@@ -47,6 +47,11 @@ CREATE POLICY "Users can insert their own feedback"
 -- Fix profiles table RLS policies (if they exist)
 DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
 DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can create their own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can create profile during signup" ON public.profiles;
+DROP POLICY IF EXISTS "Enable profile creation for authenticated users" ON public.profiles;
+DROP POLICY IF EXISTS "Enable profile creation for public during signup" ON public.profiles;
+DROP POLICY IF EXISTS "Anyone can view profiles" ON public.profiles;
 
 CREATE POLICY "Users can view own profile"
     ON public.profiles
@@ -60,6 +65,24 @@ CREATE POLICY "Users can update own profile"
     TO authenticated
     USING (id = (SELECT auth.uid()))
     WITH CHECK (id = (SELECT auth.uid()));
+
+CREATE POLICY "Users can create their own profile"
+    ON public.profiles
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (id = (SELECT auth.uid()));
+
+CREATE POLICY "Users can create profile during signup"
+    ON public.profiles
+    FOR INSERT
+    TO anon
+    WITH CHECK (true);
+
+CREATE POLICY "Anyone can view profiles"
+    ON public.profiles
+    FOR SELECT
+    TO public
+    USING (true);
 
 -- Fix chat_usage table RLS policies (if they exist)
 DROP POLICY IF EXISTS "Users can view own chat usage" ON public.chat_usage;
