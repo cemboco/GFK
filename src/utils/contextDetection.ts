@@ -13,9 +13,13 @@ export function hasSufficientContext(text: string): boolean {
   }
   
   // Prüfe auf spezifische Zeitangaben oder Situationen
-  const hasTimeContext = /\b(gestern|heute|morgen|letzte Woche|nächste Woche|vorhin|später|immer|nie|oft|selten)\b/i.test(trimmedText);
-  const hasSpecificAction = /\b(gesagt|gemacht|getan|passiert|geschehen|erlebt|gefühlt)\b/i.test(trimmedText);
-  const hasPersonContext = /\b(Partner|Freund|Kollege|Chef|Kind|Mutter|Vater|Familie)\b/i.test(trimmedText);
+  const hasTimeContext = /\b(gestern|heute|morgen|letzte Woche|nächste Woche|vorhin|später|immer|nie|oft|selten|regelmäßig|manchmal|ab und zu)\b/i.test(trimmedText);
+  
+  // Erweiterte Liste von spezifischen Aktionen
+  const hasSpecificAction = /\b(gesagt|gemacht|getan|passiert|geschehen|erlebt|gefühlt|leisten|haben|habe|möchte|will|brauche|brauch|versuche|versuch|arbeite|arbeit|mache|mach|tue|tu|bin|ist|sind|war|waren|werde|wird|werden)\b/i.test(trimmedText);
+  
+  // Erweiterte Liste von Personen-Kontext (inkl. Pronomen)
+  const hasPersonContext = /\b(Partner|Freund|Kollege|Chef|Kind|Mutter|Vater|Familie|mich|mir|ich|du|dich|dir|er|sie|es|wir|uns|ihr|euch|ihnen|ihm|ihr)\b/i.test(trimmedText);
   
   // Wenn mindestens 2 von 3 Kontext-Indikatoren vorhanden sind, ist der Kontext ausreichend
   const contextIndicators = [hasTimeContext, hasSpecificAction, hasPersonContext].filter(Boolean).length;
