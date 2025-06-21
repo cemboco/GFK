@@ -305,6 +305,9 @@ Verwende natürliche, empathische Sprache.`;
         firstTransformDone.current = true;
       }
 
+      // Set loading to false after all operations are complete
+      setIsLoading(false);
+
     } catch (err) {
       console.error('Error:', err);
       setError(
