@@ -52,6 +52,8 @@ DROP POLICY IF EXISTS "Users can create profile during signup" ON public.profile
 DROP POLICY IF EXISTS "Enable profile creation for authenticated users" ON public.profiles;
 DROP POLICY IF EXISTS "Enable profile creation for public during signup" ON public.profiles;
 DROP POLICY IF EXISTS "Anyone can view profiles" ON public.profiles;
+DROP POLICY IF EXISTS "Users can read their own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
 
 CREATE POLICY "Users can view own profile"
     ON public.profiles
@@ -88,6 +90,9 @@ CREATE POLICY "Anyone can view profiles"
 DROP POLICY IF EXISTS "Users can view own chat usage" ON public.chat_usage;
 DROP POLICY IF EXISTS "Users can insert own chat usage" ON public.chat_usage;
 DROP POLICY IF EXISTS "Users can update own chat usage" ON public.chat_usage;
+DROP POLICY IF EXISTS "Users can view their own chat usage" ON public.chat_usage;
+DROP POLICY IF EXISTS "Users can update their own chat usage" ON public.chat_usage;
+DROP POLICY IF EXISTS "Users can insert their own chat usage" ON public.chat_usage;
 
 CREATE POLICY "Users can view own chat usage"
     ON public.chat_usage
