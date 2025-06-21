@@ -17,6 +17,8 @@ import GFKTransformForm from './components/GFKTransformForm';
 import { getContextPrompt, getContextStyle } from './utils/contextHelpers';
 import TermsModal from './components/TermsModal';
 import AnonFeedbackModal from './components/AnonFeedbackModal';
+import ContextModal from './components/ContextModal';
+import { needsMoreContext } from './utils/contextDetection';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -49,7 +51,11 @@ function AppContent() {
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showChatDialog, setShowChatDialog] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
+  
+  // Context Modal states
+  const [showContextModal, setShowContextModal] = useState(false);
+  const [pendingInput, setPendingInput] = useState('');
   
   // Live typing states
   const [isTyping, setIsTyping] = useState(false);
@@ -107,6 +113,17 @@ function AppContent() {
       return;
     }
 
+    // Prüfe, ob mehr Kontext benötigt wird
+    if (needsMoreContext(input.trim())) {
+      setPendingInput(input.trim());
+      setShowContextModal(true);
+      return;
+    }
+
+    await performTransformation(input.trim());
+  };
+
+  const performTransformation = async (textToTransform: string, additionalContext?: string) => {
     if (!canUseService()) {
       const remaining = getRemainingUsage();
       if (remaining === 0 && !user && !anonFeedbackGiven) {
@@ -133,9 +150,14 @@ function AppContent() {
     setFeedbackGiven(false);
 
     try {
+      // Kombiniere den ursprünglichen Text mit dem zusätzlichen Kontext
+      const fullInput = additionalContext 
+        ? `${textToTransform}\n\n${additionalContext}`
+        : textToTransform;
+
       const { data, error: functionError } = await supabase.functions.invoke('gfk-transform', {
         body: { 
-          input: input.trim(),
+          input: fullInput,
           context: {
             userLevel: 'beginner',
             preferredStyle: getContextStyle(context),
@@ -230,7 +252,7 @@ function AppContent() {
       // Save to database (auch für anonyme Nutzer)
         await supabase.from('messages').insert([{
         user_id: user ? user.id : null,
-          input_text: input,
+          input_text: textToTransform,
           output_text: data
         }]);
 
@@ -248,11 +270,16 @@ function AppContent() {
       setError(
         err instanceof Error 
           ? err.message 
-          : 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.'
+          : 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.'
       );
-      setIsTyping(false);
-    } finally {
       setIsLoading(false);
+      setIsTyping(false);
+    }
+  };
+
+  const handleContextSubmit = (context: string) => {
+    if (pendingInput) {
+      performTransformation(pendingInput, context);
     }
   };
 
@@ -833,6 +860,14 @@ function AppContent() {
             <button onClick={() => setShowFirstTransformSnackbar(false)} className="ml-2 text-gray-400 hover:text-purple-600 text-2xl font-bold" aria-label="Schließen">×</button>
           </div>
         )}
+
+        {/* Context Modal */}
+        <ContextModal
+          isOpen={showContextModal}
+          onClose={() => setShowContextModal(false)}
+          onSubmit={handleContextSubmit}
+          originalText={pendingInput}
+        />
       </div>
   );
 }
