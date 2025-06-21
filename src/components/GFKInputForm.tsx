@@ -69,7 +69,7 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
         {setContext && (
           <div>
             <label htmlFor="context" className="block text-lg font-semibold text-gray-800 mb-3">
-              Kontext auswählen
+              Informationen auswählen
             </label>
             {user ? (
               <div className="relative">
@@ -97,8 +97,8 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
             )}
             <p className="text-sm text-gray-600 mt-2">
               {user 
-                ? "Wähle den passenden Kontext für bessere, angepasste Formulierungen."
-                : "Registriere dich, um weitere Kontexte freizuschalten."}
+                ? "Wähle die passenden Informationen für bessere, angepasste Formulierungen."
+                : "Registriere dich, um weitere Informations-Kategorien freizuschalten."}
             </p>
           </div>
         )}
