@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon, Bot, ArrowRight, CheckCircle, Star, Users, Zap, Target, User } from 'lucide-react';
+import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon, Bot, ArrowRight, CheckCircle, Star, Users, Zap, Target, User, Coffee } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
@@ -554,6 +554,27 @@ Verwende natürliche, empathische Sprache.`;
                             </div>
                           </div>
                         ))}
+                      </motion.div>
+
+                      {/* Spenden-Link */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 }}
+                        className="pt-4"
+                      >
+                        <a
+                          href="https://coff.ee/cemil"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-full font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+                        >
+                          <Coffee className="h-5 w-5" />
+                          <span>Unterstütze GFKCoach ☕</span>
+                        </a>
+                        <p className="text-sm text-gray-500 mt-2">
+                          Kleine Spende für die Weiterentwicklung
+                        </p>
                       </motion.div>
                     </section>
 
