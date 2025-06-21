@@ -915,6 +915,9 @@ Verwende natürliche, empathische Sprache.`;
               <p className="text-sm text-gray-500">
                 © {new Date().getFullYear()} GFKCoach - Empathische Kommunikation für alle
               </p>
+              <p className="text-xs text-gray-400 mt-1">
+                Beta Version 1.5.1 - Performance-Optimierungen & verbesserte Fehlerbehandlung
+              </p>
               <div className="flex justify-center items-center gap-6 mt-2">
                 <button
                   onClick={() => setShowPrivacyPolicy(true)}
