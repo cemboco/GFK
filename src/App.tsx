@@ -806,7 +806,12 @@ function AppContent() {
                 className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline"
               >
                 <span>AGB</span>
-              </button>
+            </button>
+            </div>
+            <div className="pt-4 border-t border-gray-200">
+              <p className="text-sm text-gray-500">
+                Beta Version 1.2.0 - Kontext-Modal & verbesserte GFK-Formulierungen
+              </p>
             </div>
           </div>
         </footer>
