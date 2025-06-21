@@ -902,7 +902,7 @@ Verwende natürliche, empathische Sprache.`;
             </div>
             <div className="pt-4 border-t border-gray-200">
               <p className="text-sm text-gray-500">
-                Beta Version 1.4.0 - Fragen-basiertes Informations-Modal & verbesserte Kontext-Erkennung
+                Beta Version 1.5.0 - Verbesserte Kontext-Erkennung & optimierte Benutzerführung
               </p>
             </div>
           </div>
