@@ -857,7 +857,7 @@ Verwende natürliche, empathische Sprache.`;
             </div>
             <div className="pt-4 border-t border-gray-200">
               <p className="text-sm text-gray-500">
-                Beta Version 1.2.0 - Kontext-Modal & verbesserte GFK-Formulierungen
+                Beta Version 1.3.0 - Perspektiven-Auswahl & verbesserte GFK-Formulierungen
               </p>
             </div>
           </div>
