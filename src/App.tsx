@@ -62,6 +62,9 @@ function AppContent() {
   const [showPerspectiveSelector, setShowPerspectiveSelector] = useState(false);
   const [selectedPerspective, setSelectedPerspective] = useState<'sender' | 'receiver' | null>(null);
   
+  // Collected context from modal
+  const [collectedContext, setCollectedContext] = useState<string>('');
+  
   // Live typing states
   const [isTyping, setIsTyping] = useState(false);
   const [liveOutput, setLiveOutput] = useState<{
@@ -315,6 +318,8 @@ Verwende natürliche, empathische Sprache.`;
   };
 
   const handleContextSubmit = (context: string) => {
+    setCollectedContext(context);
+    setShowContextModal(false);
     if (pendingInput) {
       // Nach Kontext-Modal zur Perspektiven-Auswahl
       setShowPerspectiveSelector(true);
@@ -326,7 +331,9 @@ Verwende natürliche, empathische Sprache.`;
     setShowPerspectiveSelector(false);
     
     if (pendingInput) {
-      performTransformation(pendingInput, undefined, perspective);
+      performTransformation(pendingInput, collectedContext, perspective);
+      // Reset collected context after use
+      setCollectedContext('');
     }
   };
 
