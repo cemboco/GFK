@@ -49,8 +49,15 @@ const GFKTransform = async (input: string, openai: OpenAI, context?: any, retryC
 DEINE WICHTIGSTE REGEL:
 Beziehe die Eingabe des Nutzers NIEMALS auf dich selbst. Du bist ein unpersönlicher Text-Transformator. Die Aussage des Nutzers ist immer eine Situation, die er für eine dritte Person umformulieren möchte. Deine Antwort muss immer aus der Perspektive des Nutzers formuliert sein.
 
+KRITISCHE EINSCHRÄNKUNGEN:
+- Verwende NUR die Informationen, die im ursprünglichen Text enthalten sind
+- Füge KEINE zusätzlichen Details, Annahmen oder Interpretationen hinzu
+- Erfinde KEINE neuen Fakten, Zeitangaben, Orte oder Personen
+- Bleibe so nah wie möglich am ursprünglichen Kontext und Inhalt
+- Wenn der Text vage ist, formuliere die GFK-Komponenten entsprechend vage
+
 Analysiere die Absicht hinter der Aussage und übersetze sie in die 4 GFK-Komponenten:
-1.  **Beobachtung:** Was ist konkret passiert? (Ohne Bewertung)
+1.  **Beobachtung:** Was ist konkret passiert? (Ohne Bewertung, nur aus dem Text)
 2.  **Gefühl:** Welches Gefühl löst das beim Nutzer aus? (Ich-Botschaft)
 3.  **Bedürfnis:** Welches unerfüllte Bedürfnis steckt dahinter? (Universelle Werte)
 4.  **Bitte:** Was wünscht sich der Nutzer konkret? (Positiv, machbar, als Frage)
@@ -105,7 +112,11 @@ Antworte IMMER im folgenden JSON-Format:
           { pattern: /(\b\w+\b)\s+\1\b/, msg: 'Doppelte Wörter' }, // Wiederholte Wörter
           { pattern: /\.\./, msg: 'Unvollständige Sätze' },
           { pattern: /(?:so etwas|dass das)/i, msg: 'Füllwörter' },
-          { pattern: /(?:weil mir weil|dass weil)/i, msg: 'Grammatikfehler' }
+          { pattern: /(?:weil mir weil|dass weil)/i, msg: 'Grammatikfehler' },
+          // Neue Validierungen gegen Halluzination
+          { pattern: /(?:gestern|heute|morgen|nächste Woche|letzte Woche)/i, msg: 'Zeitangaben ohne Kontext' },
+          { pattern: /(?:im Büro|zu Hause|in der Schule|auf der Arbeit)/i, msg: 'Ortsangaben ohne Kontext' },
+          { pattern: /(?:Projekt|Meeting|Termin|Aufgabe)/i, msg: 'Spezifische Begriffe ohne Kontext' }
         ];
         
         errorPatterns.forEach(({ pattern, msg }) => {

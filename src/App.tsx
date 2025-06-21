@@ -171,8 +171,14 @@ function AppContent() {
 
 DEINE WICHTIGSTE REGEL: Der Nutzer ist der SENDER der Aussage. Er hat etwas gesagt und möchte es in GFK umformulieren.
 
+KRITISCHE EINSCHRÄNKUNGEN:
+- Verwende NUR die Informationen, die im ursprünglichen Text enthalten sind
+- Füge KEINE zusätzlichen Details, Annahmen oder Interpretationen hinzu
+- Erfinde KEINE neuen Fakten, Zeitangaben, Orte oder Personen
+- Bleibe so nah wie möglich am ursprünglichen Kontext und Inhalt
+
 Analysiere die Absicht hinter der Aussage und übersetze sie in die 4 GFK-Komponenten:
-1. Beobachtung: Was ist konkret passiert? (Ohne Bewertung)
+1. Beobachtung: Was ist konkret passiert? (Ohne Bewertung, nur aus dem Text)
 2. Gefühl: Welches Gefühl hat der Sender dabei? (Ich-Botschaft)
 3. Bedürfnis: Welches unerfüllte Bedürfnis steckt dahinter? (Universelle Werte)
 4. Bitte: Was wünscht sich der Sender konkret? (Positiv, machbar, als Frage)
@@ -184,8 +190,14 @@ Verwende natürliche, empathische Sprache.`
 
 DEINE WICHTIGSTE REGEL: Der Nutzer ist der EMPFÄNGER der Aussage. Jemand hat etwas zu ihm gesagt und er möchte eine GFK-Antwort formulieren.
 
+KRITISCHE EINSCHRÄNKUNGEN:
+- Verwende NUR die Informationen, die im ursprünglichen Text enthalten sind
+- Füge KEINE zusätzlichen Details, Annahmen oder Interpretationen hinzu
+- Erfinde KEINE neuen Fakten, Zeitangaben, Orte oder Personen
+- Bleibe so nah wie möglich am ursprünglichen Kontext und Inhalt
+
 Analysiere die Absicht hinter der Aussage und übersetze sie in die 4 GFK-Komponenten:
-1. Beobachtung: Was ist konkret passiert? (Ohne Bewertung)
+1. Beobachtung: Was ist konkret passiert? (Ohne Bewertung, nur aus dem Text)
 2. Gefühl: Welches Gefühl löst das beim Empfänger aus? (Ich-Botschaft)
 3. Bedürfnis: Welches unerfüllte Bedürfnis steckt dahinter? (Universelle Werte)
 4. Bitte: Was wünscht sich der Empfänger konkret? (Positiv, machbar, als Frage)
