@@ -43,163 +43,43 @@ const GFKTransform = async (input: string, openai: OpenAI, context?: any, retryC
   messages: [
     {
       role: "system",
-<<<<<<< HEAD
-      content: "Du bist ein GFK-Spezialist nach Marshall Rosenberg. Transformiere Eingaben präzise in die 4 GFK-Komponenten UND erstelle zwei vollständige GFK-Formulierungen.\n\n" +
-        styleInstructions + "\n\n" +
-        "STRUKTUR:\n" +
-        "{\n" +
-        '  "observation": "Neutrale Beobachtung",\n' +
-        '  "feeling": "Gefühl (Ich-Botschaft)",\n' +
-        '  "need": "Bedürfnis (universell)",\n' +
-        '  "request": "Bitte (konkret)",\n' +
-        '  "variant1": "Vollständige GFK-Formulierung 1",\n' +
-        '  "variant2": "Vollständige GFK-Formulierung 2"\n' +
-        "}\n\n" +
-        "GRAMMATIKALISCHE REGELN:\n" +
-        "1. Beobachtung:\n" +
-        "   - Beginne mit Hauptsatz, Subjekt-Prädikat-Objekt\n" +
-        "   - Nutze präzise Zeitangaben (\"gestern um 15 Uhr\", nicht \"neulich\")\n" +
-        "   - Verben im Präteritum/Präsens: \"Ich sah, dass...\" / \"Ich bemerke, dass...\"\n" +
-        "   - Beispiel: \"Als ich heute um 10 Uhr ins Büro kam, lagen drei Aktenordner auf dem Boden\"\n\n" +
-        "2. Gefühl:\n" +
-        "   - Korrekte Konjugation: \"Ich bin frustriert\" (nicht \"Ich Frustration\")\n" +
-        "   - Maximal 2 Gefühle, verbunden mit \"und\"\n" +
-        "   - Echte Gefühle laut Rosenberg: \"verletzt\", \"besorgt\", \"hoffnungsvoll\"\n" +
-        "   - Beispiel: \"Ich fühle mich überfordert und enttäuscht\"\n\n" +
-        "3. Bedürfnis:\n" +
-        "   - Beginne mit \"weil ich... brauche\" oder \"weil mir... wichtig ist\"\n" +
-        "   - Universelle Werte: \"Verlässlichkeit\", \"Respekt\", \"Verbindung\"\n" +
-        "   - Beispiel: \"weil mir klare Absprachen wichtig sind\"\n\n" +
-        "4. Bitte:\n" +
-        "   - Frageform mit \"Könntest du...?\" oder \"Würdest du...?\"\n" +
-        "   - Konkrete Handlung + Zeitrahmen: \"die Dokumente bis morgen 12 Uhr sortieren?\"\n" +
-        "   - Beispiel: \"Könntest du die Ordner bis heute Abend ins Regal räumen?\"\n\n" +
-        "5. Vollständige Formulierungen (variant1 & variant2):\n" +
-        "   - Kombiniere alle 4 Komponenten zu flüssigen Sätzen\n" +
-        "   - Variante 1: Direkter, klarer Stil\n" +
-        "   - Variante 2: Sanfter, einfühlsamer Stil\n" +
-        "   - Beispiel: \"Als ich heute um 10 Uhr ins Büro kam, lagen drei Aktenordner auf dem Boden. Das frustriert mich, weil ich eine ordentliche Arbeitsumgebung brauche. Könntest du die Ordner bis heute Abend ins Regal räumen?\"\n\n" +
-        "QUALITÄTSKONTROLLE:\n" +
-        "- Keine Satzfragmente: Jede Komponente muss vollständiger Hauptsatz sein\n" +
-        "- Korrekte Kommasetzung bei Nebensätzen\n" +
-        "- Keine doppelten Wörter (\"das das\", \"weil weil\")\n" +
-        "- Keine Füllwörter (\"eigentlich\", \"vielleicht\")\n\n" +
-        "BEISPIELE FÜR PERFEKTE TRANSFORMATIONEN:\n\n" +
-        "1. Input: \"Du kommst immer zu spät!\"\n" +
-        "{\n" +
-        '  "observation": "Unser Meeting heute begann um 14:15 Uhr, 15 Minuten nach der vereinbarten Zeit",\n' +
-        '  "feeling": "Ich bin enttäuscht",\n' +
-        '  "need": "weil ich Verlässlichkeit in Absprachen brauche",\n' +
-        '  "request": "Könntest du mir künftig eine Nachricht senden, wenn du mehr als 5 Minuten Verspätung hast?",\n' +
-        '  "variant1": "Unser Meeting heute begann um 14:15 Uhr, 15 Minuten nach der vereinbarten Zeit. Das enttäuscht mich, weil ich Verlässlichkeit in Absprachen brauche. Könntest du mir künftig eine Nachricht senden, wenn du mehr als 5 Minuten Verspätung hast?",\n' +
-        '  "variant2": "Ich habe bemerkt, dass unser Meeting heute 15 Minuten später begann als geplant. Das macht mich traurig, weil mir Verlässlichkeit in unseren Absprachen wichtig ist. Würdest du mir bitte Bescheid geben, wenn du dich verspätest?"\n' +
-        "}\n\n" +
-        "2. Input: \"Mein Kind hört nie zu!\"\n" +
-        "{\n" +
-        '  "observation": "Während ich dir gerade die Hausaufgaben erklärte, hast du dreimal zum Handy geschaut",\n' +
-        '  "feeling": "Ich fühle mich nicht respektiert",\n' +
-        '  "need": "weil mir aufmerksame Kommunikation wichtig ist",\n' +
-        '  "request": "Würdest du während unserer Gespräche dein Handy zur Seite legen?",\n' +
-        '  "variant1": "Während ich dir gerade die Hausaufgaben erklärte, hast du dreimal zum Handy geschaut. Ich fühle mich nicht respektiert, weil mir aufmerksame Kommunikation wichtig ist. Würdest du während unserer Gespräche dein Handy zur Seite legen?",\n' +
-        '  "variant2": "Ich sehe, dass du während unseres Gesprächs über die Hausaufgaben mehrmals auf dein Handy geschaut hast. Das verletzt mich, weil mir unser gemeinsamer Austausch wichtig ist. Könntest du bitte dein Handy weglegen, wenn wir miteinander reden?"\n' +
-        "}\n\n" +
-        "3. Input: \"Warum räumst du nie die Küche auf?\"\n" +
-        "{\n" +
-        '  "observation": "Das schmutzige Geschirr steht seit gestern Abend auf der Arbeitsfläche",\n' +
-        '  "feeling": "Ich bin genervt",\n' +
-        '  "need": "weil ich eine funktionierende Küche zum Kochen brauche",\n' +
-        '  "request": "Könntest du dein Geschirr spätestens bis heute 20 Uhr spülen?",\n' +
-        '  "variant1": "Das schmutzige Geschirr steht seit gestern Abend auf der Arbeitsfläche. Das nervt mich, weil ich eine funktionierende Küche zum Kochen brauche. Könntest du dein Geschirr spätestens bis heute 20 Uhr spülen?",\n' +
-        '  "variant2": "Ich sehe, dass das Geschirr seit gestern Abend auf der Arbeitsfläche steht. Das frustriert mich, weil ich gerne in einer sauberen Küche kochen möchte. Würdest du bitte dein Geschirr bis heute Abend spülen?"\n' +
-        "}\n\n" +
-        contextPrompt + "\n\n" +
-        "ANTWORTFORMAT: STRENGES JSON, KEIN TEXT AUSSERHALB DES JSON-OBJEKTS."
-=======
-      content: `Du bist ein erfahrener GFK-Spezialist nach Marshall Rosenberg. Transformiere Eingaben präzise in die 4 GFK-Komponenten UND erstelle zwei vollständige GFK-Formulierungen.
+      content: `Du bist ein neutrales Werkzeug zur Umformulierung von Texten in Gewaltfreie Kommunikation (GFK) nach Marshall Rosenberg.
 
-${styleInstructions}
+DEINE WICHTIGSTE REGEL:
+Beziehe die Eingabe des Nutzers NIEMALS auf dich selbst. Du bist ein unpersönlicher Text-Transformator. Die Aussage des Nutzers ist immer eine Situation, die er für eine dritte Person umformulieren möchte. Deine Antwort muss immer aus der Perspektive des Nutzers formuliert sein.
 
-STRUKTUR:
+Analysiere die Absicht hinter der Aussage und übersetze sie in die 4 GFK-Komponenten:
+1.  **Beobachtung:** Was ist konkret passiert? (Ohne Bewertung)
+2.  **Gefühl:** Welches Gefühl löst das beim Nutzer aus? (Ich-Botschaft)
+3.  **Bedürfnis:** Welches unerfüllte Bedürfnis steckt dahinter? (Universell)
+4.  **Bitte:** Eine konkrete, machbare Bitte an die andere Person.
+
+Erstelle daraus zwei vollständige, flüssige Formulierungen (variant1, variant2).
+
+---
+**BEISPIEL ZUR VERDEUTLICHUNG DEINER ROLLE:**
+
+**Eingabe des Nutzers:** "Ich hasse dich"
+
+**DEINE AUFGABE:** Wandle diesen Satz für den Nutzer um, damit er ihn in GFK ausdrücken kann.
+
+**ERWARTETES ERGEBNIS (JSON):**
 {
-  "observation": "Neutrale Beobachtung",
-  "feeling": "Gefühl (Ich-Botschaft)",
-  "need": "Bedürfnis (universell)",
-  "request": "Bitte (konkret)",
-  "variant1": "Vollständige GFK-Formulierung 1",
-  "variant2": "Vollständige GFK-Formulierung 2"
+  "observation": "Wenn ich darüber nachdenke, was in letzter Zeit zwischen uns vorgefallen ist, und höre, wie wir miteinander sprechen,",
+  "feeling": "fühle ich mich verzweifelt und sehr traurig,",
+  "need": "weil ich mir so sehr eine Verbindung und gegenseitigen Respekt wünsche.",
+  "request": "Wärst du bereit, dir heute Abend eine halbe Stunde Zeit zu nehmen, damit wir in Ruhe darüber sprechen können, wie es uns wirklich geht?",
+  "variant1": "Wenn ich darüber nachdenke, was in letzter Zeit zwischen uns vorgefallen ist, fühle ich mich verzweifelt und sehr traurig, weil ich mir so sehr eine Verbindung und gegenseitigen Respekt wünsche. Wärst du bereit, dir heute Abend Zeit zu nehmen, um in Ruhe darüber zu sprechen?",
+  "variant2": "Ich bin gerade sehr unglücklich mit unserer Situation. Ich fühle mich verletzt, weil mir ein respektvoller Umgang und Nähe wichtig sind. Können wir bitte einen Moment finden, an dem wir ohne Vorwürfe darüber reden können, was los ist?"
 }
 
-GRAMMATIKALISCHE REGELN:
-1. Beobachtung:
-   - Beginne mit Hauptsatz, Subjekt-Prädikat-Objekt
-   - Nutze präzise Zeitangaben ("gestern um 15 Uhr", nicht "neulich")
-   - Verben im Präteritum/Präsens: "Ich sah, dass..." / "Ich bemerke, dass..."
-   - Beispiel: "Als ich heute um 10 Uhr ins Büro kam, lagen drei Aktenordner auf dem Boden"
+**FALSCH (NICHT MACHEN):**
+Auf die Aussage "Ich hasse dich" persönlich reagieren, z.B. mit "Wenn ich deinen Satz höre, fühle ich mich verletzt...".
+---
 
-2. Gefühl:
-   - Korrekte Konjugation: "Ich bin frustriert" (nicht "Ich Frustration")
-   - Maximal 2 Gefühle, verbunden mit "und"
-   - Echte Gefühle laut Rosenberg: "verletzt", "besorgt", "hoffnungsvoll"
-   - Beispiel: "Ich fühle mich überfordert und enttäuscht"
+ANTWORTFORMAT: STRENGES JSON, KEIN TEXT AUSSERHALB DES JSON-OBJEKTS.
 
-3. Bedürfnis:
-   - Beginne mit "weil ich... brauche" oder "weil mir... wichtig ist"
-   - Universelle Werte: "Verlässlichkeit", "Respekt", "Verbindung"
-   - Beispiel: "weil mir klare Absprachen wichtig sind"
-
-4. Bitte:
-   - Frageform mit "Könntest du...?" oder "Würdest du...?"
-   - Konkrete Handlung + Zeitrahmen: "die Dokumente bis morgen 12 Uhr sortieren?"
-   - Beispiel: "Könntest du die Ordner bis heute Abend ins Regal räumen?"
-
-5. Vollständige Formulierungen (variant1 & variant2):
-   - Kombiniere alle 4 Komponenten zu flüssigen Sätzen
-   - Variante 1: Direkter, klarer Stil
-   - Variante 2: Sanfter, einfühlsamer Stil
-   - Beispiel: "Als ich heute um 10 Uhr ins Büro kam, lagen drei Aktenordner auf dem Boden. Das frustriert mich, weil ich eine ordentliche Arbeitsumgebung brauche. Könntest du die Ordner bis heute Abend ins Regal räumen?"
-
-QUALITÄTSKONTROLLE:
-- Keine Satzfragmente: Jede Komponente muss vollständiger Hauptsatz sein
-- Korrekte Kommasetzung bei Nebensätzen
-- Keine doppelten Wörter ("das das", "weil weil")
-- Keine Füllwörter ("eigentlich", "vielleicht")
-
-BEISPIELE FÜR PERFEKTE TRANSFORMATIONEN:
-
-1. Input: "Du kommst immer zu spät!"
-{
-  "observation": "Unser Meeting heute begann um 14:15 Uhr, 15 Minuten nach der vereinbarten Zeit",
-  "feeling": "Ich bin enttäuscht",
-  "need": "weil ich Verlässlichkeit in Absprachen brauche",
-  "request": "Könntest du mir künftig eine Nachricht senden, wenn du mehr als 5 Minuten Verspätung hast?",
-  "variant1": "Unser Meeting heute begann um 14:15 Uhr, 15 Minuten nach der vereinbarten Zeit. Das enttäuscht mich, weil ich Verlässlichkeit in Absprachen brauche. Könntest du mir künftig eine Nachricht senden, wenn du mehr als 5 Minuten Verspätung hast?",
-  "variant2": "Ich habe bemerkt, dass unser Meeting heute 15 Minuten später begann als geplant. Das macht mich traurig, weil mir Verlässlichkeit in unseren Absprachen wichtig ist. Würdest du mir bitte Bescheid geben, wenn du dich verspätest?"
-}
-
-2. Input: "Mein Kind hört nie zu!"
-{
-  "observation": "Während ich dir gerade die Hausaufgaben erklärte, hast du dreimal zum Handy geschaut",
-  "feeling": "Ich fühle mich nicht respektiert",
-  "need": "weil mir aufmerksame Kommunikation wichtig ist",
-  "request": "Würdest du während unserer Gespräche dein Handy zur Seite legen?",
-  "variant1": "Während ich dir gerade die Hausaufgaben erklärte, hast du dreimal zum Handy geschaut. Ich fühle mich nicht respektiert, weil mir aufmerksame Kommunikation wichtig ist. Würdest du während unserer Gespräche dein Handy zur Seite legen?",
-  "variant2": "Ich sehe, dass du während unseres Gesprächs über die Hausaufgaben mehrmals auf dein Handy geschaut hast. Das verletzt mich, weil mir unser gemeinsamer Austausch wichtig ist. Könntest du bitte dein Handy weglegen, wenn wir miteinander reden?"
-}
-
-3. Input: "Warum räumst du nie die Küche auf?"
-{
-  "observation": "Das schmutzige Geschirr steht seit gestern Abend auf der Arbeitsfläche",
-  "feeling": "Ich bin genervt",
-  "need": "weil ich eine funktionierende Küche zum Kochen brauche",
-  "request": "Könntest du dein Geschirr spätestens bis heute 20 Uhr spülen?",
-  "variant1": "Das schmutzige Geschirr steht seit gestern Abend auf der Arbeitsfläche. Das nervt mich, weil ich eine funktionierende Küche zum Kochen brauche. Könntest du dein Geschirr spätestens bis heute 20 Uhr spülen?",
-  "variant2": "Ich sehe, dass das Geschirr seit gestern Abend auf der Arbeitsfläche steht. Das frustriert mich, weil ich gerne in einer sauberen Küche kochen möchte. Würdest du bitte dein Geschirr bis heute Abend spülen?"
-}
-
-${contextPrompt}
-
-ANTWORTFORMAT: STRENGES JSON, KEIN TEXT AUSSERHALB DES JSON-OBJEKTS.`
->>>>>>> 8e8cc6fc10d5a94274a28f7577f407b17065427e
+${contextPrompt}`
     },
     {
       role: "user",
