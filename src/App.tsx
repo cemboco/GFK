@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon, Bot, ArrowRight, CheckCircle, Star, Users, Zap, Target, User, Coffee } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -114,10 +114,16 @@ function AppContent() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) {
       setError('Bitte geben Sie einen Text ein.');
+      return;
+    }
+
+    // Validierung für sehr lange Texte
+    if (input.trim().length > 1000) {
+      setError('Der Text ist zu lang. Bitte kürzen Sie ihn auf maximal 1000 Zeichen.');
       return;
     }
 
@@ -131,7 +137,7 @@ function AppContent() {
     // Zeige Perspektiven-Auswahl
     setPendingInput(input.trim());
     setShowPerspectiveSelector(true);
-  };
+  }, [input]);
 
   const performTransformation = async (textToTransform: string, additionalContext?: string, perspective?: 'sender' | 'receiver') => {
     if (!canUseService()) {
@@ -322,11 +328,21 @@ Verwende natürliche, empathische Sprache.`;
 
     } catch (err) {
       console.error('Error:', err);
-      setError(
-        err instanceof Error 
-          ? err.message 
-          : 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.'
-      );
+      
+      // Spezifische Fehlerbehandlung
+      let errorMessage = 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.';
+      
+      if (err instanceof Error) {
+        if (err.message.includes('network') || err.message.includes('fetch')) {
+          errorMessage = 'Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.';
+        } else if (err.message.includes('timeout')) {
+          errorMessage = 'Zeitüberschreitung. Bitte versuchen Sie es erneut.';
+        } else {
+          errorMessage = err.message;
+        }
+      }
+      
+      setError(errorMessage);
       setIsLoading(false);
       setIsTyping(false);
     }
@@ -902,7 +918,7 @@ Verwende natürliche, empathische Sprache.`;
             </div>
             <div className="pt-4 border-t border-gray-200">
               <p className="text-sm text-gray-500">
-                Beta Version 1.5.0 - Verbesserte Kontext-Erkennung & optimierte Benutzerführung
+                Beta Version 1.5.1 - Performance-Optimierungen & verbesserte Fehlerbehandlung
               </p>
             </div>
           </div>

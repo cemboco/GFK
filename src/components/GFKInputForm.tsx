@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, ChevronDown, Crown, AlertCircle, Lock } from 'lucide-react';
+import { Sparkles, ChevronDown, Crown, AlertCircle, Lock, Send } from 'lucide-react';
 import { useChatUsage } from '../hooks/useChatUsage';
 
 interface UsageInfo {
@@ -177,8 +177,17 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
               (isLoading || !input.trim() || !canUseService()) && 'opacity-50 cursor-not-allowed'
             }`}
           >
-            <Sparkles className="h-6 w-6" />
-            <span>{isLoading ? 'Transformiere...' : 'In GFK umwandeln'}</span>
+            {isLoading ? (
+              <>
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                <span>Transformiere...</span>
+              </>
+            ) : (
+              <>
+                <Send className="h-6 w-6" />
+                <span>In GFK umwandeln</span>
+              </>
+            )}
           </motion.button>
         </div>
 
