@@ -943,7 +943,7 @@ Verwende natürliche, empathische Sprache.`;
             <span className="text-purple-700 text-lg font-medium">Gerne Feedback geben:</span>
             <a href="mailto:info@gfkcoach.com" className="text-purple-600 underline font-medium">info@gfkcoach.com</a>
             <button onClick={() => setShowFirstTransformSnackbar(false)} className="ml-2 text-gray-400 hover:text-purple-600 text-2xl font-bold" aria-label="Schließen">×</button>
-          </div>
+      </div>
         )}
 
         {/* Context Modal */}
