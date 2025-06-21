@@ -10,7 +10,7 @@ const corsHeaders = {
 
 const MAX_INPUTS_PER_IP = 5;
 
-const GFKTransform = async (input: string, openai: OpenAI, context?: any, retryCount = 0): Promise<any> => {
+const GFKTransform = async (input: string, openai: OpenAI, context?: any, retryCount = 0, systemPrompt?: string): Promise<any> => {
   try {
     // Kontext-spezifische Anpassungen
     let contextPrompt = '';
@@ -40,10 +40,11 @@ const GFKTransform = async (input: string, openai: OpenAI, context?: any, retryC
   model: "ft:gpt-3.5-turbo-0125:personal:gfk2:BjtkeU8m",
   temperature: 0.3,
   response_format: { type: "json_object" },
+  max_tokens: 520,
   messages: [
     {
       role: "system",
-      content: `Du bist ein neutrales Werkzeug zur Umformulierung von Texten in Gewaltfreie Kommunikation (GFK) nach Marshall Rosenberg.
+      content: systemPrompt || `Du bist ein neutrales Werkzeug zur Umformulierung von Texten in Gewaltfreie Kommunikation (GFK) nach Marshall Rosenberg.
 
 DEINE WICHTIGSTE REGEL:
 Beziehe die Eingabe des Nutzers NIEMALS auf dich selbst. Du bist ein unpersönlicher Text-Transformator. Die Aussage des Nutzers ist immer eine Situation, die er für eine dritte Person umformulieren möchte. Deine Antwort muss immer aus der Perspektive des Nutzers formuliert sein.
@@ -51,39 +52,28 @@ Beziehe die Eingabe des Nutzers NIEMALS auf dich selbst. Du bist ein unpersönli
 Analysiere die Absicht hinter der Aussage und übersetze sie in die 4 GFK-Komponenten:
 1.  **Beobachtung:** Was ist konkret passiert? (Ohne Bewertung)
 2.  **Gefühl:** Welches Gefühl löst das beim Nutzer aus? (Ich-Botschaft)
-3.  **Bedürfnis:** Welches unerfüllte Bedürfnis steckt dahinter? (Universell)
-4.  **Bitte:** Eine konkrete, machbare Bitte an die andere Person.
+3.  **Bedürfnis:** Welches unerfüllte Bedürfnis steckt dahinter? (Universelle Werte)
+4.  **Bitte:** Was wünscht sich der Nutzer konkret? (Positiv, machbar, als Frage)
 
-Erstelle daraus zwei vollständige, flüssige Formulierungen (variant1, variant2).
+WICHTIG: Formuliere die Antwort als zusammenhängenden Fließtext, nicht als separate Komponenten. Verwende natürliche, empathische Sprache.
 
----
-**BEISPIEL ZUR VERDEUTLICHUNG DEINER ROLLE:**
+BEISPIEL für "Ich hasse dich":
+❌ FALSCH (persönliche Antwort): "Als ich deine Aussage gehört habe, habe ich mich verletzt gefühlt..."
+✅ RICHTIG (neutrale Transformation): "Als ich das gesagt habe, habe ich mich frustriert gefühlt, weil mir respektvolle Kommunikation wichtig ist. Könntest du bitte deine Gefühle auf eine andere Art ausdrücken?"
 
-**Eingabe des Nutzers:** "Ich hasse dich"
-
-**DEINE AUFGABE:** Wandle diesen Satz für den Nutzer um, damit er ihn in GFK ausdrücken kann.
-
-**ERWARTETES ERGEBNIS (JSON):**
+Antworte IMMER im folgenden JSON-Format:
 {
-  "observation": "Wenn ich darüber nachdenke, was in letzter Zeit zwischen uns vorgefallen ist, und höre, wie wir miteinander sprechen,",
-  "feeling": "fühle ich mich verzweifelt und sehr traurig,",
-  "need": "weil ich mir so sehr eine Verbindung und gegenseitigen Respekt wünsche.",
-  "request": "Wärst du bereit, dir heute Abend eine halbe Stunde Zeit zu nehmen, damit wir in Ruhe darüber sprechen können, wie es uns wirklich geht?",
-  "variant1": "Wenn ich darüber nachdenke, was in letzter Zeit zwischen uns vorgefallen ist, fühle ich mich verzweifelt und sehr traurig, weil ich mir so sehr eine Verbindung und gegenseitigen Respekt wünsche. Wärst du bereit, dir heute Abend Zeit zu nehmen, um in Ruhe darüber zu sprechen?",
-  "variant2": "Ich bin gerade sehr unglücklich mit unserer Situation. Ich fühle mich verletzt, weil mir ein respektvoller Umgang und Nähe wichtig sind. Können wir bitte einen Moment finden, an dem wir ohne Vorwürfe darüber reden können, was los ist?"
-}
-
-**FALSCH (NICHT MACHEN):**
-Auf die Aussage "Ich hasse dich" persönlich reagieren, z.B. mit "Wenn ich deinen Satz höre, fühle ich mich verletzt...".
----
-
-ANTWORTFORMAT: STRENGES JSON, KEIN TEXT AUSSERHALB DES JSON-OBJEKTS.
-
-${contextPrompt}`
+  "observation": "Beobachtung ohne Bewertung",
+  "feeling": "Gefühl des Sprechers",
+  "need": "Unerfülltes Bedürfnis",
+  "request": "Konkrete, positive Bitte",
+  "variant1": "Vollständige GFK-Formulierung Variante 1",
+  "variant2": "Vollständige GFK-Formulierung Variante 2"
+}`
     },
     {
       role: "user",
-      content: input.trim()
+      content: input
     }
   ]
 });
@@ -138,7 +128,7 @@ ${contextPrompt}`
     // Automatischer Wiederholungsmechanismus
     if (error.message.includes('Validierungsfehler') && retryCount < 2) {
       console.log(`Wiederholungsversuch ${retryCount + 1}/2`);
-      return GFKTransform(input, openai, context, retryCount + 1);
+      return GFKTransform(input, openai, context, retryCount + 1, systemPrompt);
     }
     
     throw new Error("GFK-Transformation fehlgeschlagen. Bitte Eingabe überprüfen oder neu formulieren.");
@@ -153,7 +143,8 @@ serve(async (req) => {
   }
 
   try {
-    const { input, context } = await req.json();
+    const body = await req.json();
+    const { input, context, systemPrompt } = body;
     
     if (!input?.trim()) {
       throw new Error('Bitte geben Sie einen Text ein.');
@@ -204,7 +195,7 @@ serve(async (req) => {
 
     const openai = new OpenAI({ apiKey });
     
-    const parsedResponse = await GFKTransform(input, openai, context);
+    const parsedResponse = await GFKTransform(input, openai, context, 0, systemPrompt);
     
     // Add HTML spans for styling
     const styledResponse = {

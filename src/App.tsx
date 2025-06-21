@@ -18,6 +18,7 @@ import { getContextPrompt, getContextStyle } from './utils/contextHelpers';
 import TermsModal from './components/TermsModal';
 import AnonFeedbackModal from './components/AnonFeedbackModal';
 import ContextModal from './components/ContextModal';
+import PerspectiveSelector from './components/PerspectiveSelector';
 import { needsMoreContext } from './utils/contextDetection';
 
 const supabase = createClient(
@@ -56,6 +57,10 @@ function AppContent() {
   // Context Modal states
   const [showContextModal, setShowContextModal] = useState(false);
   const [pendingInput, setPendingInput] = useState('');
+  
+  // Perspective Selector states
+  const [showPerspectiveSelector, setShowPerspectiveSelector] = useState(false);
+  const [selectedPerspective, setSelectedPerspective] = useState<'sender' | 'receiver' | null>(null);
   
   // Live typing states
   const [isTyping, setIsTyping] = useState(false);
@@ -120,10 +125,12 @@ function AppContent() {
       return;
     }
 
-    await performTransformation(input.trim());
+    // Zeige Perspektiven-Auswahl
+    setPendingInput(input.trim());
+    setShowPerspectiveSelector(true);
   };
 
-  const performTransformation = async (textToTransform: string, additionalContext?: string) => {
+  const performTransformation = async (textToTransform: string, additionalContext?: string, perspective?: 'sender' | 'receiver') => {
     if (!canUseService()) {
       const remaining = getRemainingUsage();
       if (remaining === 0 && !user && !anonFeedbackGiven) {
@@ -155,9 +162,39 @@ function AppContent() {
         ? `${textToTransform}\n\n${additionalContext}`
         : textToTransform;
 
+      // Erstelle den System-Prompt basierend auf der Perspektive
+      const perspectivePrompt = perspective === 'sender' 
+        ? `Du bist ein neutrales Werkzeug zur Umformulierung von Texten in Gewaltfreie Kommunikation (GFK) nach Marshall Rosenberg.
+
+DEINE WICHTIGSTE REGEL: Der Nutzer ist der SENDER der Aussage. Er hat etwas gesagt und möchte es in GFK umformulieren.
+
+Analysiere die Absicht hinter der Aussage und übersetze sie in die 4 GFK-Komponenten:
+1. Beobachtung: Was ist konkret passiert? (Ohne Bewertung)
+2. Gefühl: Welches Gefühl hat der Sender dabei? (Ich-Botschaft)
+3. Bedürfnis: Welches unerfüllte Bedürfnis steckt dahinter? (Universelle Werte)
+4. Bitte: Was wünscht sich der Sender konkret? (Positiv, machbar, als Frage)
+
+WICHTIG: Formuliere die Antwort aus der SENDER-Perspektive: "Als ich das gesagt habe, habe ich mich... gefühlt, weil mir... wichtig ist. Könntest du bitte...?"
+
+Verwende natürliche, empathische Sprache.`
+        : `Du bist ein neutrales Werkzeug zur Umformulierung von Texten in Gewaltfreie Kommunikation (GFK) nach Marshall Rosenberg.
+
+DEINE WICHTIGSTE REGEL: Der Nutzer ist der EMPFÄNGER der Aussage. Jemand hat etwas zu ihm gesagt und er möchte eine GFK-Antwort formulieren.
+
+Analysiere die Absicht hinter der Aussage und übersetze sie in die 4 GFK-Komponenten:
+1. Beobachtung: Was ist konkret passiert? (Ohne Bewertung)
+2. Gefühl: Welches Gefühl löst das beim Empfänger aus? (Ich-Botschaft)
+3. Bedürfnis: Welches unerfüllte Bedürfnis steckt dahinter? (Universelle Werte)
+4. Bitte: Was wünscht sich der Empfänger konkret? (Positiv, machbar, als Frage)
+
+WICHTIG: Formuliere die Antwort aus der EMPFÄNGER-Perspektive: "Als ich deine Aussage gehört habe, habe ich mich... gefühlt, weil mir... wichtig ist. Könntest du bitte...?"
+
+Verwende natürliche, empathische Sprache.`;
+
       const { data, error: functionError } = await supabase.functions.invoke('gfk-transform', {
         body: { 
           input: fullInput,
+          systemPrompt: perspectivePrompt,
           context: {
             userLevel: 'beginner',
             preferredStyle: getContextStyle(context),
@@ -279,7 +316,17 @@ function AppContent() {
 
   const handleContextSubmit = (context: string) => {
     if (pendingInput) {
-      performTransformation(pendingInput, context);
+      // Nach Kontext-Modal zur Perspektiven-Auswahl
+      setShowPerspectiveSelector(true);
+    }
+  };
+
+  const handlePerspectiveSelect = (perspective: 'sender' | 'receiver') => {
+    setSelectedPerspective(perspective);
+    setShowPerspectiveSelector(false);
+    
+    if (pendingInput) {
+      performTransformation(pendingInput, undefined, perspective);
     }
   };
 
@@ -871,6 +918,14 @@ function AppContent() {
           isOpen={showContextModal}
           onClose={() => setShowContextModal(false)}
           onSubmit={handleContextSubmit}
+          originalText={pendingInput}
+        />
+
+        {/* Perspective Selector */}
+        <PerspectiveSelector
+          isOpen={showPerspectiveSelector}
+          onClose={() => setShowPerspectiveSelector(false)}
+          onSelect={handlePerspectiveSelect}
           originalText={pendingInput}
         />
       </div>
