@@ -916,7 +916,7 @@ Verwende natürliche, empathische Sprache.`;
                 © {new Date().getFullYear()} GFKCoach - Empathische Kommunikation für alle
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                Beta Version 1.5.1 - Performance-Optimierungen & verbesserte Fehlerbehandlung
+                Beta Version 1.5.2 - Umfassende Performance-Optimierungen & RLS-Verbesserungen
               </p>
               <div className="flex justify-center items-center gap-6 mt-2">
                 <button
@@ -1000,8 +1000,8 @@ Verwende natürliche, empathische Sprache.`;
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               <div>
-                <span className="text-sm font-medium">Beta Version 1.5.1</span>
-                <p className="text-xs text-purple-100">Performance-Optimierungen & verbesserte Fehlerbehandlung</p>
+                <span className="text-sm font-medium">Beta Version 1.5.2</span>
+                <p className="text-xs text-purple-100">Performance-Optimierungen & RLS-Verbesserungen</p>
               </div>
             </div>
             <button 
