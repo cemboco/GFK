@@ -101,6 +101,16 @@ function AppContent() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Zeige Version-Info nach 2 Sekunden
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowVersionInfo(true);
+      setTimeout(() => setShowVersionInfo(false), 5000); // 5 Sekunden anzeigen
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
   };
@@ -503,6 +513,7 @@ Verwende natürliche, empathische Sprache.`;
   });
 
   const [showFirstTransformSnackbar, setShowFirstTransformSnackbar] = useState(false);
+  const [showVersionInfo, setShowVersionInfo] = useState(false);
   const firstTransformDone = useRef(false);
 
   return (
@@ -900,26 +911,25 @@ Verwende natürliche, empathische Sprache.`;
                 GFKCoach
               </span>
             </div>
-            <p className="text-gray-600">© {new Date().getFullYear()} GFKCoach - Empathische Kommunikation für alle</p>
-            <div className="flex justify-center items-center gap-6">
-            <button
-              onClick={() => setShowPrivacyPolicy(true)}
-                className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline"
-            >
-              <Shield className="h-4 w-4" />
-              <span>Datenschutz</span>
-            </button>
-              <button
-                onClick={() => setShowTermsModal(true)}
-                className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline"
-              >
-                <span>AGB</span>
-            </button>
-            </div>
             <div className="pt-4 border-t border-gray-200">
               <p className="text-sm text-gray-500">
-                Beta Version 1.5.1 - Performance-Optimierungen & verbesserte Fehlerbehandlung
+                © {new Date().getFullYear()} GFKCoach - Empathische Kommunikation für alle
               </p>
+              <div className="flex justify-center items-center gap-6 mt-2">
+                <button
+                  onClick={() => setShowPrivacyPolicy(true)}
+                  className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline"
+                >
+                  <Shield className="h-4 w-4" />
+                  <span>Datenschutz</span>
+                </button>
+                <button
+                  onClick={() => setShowTermsModal(true)}
+                  className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline"
+                >
+                  <span>AGB</span>
+                </button>
+              </div>
             </div>
           </div>
         </footer>
@@ -971,7 +981,34 @@ Verwende natürliche, empathische Sprache.`;
             <span className="text-purple-700 text-lg font-medium">Gerne Feedback geben:</span>
             <a href="mailto:info@gfkcoach.com" className="text-purple-600 underline font-medium">info@gfkcoach.com</a>
             <button onClick={() => setShowFirstTransformSnackbar(false)} className="ml-2 text-gray-400 hover:text-purple-600 text-2xl font-bold" aria-label="Schließen">×</button>
-      </div>
+          </div>
+        )}
+
+        {/* Version Info */}
+        {showVersionInfo && (
+          <motion.div
+            initial={{ opacity: 0, y: -100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -100 }}
+            className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xl rounded-xl px-6 py-4 flex items-center space-x-3"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <Sparkles className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <span className="text-sm font-medium">Beta Version 1.5.1</span>
+                <p className="text-xs text-purple-100">Performance-Optimierungen & verbesserte Fehlerbehandlung</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => setShowVersionInfo(false)} 
+              className="ml-4 text-white/80 hover:text-white text-xl font-bold" 
+              aria-label="Schließen"
+            >
+              ×
+            </button>
+          </motion.div>
         )}
 
         {/* Context Modal */}
