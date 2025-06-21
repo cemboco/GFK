@@ -573,7 +573,14 @@ Verwende natürliche, empathische Sprache.`;
                           <span>Unterstütze GFKCoach ☕</span>
                         </a>
                         <p className="text-sm text-gray-500 mt-2">
-                          Kleine Spende für die Weiterentwicklung
+                          Eingeständnis: Diese App entstand, weil ich selber Kommunikations-Chaos bin.<br />
+                          – Entwicklungsstatus: 73% weniger passive Aggression 🎉<br />
+                          – Ziel: Weltweites Ende von "Hättest du mal zugehört!"<br />
+                          Hilf mit! Für jeden Kaffee:<br />
+                          ✓ 1 Bug weniger, der "Bitte" als "Forderung" missversteht<br />
+                          ✓ 5 neue Übungen gegen Augenrollen<br />
+                          Spendier mit Motivation<br />
+                          Garantiert: Dein Geld wird in Koffein & Empathie investiert.
                         </p>
                       </motion.div>
                     </section>
