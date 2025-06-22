@@ -559,7 +559,7 @@ Verwende natürliche, empathische Sprache.`;
                 © {new Date().getFullYear()} GFKCoach - Empathische Kommunikation für alle
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                Version 1.6.2 - Refactoring der Routenstruktur
+                Version 1.6.3 - Testimonials Design-Update
               </p>
               <div className="flex justify-center items-center gap-6 mt-2">
                 <button
@@ -643,8 +643,8 @@ Verwende natürliche, empathische Sprache.`;
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               <div>
-                <span className="text-sm font-medium">Beta Version 1.6.2</span>
-                <p className="text-xs text-purple-100">Refactoring der Routenstruktur</p>
+                <span className="text-sm font-medium">Beta Version 1.6.3</span>
+                <p className="text-xs text-purple-100">Testimonials Design-Update</p>
               </div>
             </div>
             <button 
@@ -726,7 +726,7 @@ function App() {
       />
       {showVersionInfo && (
         <div className="fixed bottom-4 right-4 bg-gray-800 text-white text-xs px-2 py-1 rounded-full shadow-lg z-50">
-          Version 1.6.2
+          Version 1.6.3
         </div>
       )}
     </Router>
