@@ -74,7 +74,7 @@ export default function Testimonials() {
 
   return (
     <div className="relative w-full max-w-4xl mx-auto flex flex-col items-center">
-      <div className="w-full h-[380px] md:h-[320px] relative flex items-center justify-center overflow-hidden">
+      <div className="w-full h-[420px] md:h-[360px] relative flex items-center justify-center overflow-hidden">
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
             key={page}
@@ -101,7 +101,7 @@ export default function Testimonials() {
             }}
             className="absolute w-full px-4 md:px-10"
           >
-            <div className="bg-white rounded-2xl shadow-lg p-8 text-center space-y-6 border border-gray-100">
+            <div className="bg-white rounded-2xl shadow-lg p-6 text-center space-y-4 border border-gray-100">
               <div className="flex justify-center text-yellow-400 space-x-1">
                 {[...Array(5)].map((_, i) => <Star key={i} fill="currentColor" className="w-5 h-5" />)}
               </div>
