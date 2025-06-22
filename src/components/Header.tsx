@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Sparkles, Info, Mail, LogIn, LogOut, Menu, X as XIcon, User as UserIcon } from 'lucide-react';
+import { MessageSquare, Sparkles, Info, Mail, LogIn, LogOut, Menu, X as XIcon, User as UserIcon, HelpCircle } from 'lucide-react';
 
 // Typ für User (kann ggf. noch angepasst werden, je nach Supabase-User-Objekt)
 interface User {
@@ -31,17 +31,25 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleNavigation = (tab: 'gfk' | 'about' | 'contact') => {
-    // Wenn wir nicht auf der Hauptseite sind, navigiere dorthin und setze den Tab
-    if (location.pathname !== '/') {
-      navigate('/', { state: { activeTab: tab } });
+  const handleNavigation = (tab: 'gfk' | 'about' | 'contact' | 'faq') => {
+    if (tab === 'faq') {
+      // FAQ ist eine separate Route
+      navigate('/faq');
     } else {
-      setActiveTab(tab);
+      // Wenn wir nicht auf der Hauptseite sind, navigiere dorthin und setze den Tab
+      if (location.pathname !== '/') {
+        navigate('/', { state: { activeTab: tab } });
+      } else {
+        setActiveTab(tab);
+      }
     }
     setIsMobileMenuOpen(false);
   };
 
-  const isActiveTab = (tab: 'gfk' | 'about' | 'contact') => {
+  const isActiveTab = (tab: 'gfk' | 'about' | 'contact' | 'faq') => {
+    if (tab === 'faq') {
+      return location.pathname === '/faq';
+    }
     // Wenn wir auf der Hauptseite sind, verwende activeTab
     if (location.pathname === '/') {
       return activeTab === tab;
@@ -78,15 +86,16 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
             {[
               { id: 'gfk', label: 'GFK Transform', icon: Sparkles },
               { id: 'about', label: 'Über GFK', icon: Info },
-              { id: 'contact', label: 'Kontakt', icon: Mail }
+              { id: 'contact', label: 'Kontakt', icon: Mail },
+              { id: 'faq', label: 'FAQ', icon: HelpCircle }
             ].map((item) => (
               <motion.button
                 key={item.id}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => handleNavigation(item.id as 'gfk' | 'about' | 'contact')}
+                onClick={() => handleNavigation(item.id as 'gfk' | 'about' | 'contact' | 'faq')}
                 className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 ${
-                  isActiveTab(item.id as 'gfk' | 'about' | 'contact')
+                  isActiveTab(item.id as 'gfk' | 'about' | 'contact' | 'faq')
                     ? 'bg-purple-100 text-purple-700 shadow-sm'
                     : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
                 }`}
@@ -141,13 +150,14 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
               {[
                 { id: 'gfk', label: 'GFK Transform', icon: Sparkles },
                 { id: 'about', label: 'Über GFK', icon: Info },
-                { id: 'contact', label: 'Kontakt', icon: Mail }
+                { id: 'contact', label: 'Kontakt', icon: Mail },
+                { id: 'faq', label: 'FAQ', icon: HelpCircle }
               ].map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => handleNavigation(item.id as 'gfk' | 'about' | 'contact')}
+                  onClick={() => handleNavigation(item.id as 'gfk' | 'about' | 'contact' | 'faq')}
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
-                    isActiveTab(item.id as 'gfk' | 'about' | 'contact')
+                    isActiveTab(item.id as 'gfk' | 'about' | 'contact' | 'faq')
                       ? 'bg-purple-100 text-purple-700'
                       : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
                   }`}

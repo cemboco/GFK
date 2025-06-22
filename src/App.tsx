@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon, Bot, ArrowRight, CheckCircle, Star, Users, Zap, Target, User, Coffee } from 'lucide-react';
+import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon, Bot, ArrowRight, CheckCircle, Star, Users, Zap, Target, User, Coffee, HelpCircle } from 'lucide-react';
 import { supabase } from './supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
@@ -20,6 +20,7 @@ import AnonFeedbackModal from './components/AnonFeedbackModal';
 import ContextModal from './components/ContextModal';
 import PerspectiveSelector from './components/PerspectiveSelector';
 import { needsMoreContext } from './utils/contextDetection';
+import FAQ from './components/FAQ';
 
 // const supabase = createClient(
 //   import.meta.env.VITE_SUPABASE_URL,
@@ -531,6 +532,7 @@ Verwende natürliche, empathische Sprache.`;
         <Routes>
           <Route path="/auth" element={user ? <Navigate to="/profile" /> : <Auth />} />
           <Route path="/profile" element={user ? <Profile /> : <Navigate to="/auth" />} />
+          <Route path="/faq" element={<FAQ />} />
           <Route path="/" element={
             <main className="max-w-7xl mx-auto px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
               <AnimatePresence mode="wait">
@@ -1166,6 +1168,21 @@ const AboutContent = () => (
               </motion.div>
             ))}
           </div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.1 }}
+            className="mt-8 text-center"
+          >
+            <Link
+              to="/faq"
+              className="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+              <HelpCircle className="h-5 w-5" />
+              <span>Häufige Fragen & GFK-Grundlagen</span>
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
     </motion.div>
