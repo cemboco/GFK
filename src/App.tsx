@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon, Bot, ArrowRight, CheckCircle, Star, Users, Zap, Target, User, Coffee } from 'lucide-react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from './supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import CTAForm from './components/CTAForm';
@@ -21,10 +21,10 @@ import ContextModal from './components/ContextModal';
 import PerspectiveSelector from './components/PerspectiveSelector';
 import { needsMoreContext } from './utils/contextDetection';
 
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+// const supabase = createClient(
+//   import.meta.env.VITE_SUPABASE_URL,
+//   import.meta.env.VITE_SUPABASE_ANON_KEY
+// );
 
 // Separate component that uses useLocation (must be inside Router)
 function AppContent() {

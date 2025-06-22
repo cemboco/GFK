@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import { supabase } from '../supabaseClient';
 
 interface CTAFormProps {
   onSubmit: (email: string, name: string) => Promise<void>;

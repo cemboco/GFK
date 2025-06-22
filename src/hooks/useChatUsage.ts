@@ -1,10 +1,5 @@
+import { supabase } from '../supabaseClient';
 import { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 interface ChatUsage {
   messageCount: number;
@@ -14,7 +9,7 @@ interface ChatUsage {
   canSendMessage: boolean;
 }
 
-export function useChatUsage(user: any) {
+export const useChatUsage = (user: any) => {
   const [chatUsage, setChatUsage] = useState<ChatUsage | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -157,4 +152,4 @@ export function useChatUsage(user: any) {
     incrementMessageCount,
     getUpgradeMessage
   };
-} 
+}; 

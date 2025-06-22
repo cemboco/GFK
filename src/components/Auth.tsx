@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../supabaseClient';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import TermsModal from './TermsModal';
 import PrivacyPolicy from './PrivacyPolicy';
 
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+// const supabase = createClient(
+//   import.meta.env.VITE_SUPABASE_URL,
+//   import.meta.env.VITE_SUPABASE_ANON_KEY
+// );
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -123,6 +123,8 @@ export default function Auth() {
         setError(`Google-Anmeldung fehlgeschlagen: ${error.message}`);
         setIsLoading(false);
       }
+      // Note: Bei OAuth wird der User automatisch weitergeleitet
+      // Wir setzen isLoading nicht auf false, da die Seite weitergeleitet wird
     } catch (err) {
       console.error('Google sign in error:', err);
       setError('Ein Fehler ist bei der Google-Anmeldung aufgetreten.');

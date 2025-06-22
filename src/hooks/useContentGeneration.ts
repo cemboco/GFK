@@ -1,10 +1,5 @@
-import { useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import { supabase } from '../supabaseClient';
+import { useState, useCallback } from 'react';
 
 interface ContentRequest {
   type: 'hero' | 'about' | 'features' | 'testimonial' | 'cta' | 'example';
@@ -20,7 +15,7 @@ interface GeneratedContent {
   length: string;
 }
 
-export function useContentGeneration() {
+export const useContentGeneration = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -88,4 +83,4 @@ export function useContentGeneration() {
     isLoading,
     error
   };
-}
+};

@@ -1,13 +1,9 @@
+import { supabase } from '../supabaseClient';
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
 import { useNavigate, Link } from 'react-router-dom';
 import { User, History, Settings, LogOut, MessageSquare, Edit2, Save, X, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import { useChatUsage } from '../hooks/useChatUsage';
 
 interface Message {
   id: string;
