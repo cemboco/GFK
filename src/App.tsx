@@ -21,6 +21,7 @@ import ContextModal from './components/ContextModal';
 import PerspectiveSelector from './components/PerspectiveSelector';
 import { needsMoreContext } from './utils/contextDetection';
 import FAQ from './components/FAQ';
+import HomePage from './components/HomePage';
 
 // const supabase = createClient(
 //   import.meta.env.VITE_SUPABASE_URL,
@@ -29,7 +30,6 @@ import FAQ from './components/FAQ';
 
 // Separate component that uses useLocation (must be inside Router)
 function AppContent() {
-  const [activeTab, setActiveTab] = useState<'gfk' | 'about' | 'contact'>('gfk');
   const [input, setInput] = useState('');
   const [context, setContext] = useState('general');
   const [output, setOutput] = useState<{
@@ -83,11 +83,8 @@ function AppContent() {
 
   // Handle navigation state from Header component
   useEffect(() => {
-    if (location.state?.activeTab) {
-      setActiveTab(location.state.activeTab);
-      // Clear the state to prevent it from persisting
-      window.history.replaceState({}, document.title);
-    }
+    // This logic is now handled by routes, can be removed or simplified.
+    // For now, we'll keep it empty to avoid breaking anything that might depend on it.
   }, [location.state]);
 
   useEffect(() => {
@@ -523,384 +520,48 @@ Verwende natürliche, empathische Sprache.`;
       <Header
         user={user}
         handleSignOut={handleSignOut}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
       />
 
-        <Routes>
-          <Route path="/auth" element={user ? <Navigate to="/profile" /> : <Auth />} />
-          <Route path="/profile" element={user ? <Profile /> : <Navigate to="/auth" />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/" element={
-            <main className="max-w-7xl mx-auto px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
-              <AnimatePresence mode="wait">
-                {activeTab === 'about' ? (
-                  <AboutContent />
-                ) : activeTab === 'contact' ? (
-                  <Contact />
-                ) : (
-                  <motion.div
-                    key="gfk"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    className="space-y-16"
-                  >
-                    {/* Hero Section */}
-                    <section className="text-center space-y-8">
-                      <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="space-y-6"
-                      >
-                        <div className="inline-flex items-center space-x-2 bg-purple-50 text-purple-700 px-4 py-2 rounded-full text-sm font-medium">
-                          <Sparkles className="h-4 w-4" />
-                          <span>KI-gestützte Gewaltfreie Kommunikation</span>
-                        </div>
-                        
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                          Verwandle deine Worte in
-                          <span className="block bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                            empathische Kommunikation
-                          </span>
-                        </h1>
-                        
-                        <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                          Entdecke die Kraft der Gewaltfreien Kommunikation. Unsere KI hilft dir dabei, 
-                          alltägliche Nachrichten in einfühlsame und wirkungsvolle Botschaften zu verwandeln.
-                        </p>
-                      </motion.div>
-
-                      {/* Stats */}
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                        className="flex flex-wrap justify-center gap-8 text-center"
-                      >
-                        {[
-                          { icon: Users, value: '1.200+', label: 'Aktive Nutzer' },
-                          { icon: MessageCircle, value: '4.000+', label: 'Transformationen' },
-                        ].map((stat, index) => (
-                          <div key={index} className="flex items-center space-x-3">
-                            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                              <stat.icon className="h-6 w-6 text-purple-600" />
-                            </div>
-                            <div className="text-left">
-                              <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-                              <div className="text-sm text-gray-600">{stat.label}</div>
-                            </div>
-                          </div>
-                        ))}
-                      </motion.div>
-
-                      {/* Spenden-Link */}
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4 }}
-                        className="pt-4"
-                      >
-                        <a
-                          href="https://coff.ee/cemil"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-full font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
-                        >
-                          <Coffee className="h-5 w-5" />
-                          <span>Unterstütze GFKCoach ☕</span>
-                        </a>
-                        <p className="text-sm text-gray-500 mt-2">
-                          Eingeständnis: Diese App entstand, weil ich selber Kommunikations-Chaos bin. – Entwicklungsstatus: 73% weniger passive Aggression 🎉 – Ziel: Weltweites Ende von "Hättest du mal zugehört!"
-                          <br />
-                          Spendier mit Motivation – Garantiert: Dein Geld wird in Koffein & Empathie investiert.
-                        </p>
-                      </motion.div>
-                    </section>
-
-                    {/* Examples Section */}
-                    <motion.section
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.4 }}
-                      className="bg-white rounded-3xl shadow-xl p-8 lg:p-12"
-                    >
-                      <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                          Sieh die Transformation in Aktion
-                        </h2>
-                        <p className="text-lg text-gray-600">
-                          Erlebe, wie alltägliche Aussagen zu empathischen Botschaften werden
-                        </p>
-                      </div>
-
-                      <div className="grid gap-8 lg:grid-cols-2">
-                        {[
-                          {
-                            before: "Du kommst schon wieder zu spät!",
-                            after: "Mir ist aufgefallen, dass du 15 Minuten nach der vereinbarten Zeit kommst. Das frustriert mich, weil mir Verlässlichkeit wichtig ist. Könntest du mir bitte Bescheid geben, wenn du dich verspätest?"
-                          },
-                          {
-                            before: "Du hörst mir nie richtig zu!",
-                            after: "Wenn ich merke, dass du während unseres Gesprächs auf dein Handy schaust, fühle ich mich traurig, weil mir der Austausch mit dir wichtig ist. Wärst du bereit, dir Zeit für ein ungestörtes Gespräch zu nehmen?"
-                          }
-                        ].map((example, index) => (
-                          <motion.div
-                            key={index}
-                            initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.5 + index * 0.1 }}
-                            className="space-y-6"
-                          >
-                            <div className="bg-red-50 border border-red-200 rounded-2xl p-6">
-                              <div className="flex items-start space-x-3">
-                                <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                  <XIcon className="h-4 w-4 text-red-600" />
-                                </div>
-                                <div>
-                                  <h4 className="font-semibold text-red-800 mb-2">Vorher</h4>
-                                  <p className="text-red-700">"{example.before}"</p>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="flex justify-center">
-                              <ArrowRight className="h-6 w-6 text-purple-600" />
-                            </div>
-
-                            <div className="bg-green-50 border border-green-200 rounded-2xl p-6">
-                              <div className="flex items-start space-x-3">
-                                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                  <CheckCircle className="h-4 w-4 text-green-600" />
-                                </div>
-                                <div>
-                                  <h4 className="font-semibold text-green-800 mb-2">Nachher (GFK)</h4>
-                                  <p className="text-green-700">"{example.after}"</p>
-                                </div>
-                              </div>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </motion.section>
-
-                  {/* GFKTransformForm-Komponente */}
-                  <GFKTransformForm
-                    input={input}
-                    setInput={setInput}
-                    isLoading={isLoading}
-                    canUseService={canUseService}
-                    handleSubmit={handleSubmit}
-                    error={error}
-                    liveOutput={liveOutput}
-                    output={output}
-                    isTyping={isTyping}
-                    user={user}
-                    setShowChatDialog={setShowChatDialog}
-                    feedbackGiven={feedbackGiven}
-                    handleFeedback={handleFeedback}
-                    context={context}
-                    setContext={setContext}
-                    usageInfo={usageInfo}
-                  />
-
-                    {/* Features Section */}
-                    <motion.section
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.8 }}
-                      className="text-center space-y-12"
-                    >
-                      <div>
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                          Warum GFKCoach?
-                        </h2>
-                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                          Entdecke die Vorteile unserer KI-gestützten Kommunikationsplattform
-                        </p>
-                      </div>
-
-                      <div className="grid gap-8 md:grid-cols-3">
-                        {[
-                          {
-                            icon: Zap,
-                            title: 'Sofortige Transformation',
-                            description: 'Verwandle deine Nachrichten in Sekunden in empathische GFK-Formulierungen'
-                          },
-                          {
-                            icon: Target,
-                            title: 'Präzise Analyse',
-                            description: 'Unsere KI erkennt die vier GFK-Komponenten und formuliert sie klar und verständlich'
-                          },
-                          {
-                            icon: Heart,
-                            title: 'Empathische Kommunikation',
-                            description: 'Lerne, wie du Konflikte löst und Beziehungen stärkst durch gewaltfreie Sprache'
-                          }
-                        ].map((feature, index) => (
-                          <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.9 + index * 0.1 }}
-                            className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow"
-                          >
-                            <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                              <feature.icon className="h-8 w-8 text-purple-600" />
-                            </div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
-                            <p className="text-gray-600 leading-relaxed">{feature.description}</p>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </motion.section>
-
-                    {/* CTA Section */}
-                    <motion.section
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.0 }}
-                      className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-3xl shadow-2xl p-8 lg:p-12 text-white text-center relative overflow-hidden"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 backdrop-blur-sm"></div>
-                      <div className="relative z-10 space-y-8">
-                        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto">
-                          <Heart className="h-8 w-8 text-white" />
-                        </div>
-                        <div>
-                          <h2 className="text-3xl font-bold mb-4">Hilf uns, GFKCoach zu verbessern!</h2>
-                          <p className="text-xl text-purple-100 max-w-2xl mx-auto">
-                            Teile deine Erfahrungen mit uns und gestalte die Zukunft der empathischen Kommunikation mit.
-                          </p>
-                        </div>
-                        
-                        <form onSubmit={handleMessageSubmit} className="max-w-lg mx-auto space-y-4">
-                          <div className="grid gap-4 sm:grid-cols-2">
-                            <input
-                              type="text"
-                              value={name}
-                              onChange={(e) => setName(e.target.value)}
-                              placeholder="Dein Name"
-                              className="w-full px-6 py-4 rounded-2xl text-gray-900 bg-white/95 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-white/30 transition-all"
-                              required
-                            />
-                            <input
-                              type="email"
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                              placeholder="Deine E-Mail"
-                              className="w-full px-6 py-4 rounded-2xl text-gray-900 bg-white/95 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-white/30 transition-all"
-                              required
-                            />
-                          </div>
-                          <textarea
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Deine Nachricht oder Feedback..."
-                            rows={4}
-                            className="w-full px-6 py-4 rounded-2xl text-gray-900 bg-white/95 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-white/30 transition-all resize-none"
-                            required
-                          />
-                          <motion.button 
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            type="submit"
-                            disabled={isLoading}
-                            className={`w-full bg-white text-purple-600 px-8 py-4 rounded-2xl font-semibold hover:bg-gray-50 transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg ${
-                              isLoading && 'opacity-50 cursor-not-allowed'
-                            }`}
-                          >
-                            <Send className="h-5 w-5" />
-                            <span>{isLoading ? 'Wird gesendet...' : 'Nachricht senden'}</span>
-                          </motion.button>
-                        </form>
-                        
-                        {error && (
-                          <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-red-500/20 border border-red-300/30 rounded-2xl p-4 text-white max-w-lg mx-auto"
-                          >
-                            {error}
-                          </motion.div>
-                        )}
-                        {messageSuccess && (
-                          <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-green-500/20 border border-green-300/30 rounded-2xl p-4 text-white max-w-lg mx-auto"
-                          >
-                            Vielen Dank für deine Nachricht! Wir haben sie erhalten. 🎉
-                          </motion.div>
-                        )}
-                      </div>
-                    </motion.section>
-
-                  {/* FAQ Section */}
-                  <motion.section
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.3 }}
-                    className="bg-white rounded-3xl shadow-xl p-8 lg:p-12"
-                  >
-                    <div className="text-center mb-12">
-                      <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                        Häufig gestellte Fragen
-                      </h2>
-                      <p className="text-lg text-gray-600">
-                        Finde Antworten auf die wichtigsten Fragen zu GFKCoach
-                      </p>
-                    </div>
-
-                    <div className="space-y-6 max-w-4xl mx-auto">
-                      {[
-                        {
-                          question: "Was ist Gewaltfreie Kommunikation (GFK) und warum ist sie wichtig?",
-                          answer: "Gewaltfreie Kommunikation nach Marshall B. Rosenberg ist ein Ansatz, der Menschen dabei hilft, selbst in schwierigen Situationen einfühlsam und authentisch zu kommunizieren. Sie basiert auf vier Schritten: Beobachtung, Gefühl, Bedürfnis und Bitte. GFK reduziert Konflikte, verbessert Beziehungen und fördert gegenseitiges Verständnis."
-                        },
-                        {
-                          question: "Wie funktioniert die KI-Transformation bei GFKCoach?",
-                          answer: "Unsere KI analysiert deinen Text und erkennt automatisch die vier GFK-Komponenten. Sie formuliert dann eine empathische Version, die deine Beobachtungen, Gefühle, Bedürfnisse und Bitten klar ausdrückt. Du kannst verschiedene Kontexte wählen (Familie, Arbeit, Partnerschaft), um maßgeschneiderte Formulierungen zu erhalten."
-                        },
-                        {
-                          question: "Ist GFKCoach kostenlos und gibt es Nutzungslimits?",
-                          answer: "GFKCoach bietet 5 kostenlose Transformationen für nicht-registrierte Nutzer. Nach der kostenlosen Registrierung erhältst du unbegrenzte Transformationen und zusätzlich 3 Chat-Nachrichten pro Monat für persönliche GFK-Beratung. Premium-Pläne mit erweiterten Features sind in Planung."
-                        },
-                        {
-                          question: "Kann ich meine transformierten Texte speichern und später wiederfinden?",
-                          answer: "Ja! Nach der Registrierung werden alle deine Transformationen automatisch in deinem Profil gespeichert. Du kannst sie jederzeit in deinem persönlichen Bereich einsehen, bearbeiten oder als Referenz für zukünftige Gespräche verwenden."
-                        },
-                        {
-                          question: "Wie kann ich GFK in meinem Alltag am besten üben?",
-                          answer: "Beginne mit einfachen Situationen und übe regelmäßig. Nutze GFKCoach für verschiedene Kontexte und beobachte die Reaktionen. Der GFK-Coach (Chat-Funktion) kann dir bei spezifischen Fragen helfen. Wichtig ist, dass du authentisch bleibst - GFK ist ein Prozess, der Zeit und Übung braucht."
-                        }
-                      ].map((faq, index) => (
-                    <motion.div
-                          key={index}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 1.4 + index * 0.1 }}
-                          className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition-shadow"
-                        >
-                          <h3 className="text-xl font-bold text-purple-600 mb-3">
-                            {faq.question}
-                          </h3>
-                          <p className="text-gray-700 leading-relaxed">
-                            {faq.answer}
-                          </p>
-                        </motion.div>
-                      ))}
-                        </div>
-                  </motion.section>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </main>
-          } />
-        </Routes>
+        <main className="max-w-7xl mx-auto px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
+          <Routes>
+            <Route path="/auth" element={user ? <Navigate to="/profile" /> : <Auth />} />
+            <Route path="/profile" element={user ? <Profile /> : <Navigate to="/auth" />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/ueber" element={<AboutContent />} />
+            <Route path="/kontakt" element={<Contact />} />
+            <Route path="/home" element={
+              <HomePage
+                input={input}
+                setInput={setInput}
+                isLoading={isLoading}
+                canUseService={canUseService}
+                handleSubmit={handleSubmit}
+                error={error}
+                liveOutput={liveOutput}
+                output={output}
+                isTyping={isTyping}
+                user={user}
+                setShowChatDialog={setShowChatDialog}
+                feedbackGiven={feedbackGiven}
+                handleFeedback={handleFeedback}
+                context={context}
+                setContext={setContext}
+                usageInfo={usageInfo}
+                handleMessageSubmit={handleMessageSubmit}
+                name={name}
+                setName={setName}
+                email={email}
+                setEmail={setEmail}
+                message={message}
+                setMessage={setMessage}
+                messageSuccess={messageSuccess}
+              />
+            } />
+            <Route path="/" element={<Navigate to="/home" />} />
+          </Routes>
+        </main>
 
         {/* Footer */}
         <footer className="bg-white/80 backdrop-blur-xl mt-16 py-12 border-t border-gray-100">
@@ -918,7 +579,7 @@ Verwende natürliche, empathische Sprache.`;
                 © {new Date().getFullYear()} GFKCoach - Empathische Kommunikation für alle
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                Version 1.6.1 - "Tipp für die Praxis"-Box hinzugefügt
+                Version 1.6.2 - Refactoring der Routenstruktur
               </p>
               <div className="flex justify-center items-center gap-6 mt-2">
                 <button
@@ -1002,8 +663,8 @@ Verwende natürliche, empathische Sprache.`;
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               <div>
-                <span className="text-sm font-medium">Beta Version 1.6.1</span>
-                <p className="text-xs text-purple-100">"Tipp für die Praxis"-Box hinzugefügt</p>
+                <span className="text-sm font-medium">Beta Version 1.6.2</span>
+                <p className="text-xs text-purple-100">Refactoring der Routenstruktur</p>
               </div>
             </div>
             <button 

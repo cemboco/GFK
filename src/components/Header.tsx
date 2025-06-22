@@ -12,18 +12,21 @@ interface User {
 interface HeaderProps {
   user: User | null;
   handleSignOut: () => void;
-  activeTab: 'gfk' | 'about' | 'contact';
-  setActiveTab: (tab: 'gfk' | 'about' | 'contact') => void;
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (open: boolean) => void;
 }
+
+const navItems = [
+    { id: 'home', label: 'GFK Transform', icon: Sparkles, path: '/home' },
+    { id: 'ueber', label: 'Über GFK', icon: Info, path: '/ueber' },
+    { id: 'kontakt', label: 'Kontakt', icon: Mail, path: '/kontakt' },
+    { id: 'faq', label: 'FAQ', icon: HelpCircle, path: '/faq' },
+];
 
 const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
   const {
     user,
     handleSignOut,
-    activeTab,
-    setActiveTab,
     isMobileMenuOpen,
     setIsMobileMenuOpen
   } = props;
@@ -31,31 +34,13 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleNavigation = (tab: 'gfk' | 'about' | 'contact' | 'faq') => {
-    if (tab === 'faq') {
-      // FAQ ist eine separate Route
-      navigate('/faq');
-    } else {
-      // Wenn wir nicht auf der Hauptseite sind, navigiere dorthin und setze den Tab
-      if (location.pathname !== '/') {
-        navigate('/', { state: { activeTab: tab } });
-      } else {
-        setActiveTab(tab);
-      }
-    }
+  const handleNavigation = (path: string) => {
+    navigate(path);
     setIsMobileMenuOpen(false);
   };
 
-  const isActiveTab = (tab: 'gfk' | 'about' | 'contact' | 'faq') => {
-    if (tab === 'faq') {
-      return location.pathname === '/faq';
-    }
-    // Wenn wir auf der Hauptseite sind, verwende activeTab
-    if (location.pathname === '/') {
-      return activeTab === tab;
-    }
-    // Wenn wir auf einer anderen Seite sind, zeige keinen Tab als aktiv
-    return false;
+  const isActive = (path: string) => {
+    return location.pathname === path;
   };
 
   return (
@@ -83,19 +68,14 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
           </motion.div>
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
-            {[
-              { id: 'gfk', label: 'GFK Transform', icon: Sparkles },
-              { id: 'about', label: 'Über GFK', icon: Info },
-              { id: 'contact', label: 'Kontakt', icon: Mail },
-              { id: 'faq', label: 'FAQ', icon: HelpCircle }
-            ].map((item) => (
+            {navItems.map((item) => (
               <motion.button
                 key={item.id}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => handleNavigation(item.id as 'gfk' | 'about' | 'contact' | 'faq')}
+                onClick={() => handleNavigation(item.path)}
                 className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 ${
-                  isActiveTab(item.id as 'gfk' | 'about' | 'contact' | 'faq')
+                  isActive(item.path)
                     ? 'bg-purple-100 text-purple-700 shadow-sm'
                     : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
                 }`}
@@ -108,7 +88,11 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
               <div className="flex items-center space-x-2 ml-4">
                 <Link
                   to="/profile"
-                  className="px-4 py-2 rounded-xl font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+                  className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
+                    isActive('/profile') 
+                    ? 'bg-purple-100 text-purple-700 shadow-sm' 
+                    : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                  }`}
                 >
                   Profil
                 </Link>
@@ -147,17 +131,12 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
               exit={{ opacity: 0, height: 0 }}
               className="md:hidden mt-4 space-y-2 border-t border-gray-100 pt-4"
             >
-              {[
-                { id: 'gfk', label: 'GFK Transform', icon: Sparkles },
-                { id: 'about', label: 'Über GFK', icon: Info },
-                { id: 'contact', label: 'Kontakt', icon: Mail },
-                { id: 'faq', label: 'FAQ', icon: HelpCircle }
-              ].map((item) => (
+              {navItems.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => handleNavigation(item.id as 'gfk' | 'about' | 'contact' | 'faq')}
+                  onClick={() => handleNavigation(item.path)}
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
-                    isActiveTab(item.id as 'gfk' | 'about' | 'contact' | 'faq')
+                    isActive(item.path)
                       ? 'bg-purple-100 text-purple-700'
                       : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
                   }`}
@@ -171,7 +150,11 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
                   <Link
                     to="/profile"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 text-gray-600 hover:text-purple-600 hover:bg-purple-50"
+                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
+                        isActive('/profile')
+                        ? 'bg-purple-100 text-purple-700'
+                        : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                    }`}
                   >
                     <UserIcon className="h-5 w-5" />
                     <span>Profil</span>
