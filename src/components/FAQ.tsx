@@ -1,6 +1,7 @@
 import React from "react";
 import { ChevronDown, HelpCircle, Heart, MessageSquare, Book } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const faqData = [
   {
@@ -193,9 +194,12 @@ export default function FAQ() {
             <p className="text-slate-600 mb-4">
               Wenn Sie weitere Fragen haben oder Hilfe benötigen, kontaktieren Sie uns gerne.
             </p>
-            <button className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg">
+            <Link
+              to="/kontakt"
+              className="inline-block bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+            >
               Kontakt aufnehmen
-            </button>
+            </Link>
           </div>
         </motion.div>
       </div>
