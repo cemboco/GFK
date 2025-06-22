@@ -81,7 +81,7 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
     variant2: string;
   } | null>(null);
 
-  const { session, canUseService, incrementUsage, getRemainingUsage, getUsageInfo } = useUserTracking();
+  const { session, canUseService, incrementUsage, getRemainingUsage, getUsageInfo } = useUserTracking(user);
 
   const location = useLocation();
 
@@ -93,6 +93,13 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+    // Reset all relevant states to ensure a clean slate for the new anonymous user
+    setInput('');
+    setOutput(null);
+    setLiveOutput(null);
+    setError(null);
+    setFeedbackGiven(false);
+    // Any other state that should be cleared on logout
   };
 
   // Live typing effect
@@ -559,7 +566,7 @@ Verwende natürliche, empathische Sprache.`;
                 © {new Date().getFullYear()} GFKCoach - Empathische Kommunikation für alle
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                Version 1.6.6 - Fix: FAQ Kontakt-Button
+                Version 1.6.7 - Fix: State-Reset beim Logout
               </p>
               <div className="flex justify-center items-center gap-6 mt-2">
                 <button
@@ -643,8 +650,8 @@ Verwende natürliche, empathische Sprache.`;
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               <div>
-                <span className="text-sm font-medium">Beta Version 1.6.6</span>
-                <p className="text-xs text-purple-100">Fix: FAQ Kontakt-Button</p>
+                <span className="text-sm font-medium">Beta Version 1.6.7</span>
+                <p className="text-xs text-purple-100">Fix: State-Reset beim Logout</p>
               </div>
             </div>
             <button 
@@ -726,7 +733,7 @@ function App() {
       />
       {showVersionInfo && (
         <div className="fixed bottom-4 right-4 bg-gray-800 text-white text-xs px-2 py-1 rounded-full shadow-lg z-50">
-          Version 1.6.6
+          Version 1.6.7
         </div>
       )}
     </Router>

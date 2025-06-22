@@ -14,7 +14,7 @@ interface UserSession {
   maxUsage: number;
 }
 
-export function useUserTracking() {
+export function useUserTracking(user: any) {
   const [session, setSession] = useState<UserSession | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -53,23 +53,11 @@ export function useUserTracking() {
 
   useEffect(() => {
     initializeSession();
-  }, []);
+  }, [user]);
 
   const initializeSession = async () => {
+    setIsLoading(true);
     try {
-      // Check if user is authenticated
-      const { data: { user }, error } = await supabase.auth.getUser();
-      
-      // Check for invalid session error
-      if (error && error.message.includes('Session from session_id claim in JWT does not exist')) {
-        await supabase.auth.signOut();
-        // Continue with anonymous session after clearing invalid session
-        const anonymousSession = await getAnonymousUserSession();
-        setSession(anonymousSession);
-        setIsLoading(false);
-        return;
-      }
-      
       if (user) {
         // Authenticated user - unlimited usage
         const userSession = await getAuthenticatedUserSession(user.id);
@@ -81,6 +69,13 @@ export function useUserTracking() {
       }
     } catch (error) {
       console.error('Error initializing session:', error);
+      // Fallback to a safe default state in case of error
+      setSession({
+        id: getAnonymousUserId(),
+        type: 'anonymous',
+        usageCount: 0,
+        maxUsage: 5
+      });
     } finally {
       setIsLoading(false);
     }
