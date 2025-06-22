@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Users, MessageCircle, Coffee, Sparkles, ArrowRight, CheckCircle, X as XIcon, Zap, Target, Heart, Send } from 'lucide-react';
 import GFKTransformForm from './GFKTransformForm';
+import Testimonials from './Testimonials';
 
 interface HomePageProps {
   // Define types for props that are passed down
@@ -248,6 +249,24 @@ const HomePage: React.FC<HomePageProps> = (props) => {
               </motion.div>
             ))}
           </div>
+        </motion.section>
+
+        {/* Testimonials Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.0 }}
+          className="bg-purple-50/50 rounded-3xl shadow-xl p-8 lg:p-12"
+        >
+            <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Was unsere Nutzer über uns sagen
+                </h2>
+                <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                Echte Erfahrungen von Menschen, die ihre Kommunikation mit unserem GFK Coach transformiert haben.
+                </p>
+            </div>
+            <Testimonials />
         </motion.section>
 
         {/* CTA Section */}
