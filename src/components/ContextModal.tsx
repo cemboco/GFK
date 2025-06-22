@@ -70,6 +70,12 @@ export default function ContextModal({ isOpen, onClose, onSubmit, originalText }
     }
   };
 
+  const handlePrevious = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+    }
+  };
+
   const handleSkip = () => {
     onSubmit('Standard-Informationen: Allgemeine Situation');
     onClose();
@@ -160,12 +166,23 @@ export default function ContextModal({ isOpen, onClose, onSubmit, originalText }
 
           {/* Footer */}
           <div className="flex items-center justify-between p-6 border-t border-gray-200">
-            <button
-              onClick={handleSkip}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-            >
-              Überspringen
-            </button>
+            <div className="flex items-center space-x-3">
+              {currentQuestionIndex > 0 && (
+                <button
+                  onClick={handlePrevious}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors flex items-center space-x-2"
+                >
+                  <ArrowRight className="h-4 w-4 rotate-180" />
+                  <span>Zurück</span>
+                </button>
+              )}
+              <button
+                onClick={handleSkip}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+              >
+                Überspringen
+              </button>
+            </div>
             <div className="flex space-x-3">
               <button
                 onClick={onClose}
