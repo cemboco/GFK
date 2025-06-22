@@ -102,11 +102,6 @@ export default function Testimonials() {
             className="absolute w-[90%] h-full"
           >
             <div className="h-full bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-xl flex flex-col justify-center items-center p-8 space-y-4 border border-gray-100">
-              <div className="flex justify-center text-yellow-400 space-x-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} fill="currentColor" className="w-5 h-5" />
-                ))}
-              </div>
               <p className="text-base sm:text-lg text-center text-gray-700 leading-relaxed italic max-w-xl mx-auto">
                 "{testimonials[testimonialIndex].text}"
               </p>
