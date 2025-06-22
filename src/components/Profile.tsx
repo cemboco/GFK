@@ -17,11 +17,15 @@ interface Message {
   created_at: string;
 }
 
-export default function Profile() {
+interface ProfileProps {
+  user: any;
+  onSignOut: () => void;
+}
+
+export default function Profile({ user, onSignOut }: ProfileProps) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'profile' | 'messages' | 'settings'>('profile');
   const [profile, setProfile] = useState<any>(null);
-  const [user, setUser] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,26 +38,20 @@ export default function Profile() {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    fetchUserData();
-  }, []);
+    if (user) {
+      fetchUserData();
+    } else {
+      navigate('/auth');
+    }
+  }, [user]);
 
   const fetchUserData = async () => {
+    setIsLoading(true);
     try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
-      // Check for invalid session error
-      if (userError && userError.message.includes('Session from session_id claim in JWT does not exist')) {
-        await supabase.auth.signOut();
-        navigate('/auth');
-        return;
-      }
-      
       if (!user) {
         navigate('/auth');
         return;
       }
-
-      setUser(user);
 
       // Fetch profile data
       const { data: profileData, error: profileError } = await supabase
@@ -183,13 +181,8 @@ export default function Profile() {
   };
 
   const handleSignOut = async () => {
-    try {
-      await supabase.auth.signOut();
-      navigate('/');
-    } catch (err) {
-      console.error('Error signing out:', err);
-      setError('Fehler beim Abmelden');
-    }
+    await onSignOut();
+    navigate('/');
   };
 
   if (isLoading) {

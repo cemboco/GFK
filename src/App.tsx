@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon, Bot, ArrowRight, CheckCircle, Star, Users, Zap, Target, User, Coffee, HelpCircle } from 'lucide-react';
 import { supabase } from './supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation, useOutletContext } from 'react-router-dom';
 import CTAForm from './components/CTAForm';
 import FeedbackDialog from './components/FeedbackDialog';
 import PositiveFeedbackDialog from './components/PositiveFeedbackDialog';
@@ -506,8 +506,8 @@ Verwende natürliche, empathische Sprache.`;
 
         <main className="max-w-7xl mx-auto px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
           <Routes>
-            <Route path="/auth" element={user ? <Navigate to="/profile" /> : <Auth />} />
-            <Route path="/profile" element={user ? <Profile /> : <Navigate to="/auth" />} />
+            <Route path="/auth" element={user ? <Navigate to="/profile" replace /> : <Auth />} />
+            <Route path="/profile" element={user ? <Profile user={user} onSignOut={onSignOut} /> : <Navigate to="/auth" replace />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/ueber" element={<AboutContent />} />
             <Route path="/kontakt" element={<Contact />} />
