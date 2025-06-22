@@ -74,7 +74,7 @@ export default function Testimonials() {
 
   return (
     <div className="relative w-full max-w-4xl mx-auto flex flex-col items-center">
-      <div className="w-full h-[420px] md:h-[360px] relative flex items-center justify-center overflow-hidden">
+      <div className="w-full h-[360px] md:h-[320px] relative flex items-center justify-center overflow-hidden">
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
             key={page}
@@ -99,16 +99,16 @@ export default function Testimonials() {
                 paginate(-1);
               }
             }}
-            className="absolute w-full px-4 md:px-10"
+            className="absolute w-full px-4 md:px-8"
           >
             <motion.div 
               whileHover={{ scale: 1.02 }}
-              className="bg-white/90 backdrop-blur-sm border border-slate-200 rounded-3xl shadow-xl p-8 text-center space-y-6"
+              className="bg-white/90 backdrop-blur-sm border border-slate-200 rounded-3xl shadow-xl p-6 text-center space-y-4 max-w-2xl mx-auto"
             >
               {/* Quote Icon */}
               <div className="flex justify-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-2xl flex items-center justify-center">
-                  <Quote className="w-6 h-6 text-purple-600" />
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-2xl flex items-center justify-center">
+                  <Quote className="w-5 h-5 text-purple-600" />
                 </div>
               </div>
 
@@ -121,28 +121,28 @@ export default function Testimonials() {
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ delay: i * 0.1, type: "spring", stiffness: 200 }}
                   >
-                    <Star fill="currentColor" className="w-6 h-6" />
+                    <Star fill="currentColor" className="w-5 h-5" />
                   </motion.div>
                 ))}
               </div>
 
               {/* Testimonial Text */}
-              <p className="text-lg text-gray-700 leading-relaxed italic max-w-2xl mx-auto">
+              <p className="text-base text-gray-700 leading-relaxed italic max-w-xl mx-auto">
                 "{testimonials[testimonialIndex].text}"
               </p>
 
               {/* Author Info */}
-              <div className="flex flex-col items-center space-y-4">
+              <div className="flex flex-col items-center space-y-3">
                 <motion.img
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
                   src={testimonials[testimonialIndex].avatar}
                   alt={testimonials[testimonialIndex].name}
-                  className="w-16 h-16 rounded-2xl border-2 border-white shadow-lg"
+                  className="w-12 h-12 rounded-2xl border-2 border-white shadow-lg"
                 />
                 <div className="space-y-1">
-                  <div className="font-semibold text-gray-900 text-lg">
+                  <div className="font-semibold text-gray-900 text-base">
                     {testimonials[testimonialIndex].name}
                   </div>
                   <div className="text-gray-500 text-sm">
@@ -152,7 +152,7 @@ export default function Testimonials() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className={`mt-2 px-4 py-1.5 text-xs font-medium rounded-full ${testimonials[testimonialIndex].tagColor}`}
+                    className={`mt-2 px-3 py-1 text-xs font-medium rounded-full ${testimonials[testimonialIndex].tagColor}`}
                   >
                     {testimonials[testimonialIndex].tag}
                   </motion.div>
@@ -164,25 +164,25 @@ export default function Testimonials() {
       </div>
 
       {/* Navigation Controls */}
-      <div className="mt-8 flex items-center space-x-6">
+      <div className="mt-6 flex items-center space-x-4">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => paginate(-1)}
-          className="w-12 h-12 rounded-2xl bg-white border-2 border-purple-600 text-purple-600 flex items-center justify-center hover:bg-purple-50 transition-all duration-200 shadow-lg hover:shadow-xl"
+          className="w-10 h-10 rounded-2xl bg-white border-2 border-purple-600 text-purple-600 flex items-center justify-center hover:bg-purple-50 transition-all duration-200 shadow-lg hover:shadow-xl"
         >
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className="w-5 h-5" />
         </motion.button>
 
         {/* Dots */}
-        <div className="flex space-x-3">
+        <div className="flex space-x-2">
           {testimonials.map((_, i) => (
             <motion.button
               key={i}
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setPage([i, i > testimonialIndex ? 1 : -1])}
-              className={`w-3 h-3 rounded-full transition-all duration-200 ${
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
                 i === testimonialIndex 
                   ? 'bg-gradient-to-r from-purple-600 to-indigo-600 shadow-md' 
                   : 'bg-gray-300 hover:bg-purple-300'
@@ -195,9 +195,9 @@ export default function Testimonials() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => paginate(1)}
-          className="w-12 h-12 rounded-2xl bg-white border-2 border-purple-600 text-purple-600 flex items-center justify-center hover:bg-purple-50 transition-all duration-200 shadow-lg hover:shadow-xl"
+          className="w-10 h-10 rounded-2xl bg-white border-2 border-purple-600 text-purple-600 flex items-center justify-center hover:bg-purple-50 transition-all duration-200 shadow-lg hover:shadow-xl"
         >
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className="w-5 h-5" />
         </motion.button>
       </div>
     </div>
