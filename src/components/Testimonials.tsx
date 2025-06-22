@@ -38,24 +38,23 @@ const testimonials = [
 ];
 
 const variants = {
-  enter: (direction: number) => {
-    return {
-      x: direction > 0 ? 1000 : -1000,
-      opacity: 0
-    };
-  },
+  enter: (direction: number) => ({
+    x: direction > 0 ? 500 : -500,
+    opacity: 0,
+    scale: 0.8,
+  }),
   center: {
     zIndex: 1,
     x: 0,
-    opacity: 1
+    opacity: 1,
+    scale: 1,
   },
-  exit: (direction: number) => {
-    return {
-      zIndex: 0,
-      x: direction < 0 ? 1000 : -1000,
-      opacity: 0
-    };
-  }
+  exit: (direction: number) => ({
+    zIndex: 0,
+    x: direction < 0 ? 500 : -500,
+    opacity: 0,
+    scale: 0.8,
+  }),
 };
 
 const swipeConfidenceThreshold = 10000;
@@ -67,14 +66,14 @@ export default function Testimonials() {
   const [[page, direction], setPage] = useState([0, 0]);
 
   const paginate = (newDirection: number) => {
-    setPage([page + newDirection, newDirection]);
+    setPage([(page + newDirection + testimonials.length) % testimonials.length, newDirection]);
   };
 
-  const testimonialIndex = ((page % testimonials.length) + testimonials.length) % testimonials.length;
+  const testimonialIndex = page;
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto flex flex-col items-center">
-      <div className="w-full h-[360px] md:h-[320px] relative flex items-center justify-center overflow-hidden">
+    <div className="relative w-full max-w-3xl mx-auto flex flex-col items-center py-12">
+       <div className="w-full h-[380px] sm:h-[320px] relative flex items-center justify-center">
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
             key={page}
@@ -84,12 +83,13 @@ export default function Testimonials() {
             animate="center"
             exit="exit"
             transition={{
-              x: { type: "spring", stiffness: 300, damping: 30 },
-              opacity: { duration: 0.2 }
+              x: { type: 'spring', stiffness: 300, damping: 30 },
+              opacity: { duration: 0.2 },
+              scale: { duration: 0.2 },
             }}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={1}
+            dragElastic={0.7}
             onDragEnd={(e, { offset, velocity }) => {
               const swipe = swipePower(offset.x, velocity.x);
 
@@ -99,106 +99,67 @@ export default function Testimonials() {
                 paginate(-1);
               }
             }}
-            className="absolute w-full px-4 md:px-8"
+            className="absolute w-[90%] h-full"
           >
-            <motion.div 
-              whileHover={{ scale: 1.02 }}
-              className="bg-white/90 backdrop-blur-sm border border-slate-200 rounded-3xl shadow-xl p-6 text-center space-y-4 max-w-2xl mx-auto"
-            >
-              {/* Quote Icon */}
-              <div className="flex justify-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-2xl flex items-center justify-center">
-                  <Quote className="w-5 h-5 text-purple-600" />
-                </div>
-              </div>
-
-              {/* Stars */}
+            <div className="h-full bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-xl flex flex-col justify-center items-center p-8 space-y-4 border border-gray-100">
               <div className="flex justify-center text-yellow-400 space-x-1">
                 {[...Array(5)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ scale: 0, rotate: -180 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ delay: i * 0.1, type: "spring", stiffness: 200 }}
-                  >
-                    <Star fill="currentColor" className="w-5 h-5" />
-                  </motion.div>
+                  <Star key={i} fill="currentColor" className="w-5 h-5" />
                 ))}
               </div>
-
-              {/* Testimonial Text */}
-              <p className="text-base text-gray-700 leading-relaxed italic max-w-xl mx-auto">
+              <p className="text-base sm:text-lg text-center text-gray-700 leading-relaxed italic max-w-xl mx-auto">
                 "{testimonials[testimonialIndex].text}"
               </p>
-
-              {/* Author Info */}
-              <div className="flex flex-col items-center space-y-3">
-                <motion.img
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+              <div className="pt-4 flex flex-col items-center text-center">
+                <img
                   src={testimonials[testimonialIndex].avatar}
                   alt={testimonials[testimonialIndex].name}
-                  className="w-12 h-12 rounded-2xl border-2 border-white shadow-lg"
+                  className="w-14 h-14 rounded-full mb-3 border-2 border-purple-100 shadow-md"
                 />
-                <div className="space-y-1">
-                  <div className="font-semibold text-gray-900 text-base">
-                    {testimonials[testimonialIndex].name}
-                  </div>
-                  <div className="text-gray-500 text-sm">
-                    {testimonials[testimonialIndex].role}
-                  </div>
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className={`mt-2 px-3 py-1 text-xs font-medium rounded-full ${testimonials[testimonialIndex].tagColor}`}
-                  >
-                    {testimonials[testimonialIndex].tag}
-                  </motion.div>
+                <div className="font-semibold text-gray-900">{testimonials[testimonialIndex].name}</div>
+                <div className="text-gray-500 text-sm">{testimonials[testimonialIndex].role}</div>
+                <div className={`mt-2 px-3 py-1 text-xs font-medium rounded-full ${testimonials[testimonialIndex].tagColor}`}>
+                  {testimonials[testimonialIndex].tag}
                 </div>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>
 
       {/* Navigation Controls */}
-      <div className="mt-6 flex items-center space-x-4">
+      <div className="absolute top-1/2 -translate-y-1/2 w-full flex justify-between px-0 sm:px-4 z-10">
         <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.1, x: -5 }}
+          whileTap={{ scale: 0.9 }}
           onClick={() => paginate(-1)}
-          className="w-10 h-10 rounded-2xl bg-white border-2 border-purple-600 text-purple-600 flex items-center justify-center hover:bg-purple-50 transition-all duration-200 shadow-lg hover:shadow-xl"
+          className="w-12 h-12 rounded-full bg-white/70 backdrop-blur-sm border border-gray-200 text-purple-600 flex items-center justify-center hover:bg-purple-50 transition-colors duration-200 shadow-lg"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-6 h-6" />
         </motion.button>
-
-        {/* Dots */}
-        <div className="flex space-x-2">
-          {testimonials.map((_, i) => (
-            <motion.button
-              key={i}
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setPage([i, i > testimonialIndex ? 1 : -1])}
-              className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
-                i === testimonialIndex 
-                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 shadow-md' 
-                  : 'bg-gray-300 hover:bg-purple-300'
-              }`}
-            />
-          ))}
-        </div>
-
         <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.1, x: 5 }}
+          whileTap={{ scale: 0.9 }}
           onClick={() => paginate(1)}
-          className="w-10 h-10 rounded-2xl bg-white border-2 border-purple-600 text-purple-600 flex items-center justify-center hover:bg-purple-50 transition-all duration-200 shadow-lg hover:shadow-xl"
+          className="w-12 h-12 rounded-full bg-white/70 backdrop-blur-sm border border-gray-200 text-purple-600 flex items-center justify-center hover:bg-purple-50 transition-colors duration-200 shadow-lg"
         >
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight className="w-6 h-6" />
         </motion.button>
+      </div>
+      
+      {/* Dots */}
+      <div className="mt-8 flex space-x-2">
+        {testimonials.map((_, i) => (
+          <motion.button
+            key={i}
+            animate={{ scale: i === testimonialIndex ? 1.2 : 1 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            onClick={() => setPage([i, i > testimonialIndex ? 1 : -1])}
+            className={`w-3 h-3 rounded-full transition-colors duration-200 ${
+              i === testimonialIndex ? 'bg-purple-600' : 'bg-gray-300 hover:bg-purple-300'
+            }`}
+          />
+        ))}
       </div>
     </div>
   );
