@@ -918,7 +918,7 @@ Verwende natürliche, empathische Sprache.`;
                 © {new Date().getFullYear()} GFKCoach - Empathische Kommunikation für alle
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                Version 1.6.0 - OAuth-Integration, ContextModal-Verbesserungen & SPA-Routing
+                Version 1.6.1 - "Tipp für die Praxis"-Box hinzugefügt
               </p>
               <div className="flex justify-center items-center gap-6 mt-2">
                 <button
@@ -1002,8 +1002,8 @@ Verwende natürliche, empathische Sprache.`;
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               <div>
-                <span className="text-sm font-medium">Beta Version 1.6.0</span>
-                <p className="text-xs text-purple-100">OAuth-Integration, ContextModal-Verbesserungen & SPA-Routing</p>
+                <span className="text-sm font-medium">Beta Version 1.6.1</span>
+                <p className="text-xs text-purple-100">"Tipp für die Praxis"-Box hinzugefügt</p>
               </div>
             </div>
             <button 

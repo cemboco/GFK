@@ -1,5 +1,6 @@
 import React from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Lightbulb } from 'lucide-react';
 import GFKInputForm from './GFKInputForm';
 import GFKResults from './GFKResults';
 import GFKVariants from './GFKVariants';
@@ -30,7 +31,7 @@ interface GFKTransformFormProps {
 }
 
 const GFKTransformForm: React.FC<GFKTransformFormProps> = (props) => {
-  const { liveOutput, output } = props;
+  const { liveOutput, output, isTyping } = props;
 
   return (
     <>
@@ -73,6 +74,26 @@ const GFKTransformForm: React.FC<GFKTransformFormProps> = (props) => {
                 handleFeedback={props.handleFeedback}
               />
             </div>
+            
+            {/* Tipp für die Praxis */}
+            {!isTyping && output && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                className="mt-6 bg-yellow-50 border border-yellow-200 rounded-xl p-5 flex items-start space-x-4"
+              >
+                <div className="w-10 h-10 bg-yellow-400/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                  <Lightbulb className="w-5 h-5 text-yellow-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-yellow-800">Tipp für die Praxis</h4>
+                  <p className="text-yellow-700 leading-relaxed">
+                    Üben Sie diese Umformulierung zunächst für sich selbst, bevor Sie sie im Gespräch verwenden. Echte GFK entsteht durch innere Haltung, nicht nur durch die richtige Formulierung.
+                  </p>
+                </div>
+              </motion.div>
+            )}
           </div>
         )}
       </AnimatePresence>
