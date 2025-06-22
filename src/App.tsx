@@ -29,7 +29,12 @@ import HomePage from './components/HomePage';
 // );
 
 // Separate component that uses useLocation (must be inside Router)
-function AppContent() {
+function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: { 
+  user: any, 
+  onSignOut: () => void,
+  isMobileMenuOpen: boolean,
+  setIsMobileMenuOpen: (open: boolean) => void
+}) {
   const [input, setInput] = useState('');
   const [context, setContext] = useState('general');
   const [output, setOutput] = useState<{
@@ -52,8 +57,7 @@ function AppContent() {
   const [showPositiveFeedbackDialog, setShowPositiveFeedbackDialog] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showChatDialog, setShowChatDialog] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   
   // Context Modal states
   const [showContextModal, setShowContextModal] = useState(false);
@@ -86,28 +90,6 @@ function AppContent() {
     // This logic is now handled by routes, can be removed or simplified.
     // For now, we'll keep it empty to avoid breaking anything that might depend on it.
   }, [location.state]);
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  // Zeige Version-Info nach 2 Sekunden
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowVersionInfo(true);
-      setTimeout(() => setShowVersionInfo(false), 5000); // 5 Sekunden anzeigen
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -280,8 +262,6 @@ Verwende natürliche, empathische Sprache.`;
       await typeText(cleanData.need, (text) => {
         setLiveOutput(prev => prev ? { ...prev, need: text } : null);
       }, 25);
-
-      await new Promise(resolve => setTimeout(resolve, 300));
 
       await typeText(cleanData.request, (text) => {
         setLiveOutput(prev => prev ? { ...prev, request: text } : null);
@@ -519,7 +499,7 @@ Verwende natürliche, empathische Sprache.`;
       {/* Neuer Header */}
       <Header
         user={user}
-        handleSignOut={handleSignOut}
+        handleSignOut={onSignOut}
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
       />
@@ -698,9 +678,57 @@ Verwende natürliche, empathische Sprache.`;
 
 // Main App component that wraps everything in Router
 function App() {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [showVersionInfo, setShowVersionInfo] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  // Zeige Version-Info nach 2 Sekunden
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowVersionInfo(true);
+      setTimeout(() => setShowVersionInfo(false), 5000); // 5 Sekunden anzeigen
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
+  
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
+
   return (
     <Router>
-      <AppContent />
+      <AppContent 
+        user={user} 
+        onSignOut={handleSignOut} 
+        isMobileMenuOpen={isMobileMenuOpen}
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
+      />
+      {showVersionInfo && (
+        <div className="fixed bottom-4 right-4 bg-gray-800 text-white text-xs px-2 py-1 rounded-full shadow-lg z-50">
+          Version 1.6.2
+        </div>
+      )}
     </Router>
   );
 }
