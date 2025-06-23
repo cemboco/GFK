@@ -50,7 +50,7 @@ const variants = {
     scale: 1,
   },
   exit: (direction: number) => ({
-    zIndex: 0,
+      zIndex: 0,
     x: direction < 0 ? 500 : -500,
     opacity: 0,
     scale: 0.8,
@@ -144,17 +144,17 @@ export default function Testimonials() {
       
       {/* Dots */}
       <div className="mt-8 flex space-x-2">
-        {testimonials.map((_, i) => (
+          {testimonials.map((_, i) => (
           <motion.button
-            key={i}
+              key={i}
             animate={{ scale: i === testimonialIndex ? 1.2 : 1 }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-            onClick={() => setPage([i, i > testimonialIndex ? 1 : -1])}
-            className={`w-3 h-3 rounded-full transition-colors duration-200 ${
-              i === testimonialIndex ? 'bg-purple-600' : 'bg-gray-300 hover:bg-purple-300'
-            }`}
-          />
-        ))}
+              onClick={() => setPage([i, i > testimonialIndex ? 1 : -1])}
+              className={`w-3 h-3 rounded-full transition-colors duration-200 ${
+                i === testimonialIndex ? 'bg-purple-600' : 'bg-gray-300 hover:bg-purple-300'
+              }`}
+            />
+          ))}
       </div>
     </div>
   );
