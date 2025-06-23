@@ -966,7 +966,6 @@ const AboutContent = () => (
         </motion.div>
       </div>
     </motion.div>
-  );
-};
+);
 
 export default App;
