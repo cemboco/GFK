@@ -10,41 +10,49 @@ const corsHeaders = {
 
 const MAX_INPUTS_PER_IP = 5;
 
+/**
+ * Definiert die Anleitung für den Tonfall basierend auf dem Kontext.
+ */
+const toneGuidanceMap: Record<string, string> = {
+  familie: "familiär und herzlich, aber respektvoll",
+  arbeit: "professionell und sachlich, aber menschlich",
+  partnerschaft: "intim und liebevoll",
+  kind: "einfach und altersgerecht",
+  freunde: "entspannt und authentisch",
+  allgemein: "höflich und ausgewogen"
+};
+
 const GFKTransform = async (input: string, openai: OpenAI, context?: any, retryCount = 0, systemPrompt?: string): Promise<any> => {
   try {
     // Kontext-spezifische Anpassungen
     let contextPrompt = '';
     let styleInstructions = '';
+    let contextKey = 'allgemein';
     
     if (context) {
+      // Verwende den neuen Kontext-Schlüssel oder fallback auf alten
+      contextKey = context.relationship || context.context || 'allgemein';
+      
       // Kontext-spezifische Beispiele hinzufügen
-      if (context.relationship && context.relationship !== 'general') {
-        contextPrompt = getContextPrompt(context.relationship);
+      if (contextKey && contextKey !== 'general') {
+        contextPrompt = getContextPrompt(contextKey);
       } else if (context.contextExamples) {
         contextPrompt = `\n\n${context.contextExamples}\n\n`;
       }
       
       // Stil-Anweisungen basierend auf Kontext
-      const styleMap = {
-        child: 'Verwende einen sanften, einfühlsamen Ton. Sei geduldig und erklärend.',
-        business: 'Verwende einen professionellen, respektvollen Ton. Sei klar und strukturiert.',
-        partner: 'Verwende einen warmen, intimen Ton. Sei verletzlich und ehrlich.',
-        colleague: 'Verwende einen kooperativen, teamorientierten Ton. Sei konstruktiv und lösungsorientiert.',
-        general: 'Verwende einen ausgewogenen, empathischen Ton.'
-      };
-      
-      styleInstructions = styleMap[context.relationship] || styleMap.general;
+      styleInstructions = toneGuidanceMap[contextKey] || toneGuidanceMap.allgemein;
     }
 
     const completion = await openai.chat.completions.create({
-  model: "ft:gpt-3.5-turbo-0125:personal:gfk2:BjtkeU8m",
-  temperature: 0.3,
-  response_format: { type: "json_object" },
-  max_tokens: 520,
-  messages: [
-    {
-      role: "system",
-      content: systemPrompt || `Du bist ein neutrales Werkzeug zur Umformulierung von Texten in Gewaltfreie Kommunikation (GFK) nach Marshall Rosenberg.
+      model: "ft:gpt-3.5-turbo-0125:personal:gfk2:BjtkeU8m",
+      temperature: 0.3,
+      response_format: { type: "json_object" },
+      max_tokens: 520,
+      messages: [
+        {
+          role: "system",
+          content: systemPrompt || `Du bist ein neutrales Werkzeug zur Umformulierung von Texten in Gewaltfreie Kommunikation (GFK) nach Marshall Rosenberg.
 
 DEINE WICHTIGSTE REGEL:
 Beziehe die Eingabe des Nutzers NIEMALS auf dich selbst. Du bist ein unpersönlicher Text-Transformator. Die Aussage des Nutzers ist immer eine Situation, die er für eine dritte Person umformulieren möchte. Deine Antwort muss immer aus der Perspektive des Nutzers formuliert sein.
@@ -55,6 +63,10 @@ KRITISCHE EINSCHRÄNKUNGEN:
 - Erfinde KEINE neuen Fakten, Zeitangaben, Orte oder Personen
 - Bleibe so nah wie möglich am ursprünglichen Kontext und Inhalt
 - Wenn der Text vage ist, formuliere die GFK-Komponenten entsprechend vage
+
+Der Ton der Umformulierung muss zum Kontext '${contextKey}' passen und ${styleInstructions} sein.
+
+${contextPrompt}
 
 Analysiere die Absicht hinter der Aussage und übersetze sie in die 4 GFK-Komponenten:
 1.  **Beobachtung:** Was ist konkret passiert? (Ohne Bewertung, nur aus dem Text)
@@ -77,13 +89,13 @@ Antworte IMMER im folgenden JSON-Format:
   "variant1": "Vollständige GFK-Formulierung Variante 1",
   "variant2": "Vollständige GFK-Formulierung Variante 2"
 }`
-    },
-    {
-      role: "user",
-      content: input
-    }
-  ]
-});
+        },
+        {
+          role: "user",
+          content: input
+        }
+      ]
+    });
 
     const responseContent = completion.choices[0].message.content;
     
