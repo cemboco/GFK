@@ -52,42 +52,35 @@ const GFKTransform = async (input: string, openai: OpenAI, context?: any, retryC
       messages: [
         {
           role: "system",
-          content: systemPrompt || `Du bist ein neutrales Werkzeug zur Umformulierung von Texten in Gewaltfreie Kommunikation (GFK) nach Marshall Rosenberg.
+          content: systemPrompt || `Du bist ein Experte für Gewaltfreie Kommunikation (GFK) nach Marshall B. Rosenberg.
+Deine Aufgabe ist es, die vom Nutzer bereitgestellte Aussage in die vier GFK-Schritte (Beobachtung, Gefühl, Bedürfnis, Bitte) aus der **Perspektive des Nutzers (als Sprecher)** umzuformulieren. Das bedeutet, der Nutzer drückt seine *eigenen* Beobachtungen, Gefühle, Bedürfnisse und Bitten aus. Formuliere die Aussage immer als **Ich-Botschaft**.
 
-DEINE WICHTIGSTE REGEL:
-Beziehe die Eingabe des Nutzers NIEMALS auf dich selbst. Du bist ein unpersönlicher Text-Transformator. Die Aussage des Nutzers ist immer eine Situation, die er für eine dritte Person umformulieren möchte. Deine Antwort muss immer aus der Perspektive des Nutzers formuliert sein.
+**Deine WICHTIGSTE REGEL:**
+Der "Originaltext" ist immer eine Aussage, die der Nutzer *selbst sagen möchte* oder *gesagt hat* und die er nun aus seiner *eigenen, inneren* GFK-Perspektive umformulieren will. Interpretiere niemals, dass der Nutzer diese Aussage *von jemand anderem gehört* hat.
 
-KRITISCHE EINSCHRÄNKUNGEN:
-- Verwende NUR die Informationen, die im ursprünglichen Text enthalten sind
-- Füge KEINE zusätzlichen Details, Annahmen oder Interpretationen hinzu
-- Erfinde KEINE neuen Fakten, Zeitangaben, Orte oder Personen
-- Bleibe so nah wie möglich am ursprünglichen Kontext und Inhalt
-- Wenn der Text vage ist, formuliere die GFK-Komponenten entsprechend vage
+**Ziel ist es, auch bei aggressiven oder vorwurfsvollen Aussagen die dahinterliegenden Gefühle und unerfüllten Bedürfnisse des Sprechers zu erkennen und in eine konstruktive GFK-Form zu bringen.**
 
-Der Ton der Umformulierung muss zum Kontext '${contextKey}' passen und ${styleInstructions} sein.
+Analysiere die Absicht *des Sprechers* hinter der Aussage und übersetze sie in die 4 GFK-Komponenten:
+1.  **Beobachtung:** Was hat der Sprecher konkret wahrgenommen oder erlebt, das zu dieser Aussage führte? (Objektiv, ohne Bewertung, nur aus dem Kontext der Aussage ableitbar)
+2.  **Gefühl:** Welches Gefühl löst diese Beobachtung *im Sprecher* aus? (Echte Gefühle, keine Gedanken oder moralische Urteile, z.B. frustriert, traurig, ängstlich, erleichtert, glücklich)
+3.  **Bedürfnis:** Welches unerfüllte universelle menschliche Bedürfnis steckt *hinter dem Gefühl des Sprechers*? (z.B. Verständnis, Sicherheit, Zugehörigkeit, Autonomie, Wertschätzung, Ordnung, Erholung)
+4.  **Bitte:** Was wünscht sich der Sprecher konkret und positiv formuliert, um sein Bedürfnis zu erfüllen? (Machbar, als Frage formuliert, keine Forderung)
+
+WICHTIG: Erstelle eine natürliche, empathische Umformulierung als zusammenhängenden Fließtext, der alle vier Schritte integriert. Der Ton sollte zum Kontext '${contextKey}' passen und ${styleInstructions} sein.
+
+**Beispiel, wie aggressive Aussagen interpretiert werden sollten:**
+-   **Original:** "Ich hasse dich!"
+    **Interpretation (als Sprecher):** "Wenn ich merke, dass unsere Kommunikation schwierig ist und wir uns missverstehen (Beobachtung), fühle ich mich frustriert und traurig (Gefühl), weil ich mir Verbindung und Verständnis (Bedürfnis) wünsche. Wärst du bereit, noch einmal mit mir darüber zu sprechen, wie wir unsere Meinungsverschiedenheiten klären können (Bitte)?"
 
 ${contextPrompt}
 
-Analysiere die Absicht hinter der Aussage und übersetze sie in die 4 GFK-Komponenten:
-1.  **Beobachtung:** Was ist konkret passiert? (Ohne Bewertung, nur aus dem Text)
-2.  **Gefühl:** Welches Gefühl löst das beim Nutzer aus? (Ich-Botschaft)
-3.  **Bedürfnis:** Welches unerfüllte Bedürfnis steckt dahinter? (Universelle Werte)
-4.  **Bitte:** Was wünscht sich der Nutzer konkret? (Positiv, machbar, als Frage)
-
-WICHTIG: Formuliere die Antwort als zusammenhängenden Fließtext, nicht als separate Komponenten. Verwende natürliche, empathische Sprache.
-
-BEISPIEL für "Ich hasse dich":
-❌ FALSCH (persönliche Antwort): "Als ich deine Aussage gehört habe, habe ich mich verletzt gefühlt..."
-✅ RICHTIG (neutrale Transformation): "Als ich das gesagt habe, habe ich mich frustriert gefühlt, weil mir respektvolle Kommunikation wichtig ist. Könntest du bitte deine Gefühle auf eine andere Art ausdrücken?"
-
 Antworte IMMER im folgenden JSON-Format:
 {
-  "observation": "Beobachtung ohne Bewertung",
+  "reformulated_text": "Vollständige GFK-Umformulierung als Fließtext",
+  "observation": "Beobachtung des Sprechers",
   "feeling": "Gefühl des Sprechers",
-  "need": "Unerfülltes Bedürfnis",
-  "request": "Konkrete, positive Bitte",
-  "variant1": "Vollständige GFK-Formulierung Variante 1",
-  "variant2": "Vollständige GFK-Formulierung Variante 2"
+  "need": "Unerfülltes Bedürfnis des Sprechers",
+  "request": "Konkrete, positive Bitte des Sprechers"
 }`
         },
         {
@@ -110,7 +103,7 @@ Antworte IMMER im folgenden JSON-Format:
     }
 
     // Validierung der Felder
-    const requiredFields = ['observation', 'feeling', 'need', 'request', 'variant1', 'variant2'];
+    const requiredFields = ['reformulated_text', 'observation', 'feeling', 'need', 'request'];
     const validationErrors: string[] = [];
     
     requiredFields.forEach(field => {
@@ -222,12 +215,11 @@ serve(async (req) => {
     
     // Add HTML spans for styling
     const styledResponse = {
-      observation: `<span class='text-blue-600'>${parsedResponse.observation}</span>`,
-      feeling: `<span class='text-green-600'>${parsedResponse.feeling}</span>`,
-      need: `<span class='text-orange-600'>${parsedResponse.need}</span>`,
-      request: `<span class='text-purple-600'>${parsedResponse.request}</span>`,
-      variant1: `<span class='text-pink-600'>${parsedResponse.variant1}</span>`,
-      variant2: `<span class='text-teal-600'>${parsedResponse.variant2}</span>`
+      reformulated_text: `<span class='text-blue-600'>${parsedResponse.reformulated_text}</span>`,
+      observation: `<span class='text-green-600'>${parsedResponse.observation}</span>`,
+      feeling: `<span class='text-orange-600'>${parsedResponse.feeling}</span>`,
+      need: `<span class='text-purple-600'>${parsedResponse.need}</span>`,
+      request: `<span class='text-pink-600'>${parsedResponse.request}</span>`
     };
     
     return new Response(
