@@ -835,4 +835,23 @@ const AboutContent = () => (
                 className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition-shadow"
               >
                 <div className="flex items-start space-x-4">
-                  <div className={`w-12 h-12 bg-${step.color}-100 rounded-xl flex items-center justify-center flex-shrink-0`
+                  <div className={`w-12 h-12 bg-${step.color}-100 rounded-xl flex items-center justify-center flex-shrink-0`}>
+                    <span className="text-2xl">{step.icon}</span>
+                  </div>
+                  <div>
+                    <h3 className={`text-xl font-bold text-${step.color}-700 mb-2`}>
+                      {step.number}. {step.title}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed">{step.description}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  </motion.div>
+);
+
+export default App;
