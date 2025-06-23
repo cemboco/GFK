@@ -850,6 +850,121 @@ const AboutContent = () => (
           </div>
         </div>
 
+        {/* Wolfssprache und Giraffensprache */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="space-y-8"
+        >
+          <h2 className="text-2xl font-bold text-purple-600 text-center">Wolfssprache vs. Giraffensprache</h2>
+          <p className="text-center text-gray-600 max-w-3xl mx-auto">
+            Marshall Rosenberg verwendete diese Metaphern, um die verschiedenen Kommunikationsweisen zu veranschaulichen
+          </p>
+          
+          <div className="grid gap-8 lg:grid-cols-2">
+            {/* Wolfssprache */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.7 }}
+              className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-6 border border-red-100"
+            >
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                  <span className="text-2xl">🐺</span>
+                </div>
+                <h3 className="text-xl font-bold text-red-700">Wolfssprache</h3>
+              </div>
+              <p className="text-gray-700 mb-4">
+                Die Sprache der Gewalt - Urteile, Vorwürfe und Forderungen, die zu Konflikten führen.
+              </p>
+              <div className="space-y-3">
+                <div className="bg-white/60 rounded-lg p-3">
+                  <h4 className="font-semibold text-red-600 mb-2">Typische Merkmale:</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Urteile und Bewertungen ("Du bist faul!")</li>
+                    <li>• Vorwürfe und Schuldzuweisungen</li>
+                    <li>• Forderungen und Drohungen</li>
+                    <li>• Vergleiche und Konkurrenz</li>
+                    <li>• Verallgemeinerungen ("Du machst das immer!")</li>
+                  </ul>
+                </div>
+                <div className="bg-white/60 rounded-lg p-3">
+                  <h4 className="font-semibold text-red-600 mb-2">Beispiel:</h4>
+                  <p className="text-sm text-gray-600 italic">
+                    "Du bist so egoistisch! Du denkst nur an dich selbst. Du musst das sofort ändern!"
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Giraffensprache */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.8 }}
+              className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100"
+            >
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                  <span className="text-2xl">🦒</span>
+                </div>
+                <h3 className="text-xl font-bold text-green-700">Giraffensprache</h3>
+              </div>
+              <p className="text-gray-700 mb-4">
+                Die Sprache des Herzens - einfühlsam, authentisch und verbindend.
+              </p>
+              <div className="space-y-3">
+                <div className="bg-white/60 rounded-lg p-3">
+                  <h4 className="font-semibold text-green-600 mb-2">Typische Merkmale:</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Beobachtungen ohne Bewertung</li>
+                    <li>• Gefühle und Bedürfnisse ausdrücken</li>
+                    <li>• Bitten statt Forderungen</li>
+                    <li>• Empathie und Verständnis</li>
+                    <li>• Verantwortung für eigene Gefühle</li>
+                  </ul>
+                </div>
+                <div className="bg-white/60 rounded-lg p-3">
+                  <h4 className="font-semibold text-green-600 mb-2">Beispiel:</h4>
+                  <p className="text-sm text-gray-600 italic">
+                    "Wenn ich sehe, dass du deine Sachen liegen lässt, fühle ich mich frustriert, weil mir Ordnung wichtig ist. Könntest du bitte deine Sachen wegräumen?"
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Transformationsbeispiel */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9 }}
+            className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100"
+          >
+            <h3 className="text-xl font-bold text-blue-700 mb-4 text-center">Transformation: Von Wolf zu Giraffe</h3>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="bg-white/60 rounded-lg p-4">
+                <h4 className="font-semibold text-red-600 mb-2 flex items-center">
+                  <span className="text-lg mr-2">🐺</span> Wolfssprache
+                </h4>
+                <p className="text-gray-700 italic">
+                  "Du bist so unzuverlässig! Du kommst immer zu spät. Das ist respektlos!"
+                </p>
+              </div>
+              <div className="bg-white/60 rounded-lg p-4">
+                <h4 className="font-semibold text-green-600 mb-2 flex items-center">
+                  <span className="text-lg mr-2">🦒</span> Giraffensprache
+                </h4>
+                <p className="text-gray-700 italic">
+                  "Wenn du später kommst als vereinbart, fühle ich mich enttäuscht, weil mir Pünktlichkeit wichtig ist. Könntest du bitte das nächste Mal rechtzeitig da sein?"
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
