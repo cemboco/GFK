@@ -53,7 +53,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
             className="flex items-center space-x-3"
           >
             <Link to="/" className="flex items-center space-x-3">
-              <div className="w-[80px] h-[80px] rounded-xl overflow-hidden flex items-center justify-center bg-white">
+              <div className="w-[80px] h-[80px] rounded-xl overflow-hidden flex items-center justify-center">
                 <img src="/logo.png" alt="GFKCoach Logo" className="w-[80px] h-[80px] object-contain" />
               </div>
               <div>
