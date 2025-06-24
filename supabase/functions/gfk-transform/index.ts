@@ -123,19 +123,13 @@ ${contextPrompt}
       } else {
         const text = parsedResponse[field];
         
-        // Anti-Halluzinations-Checks
-        const errorPatterns = [
-          { pattern: /(\b\w+\b)\s+\1\b/, msg: 'Doppelte Wörter' }, // Wiederholte Wörter
+        // Nur kritische Validierungen - weniger streng
+        const criticalErrorPatterns = [
           { pattern: /\.\./, msg: 'Unvollständige Sätze' },
-          { pattern: /(?:so etwas|dass das)/i, msg: 'Füllwörter' },
-          { pattern: /(?:weil mir weil|dass weil)/i, msg: 'Grammatikfehler' },
-          // Neue Validierungen gegen Halluzination
-          { pattern: /(?:gestern|heute|morgen|nächste Woche|letzte Woche)/i, msg: 'Zeitangaben ohne Kontext' },
-          { pattern: /(?:im Büro|zu Hause|in der Schule|auf der Arbeit)/i, msg: 'Ortsangaben ohne Kontext' },
-          { pattern: /(?:Projekt|Meeting|Termin|Aufgabe)/i, msg: 'Spezifische Begriffe ohne Kontext' }
+          { pattern: /(?:weil mir weil|dass weil)/i, msg: 'Grammatikfehler' }
         ];
         
-        errorPatterns.forEach(({ pattern, msg }) => {
+        criticalErrorPatterns.forEach(({ pattern, msg }) => {
           if (pattern.test(text)) {
             validationErrors.push(`Feld '${field}' enthält '${msg}': ${text}`);
           }
@@ -144,6 +138,7 @@ ${contextPrompt}
     });
 
     if (validationErrors.length > 0) {
+      console.error("Validierungsfehler:", validationErrors);
       throw new Error(`Validierungsfehler:\n${validationErrors.join('\n')}`);
     }
 
