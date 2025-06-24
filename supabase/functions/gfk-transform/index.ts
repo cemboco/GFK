@@ -47,6 +47,7 @@ const GFKTransform = async (input: string, openai: OpenAI, context?: any, retryC
     const completion = await openai.chat.completions.create({
       model: "ft:gpt-3.5-turbo-0125:personal:gfk2:BjtkeU8m",
       temperature: 0.3,
+      response_format: { type: "json_object" },
       max_tokens: 520,
       messages: [
         {
@@ -85,6 +86,10 @@ ${contextPrompt}
   "need": "Unerfülltes Bedürfnis des Sprechers",
   "request": "Konkrete, positive Bitte des Sprechers"
 }`
+        },
+        {
+          role: "user",
+          content: "Please respond in json format."
         },
         {
           role: "user",
