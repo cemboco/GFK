@@ -196,7 +196,7 @@ KRITISCHE EINSCHRÄNKUNGEN:
 - Bleibe so nah wie möglich am ursprünglichen Kontext und Inhalt
 
 Analysiere die Absicht hinter der Aussage und übersetze sie in die 4 GFK-Komponenten:
-1. Beobachtung: Was ist konkret passiert? (Ohne Bewertung, nur aus dem Text)
+1. Beobachtung: Beschreibe konkret die Situation oder das Verhalten anderer Personen, das dich zu deiner Aussage bewegt hat. Verwende keine Bewertung und nenne nicht deine eigene Äußerung oder deren Empfang.
 2. Gefühl: Welches Gefühl hat der Sender dabei? (Ich-Botschaft)
 3. Bedürfnis: Welches unerfüllte Bedürfnis steckt dahinter? (Universelle Werte)
 4. Bitte: Was wünscht sich der Sender konkret? (Positiv, machbar, als Frage)
@@ -584,7 +584,7 @@ Verwende natürliche, empathische Sprache.`;
                 © {new Date().getFullYear()} GFKCoach - Empathische Kommunikation für alle
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                Version 1.6.13 - Fließtext-Integration & Debug-Logging
+                Version 1.6.14 - Verbesserter Prompt & Kontext-Handling
               </p>
               <div className="flex justify-center items-center gap-6 mt-2">
                 <button
@@ -668,7 +668,7 @@ Verwende natürliche, empathische Sprache.`;
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               <div>
-                <span className="text-sm font-medium">Beta Version 1.6.13</span>
+                <span className="text-sm font-medium">Beta Version 1.6.14</span>
                 <p className="text-xs text-purple-100">Fließtext-Integration & Debug-Logging</p>
               </div>
             </div>
@@ -751,7 +751,7 @@ function App() {
       />
       {showVersionInfo && (
         <div className="fixed bottom-4 right-4 bg-gray-800 text-white text-xs px-2 py-1 rounded-full shadow-lg z-50">
-          Version 1.6.13
+          Version 1.6.14
         </div>
       )}
     </Router>
