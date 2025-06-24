@@ -69,6 +69,9 @@ Formuliere die vom Nutzer eingegebene Aussage in die vier GFK-Schritte um, wobei
 3. **Bedürfnis:** Welches unerfüllte Bedürfnis steckt dahinter?
 4. **Bitte:** Was wünscht sich der Nutzer konkret?
 
+**WICHTIG - FLIEßTEXT ERSTELLEN:**
+Erstelle zusätzlich zu den einzelnen Schritten eine natürliche, empathische Umformulierung als zusammenhängenden Text, der alle vier GFK-Schritte flüssig miteinander verbindet. Dieser Fließtext sollte wie eine authentische GFK-Aussage klingen, die jemand tatsächlich sagen würde.
+
 **Ziel:** Auch aggressive Aussagen in konstruktive GFK-Form bringen, die die dahinterliegenden Gefühle und Bedürfnisse des Sprechers ausdrücken.
 
 Der Ton sollte zum Kontext '${contextKey}' passen und ${styleInstructions} sein.
@@ -77,7 +80,7 @@ ${contextPrompt}
 
 **Antworte IMMER im folgenden JSON-Format:**
 {
-  "reformulated_text": "Vollständige GFK-Umformulierung als Fließtext aus der Sprecher-Perspektive",
+  "reformulated_text": "Vollständige GFK-Umformulierung als zusammenhängender Fließtext, der alle vier Schritte natürlich verbindet",
   "observation": "Beobachtung des Sprechers",
   "feeling": "Gefühl des Sprechers", 
   "need": "Unerfülltes Bedürfnis des Sprechers",

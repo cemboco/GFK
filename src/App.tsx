@@ -53,8 +53,7 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
     feeling: string;
     need: string;
     request: string;
-    variant1: string;
-    variant2: string;
+    reformulated_text: string;
   } | null>(null);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -88,8 +87,7 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
     feeling: string;
     need: string;
     request: string;
-    variant1: string;
-    variant2: string;
+    reformulated_text: string;
   } | null>(null);
 
   const { session, canUseService, incrementUsage, getRemainingUsage, getUsageInfo } = useUserTracking(user);
@@ -197,6 +195,9 @@ Analysiere die Absicht hinter der Aussage und übersetze sie in die 4 GFK-Kompon
 3. Bedürfnis: Welches unerfüllte Bedürfnis steckt dahinter? (Universelle Werte)
 4. Bitte: Was wünscht sich der Sender konkret? (Positiv, machbar, als Frage)
 
+WICHTIG - FLIEßTEXT ERSTELLEN:
+Erstelle zusätzlich zu den einzelnen Schritten eine natürliche, empathische Umformulierung als zusammenhängenden Text, der alle vier GFK-Schritte flüssig miteinander verbindet. Dieser Fließtext sollte wie eine authentische GFK-Aussage klingen, die jemand tatsächlich sagen würde.
+
 WICHTIG: Formuliere die Antwort aus der SENDER-Perspektive: "Als ich das gesagt habe, habe ich mich... gefühlt, weil mir... wichtig ist. Könntest du bitte...?"
 
 Verwende natürliche, empathische Sprache.`
@@ -215,6 +216,9 @@ Analysiere die Absicht hinter der Aussage und übersetze sie in die 4 GFK-Kompon
 2. Gefühl: Welches Gefühl löst das beim Empfänger aus? (Ich-Botschaft)
 3. Bedürfnis: Welches unerfüllte Bedürfnis steckt dahinter? (Universelle Werte)
 4. Bitte: Was wünscht sich der Empfänger konkret? (Positiv, machbar, als Frage)
+
+WICHTIG - FLIEßTEXT ERSTELLEN:
+Erstelle zusätzlich zu den einzelnen Schritten eine natürliche, empathische Umformulierung als zusammenhängenden Text, der alle vier GFK-Schritte flüssig miteinander verbindet. Dieser Fließtext sollte wie eine authentische GFK-Antwort klingen, die jemand tatsächlich sagen würde.
 
 WICHTIG: Formuliere die Antwort aus der EMPFÄNGER-Perspektive: "Als ich deine Aussage gehört habe, habe ich mich... gefühlt, weil mir... wichtig ist. Könntest du bitte...?"
 
@@ -255,8 +259,7 @@ Verwende natürliche, empathische Sprache.`;
         feeling: (data.feeling || '').replace(/<[^>]*>/g, ''),
         need: (data.need || '').replace(/<[^>]*>/g, ''),
         request: (data.request || '').replace(/<[^>]*>/g, ''),
-        variant1: (data.variant1 || '').replace(/<[^>]*>/g, ''),
-        variant2: (data.variant2 || '').replace(/<[^>]*>/g, '')
+        reformulated_text: (data.reformulated_text || '').replace(/<[^>]*>/g, '')
       };
 
       // Initialize live output
@@ -265,8 +268,7 @@ Verwende natürliche, empathische Sprache.`;
         feeling: '',
         need: '',
         request: '',
-        variant1: '',
-        variant2: ''
+        reformulated_text: ''
       });
 
       // Type each component with delays
@@ -290,19 +292,11 @@ Verwende natürliche, empathische Sprache.`;
         setLiveOutput(prev => prev ? { ...prev, request: text } : null);
       }, 20);
 
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      // Type variant1
-      await typeText(cleanData.variant1, (text) => {
-        setLiveOutput(prev => prev ? { ...prev, variant1: text } : null);
+      await typeText(cleanData.reformulated_text, (text) => {
+        setLiveOutput(prev => prev ? { ...prev, reformulated_text: text } : null);
       }, 15);
 
       await new Promise(resolve => setTimeout(resolve, 500));
-
-      // Type variant2
-      await typeText(cleanData.variant2, (text) => {
-        setLiveOutput(prev => prev ? { ...prev, variant2: text } : null);
-      }, 15);
 
       // Set final output with HTML styling - ensure all fields exist
       setOutput({
@@ -310,8 +304,7 @@ Verwende natürliche, empathische Sprache.`;
         feeling: data.feeling || '',
         need: data.need || '',
         request: data.request || '',
-        variant1: data.variant1 || '',
-        variant2: data.variant2 || ''
+        reformulated_text: data.reformulated_text || ''
       });
       setIsTyping(false);
 
@@ -585,7 +578,7 @@ Verwende natürliche, empathische Sprache.`;
                 © {new Date().getFullYear()} GFKCoach - Empathische Kommunikation für alle
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                Version 1.6.12 - Verbesserter GFK-System-Prompt
+                Version 1.6.13 - Fließtext-Integration & Debug-Logging
               </p>
               <div className="flex justify-center items-center gap-6 mt-2">
                 <button
@@ -669,8 +662,8 @@ Verwende natürliche, empathische Sprache.`;
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               <div>
-                <span className="text-sm font-medium">Beta Version 1.6.12</span>
-                <p className="text-xs text-purple-100">Verbesserter GFK-System-Prompt</p>
+                <span className="text-sm font-medium">Beta Version 1.6.13</span>
+                <p className="text-xs text-purple-100">Fließtext-Integration & Debug-Logging</p>
               </div>
             </div>
             <button 
@@ -752,7 +745,7 @@ function App() {
       />
       {showVersionInfo && (
         <div className="fixed bottom-4 right-4 bg-gray-800 text-white text-xs px-2 py-1 rounded-full shadow-lg z-50">
-          Version 1.6.12
+          Version 1.6.13
         </div>
       )}
     </Router>
