@@ -111,19 +111,23 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
               Was möchtest du sagen?
             </label>
             
-            {/* Übungs-Button für registrierte Nutzer */}
-            {user && onOpenExerciseModal && (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                type="button"
-                onClick={onOpenExerciseModal}
-                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-medium rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
-              >
-                <Target className="h-4 w-4" />
-                <span>GFK-Übung</span>
-              </motion.button>
-            )}
+            {/* Übungs-Button für alle Nutzer (grau für nicht-registrierte) */}
+            <motion.button
+              whileHover={{ scale: user ? 1.05 : 1 }}
+              whileTap={{ scale: user ? 0.95 : 1 }}
+              type="button"
+              onClick={user ? onOpenExerciseModal : undefined}
+              disabled={!user}
+              className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-xl shadow-md transition-all duration-200 ${
+                user 
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-lg'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              <Target className="h-4 w-4" />
+              <span>GFK-Übung</span>
+              {!user && <span className="text-xs ml-1">(Anmeldung erforderlich)</span>}
+            </motion.button>
             
             {/* Usage Display */}
             <div className="flex items-center space-x-2">
