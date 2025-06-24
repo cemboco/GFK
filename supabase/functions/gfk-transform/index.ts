@@ -91,6 +91,13 @@ ${contextPrompt}
       ]
     });
 
+    // DEBUG: Log den tatsächlich verwendeten systemPrompt
+    console.log("DEBUG - Verwendeter systemPrompt:", systemPrompt ? "CUSTOM" : "FALLBACK");
+    if (systemPrompt) {
+      console.log("DEBUG - Custom systemPrompt Länge:", systemPrompt.length);
+      console.log("DEBUG - Custom systemPrompt (erste 200 Zeichen):", systemPrompt.substring(0, 200));
+    }
+
     const responseContent = completion.choices[0].message.content;
     
     // Versuche direkte JSON-Parsung und handle potentielle Markdown

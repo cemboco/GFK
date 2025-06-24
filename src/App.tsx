@@ -236,6 +236,11 @@ Verwende natürliche, empathische Sprache.`;
         }
       });
 
+      // DEBUG: Log den gesendeten systemPrompt
+      console.log("DEBUG - Gesendete Perspektive:", perspective);
+      console.log("DEBUG - Gesendeter systemPrompt Länge:", perspectivePrompt.length);
+      console.log("DEBUG - Gesendeter systemPrompt (erste 200 Zeichen):", perspectivePrompt.substring(0, 200));
+
       if (functionError) {
         throw new Error(functionError.message);
       }
