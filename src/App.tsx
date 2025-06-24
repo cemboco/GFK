@@ -90,7 +90,7 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
     reformulated_text: string;
   } | null>(null);
 
-  const { session, canUseService, incrementUsage, getRemainingUsage, getUsageInfo } = useUserTracking(user);
+  const { session, isLoading: userTrackingLoading, canUseService, incrementUsage, getRemainingUsage, getUsageInfo } = useUserTracking(user);
 
   const location = useLocation();
 
@@ -146,6 +146,12 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
   }, [input]);
 
   const performTransformation = async (textToTransform: string, additionalContext?: string, perspective?: 'sender' | 'receiver') => {
+    // Warte bis die User-Tracking-Session initialisiert ist
+    if (userTrackingLoading) {
+      setError('Lade Benutzerdaten... Bitte warten Sie einen Moment.');
+      return;
+    }
+
     if (!canUseService()) {
       const remaining = getRemainingUsage();
       if (remaining === 0 && !user && !anonFeedbackGiven) {

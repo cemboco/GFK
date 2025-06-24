@@ -56,6 +56,8 @@ const GFKTransformForm: React.FC<GFKTransformFormProps> = (props) => {
                 liveOutput={liveOutput}
                 output={output}
                 isTyping={props.isTyping}
+                user={props.user}
+                setShowChatDialog={props.setShowChatDialog}
               />
               <FeedbackSection
                 output={output}

@@ -33,6 +33,15 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = (props) => {
+    // Debug-Ausgabe
+    console.log('HomePage Props:', {
+      input: props.input,
+      isLoading: props.isLoading,
+      canUseService: props.canUseService,
+      user: props.user,
+      error: props.error
+    });
+
     return (
         <motion.div
         key="gfk"

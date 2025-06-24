@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Bot } from 'lucide-react';
 import * as Switch from '@radix-ui/react-switch';
 
 interface GFKVariantsProps {
   output: any;
   liveOutput: any;
   isTyping: boolean;
+  user?: any;
+  setShowChatDialog?: (open: boolean) => void;
 }
 
-const GFKVariants: React.FC<GFKVariantsProps> = ({ output, liveOutput, isTyping }) => {
+const GFKVariants: React.FC<GFKVariantsProps> = ({ output, liveOutput, isTyping, user, setShowChatDialog }) => {
   const [showFlowText, setShowFlowText] = useState(false);
   if (!liveOutput && !output) return null;
 
@@ -35,6 +38,17 @@ const GFKVariants: React.FC<GFKVariantsProps> = ({ output, liveOutput, isTyping 
           </Switch.Root>
           <span className="text-sm text-gray-600">Fließtext</span>
         </div>
+        {output && !isTyping && setShowChatDialog && (
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => user ? setShowChatDialog(true) : window.location.href = '/auth'}
+            className="flex items-center space-x-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-xl hover:bg-purple-200 transition-colors"
+          >
+            <Bot className="h-4 w-4" />
+            <span>{user ? 'GFK-Coach fragen' : 'Coach (Anmeldung erforderlich)'}</span>
+          </motion.button>
+        )}
       </div>
       <div className="space-y-6">
         {showFlowText ? (

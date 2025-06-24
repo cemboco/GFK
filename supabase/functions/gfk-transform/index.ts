@@ -201,34 +201,52 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Check IP usage
-    const { data: ipData, error: ipError } = await supabase
-      .from('ip_usage')
-      .select('usage_count')
-      .eq('ip', clientIP)
-      .single();
-
-    if (ipError && ipError.code !== 'PGRST116') { // PGRST116 means no rows found
-      throw new Error('Fehler beim Überprüfen der IP-Nutzung.');
+    // Prüfe, ob der Benutzer authentifiziert ist
+    const authHeader = req.headers.get('authorization');
+    let isAuthenticated = false;
+    
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        const token = authHeader.substring(7);
+        const { data: { user }, error } = await supabase.auth.getUser(token);
+        isAuthenticated = !!user && !error;
+      } catch (error) {
+        console.log('Auth error:', error);
+        isAuthenticated = false;
+      }
     }
 
-    const currentCount = ipData?.usage_count || 0;
+    // Nur für nicht-authentifizierte Benutzer: IP-Limit prüfen
+    if (!isAuthenticated) {
+      // Check IP usage
+      const { data: ipData, error: ipError } = await supabase
+        .from('ip_usage')
+        .select('usage_count')
+        .eq('ip', clientIP)
+        .single();
 
-    if (currentCount >= MAX_INPUTS_PER_IP) {
-      throw new Error('Sie haben das Limit für Eingaben erreicht.');
-    }
+      if (ipError && ipError.code !== 'PGRST116') { // PGRST116 means no rows found
+        throw new Error('Fehler beim Überprüfen der IP-Nutzung.');
+      }
 
-    // Update IP usage
-    const { error: updateError } = await supabase
-      .from('ip_usage')
-      .upsert({
-        ip: clientIP,
-        usage_count: currentCount + 1,
-        last_used: new Date().toISOString()
-      });
+      const currentCount = ipData?.usage_count || 0;
 
-    if (updateError) {
-      throw new Error('Fehler beim Aktualisieren der IP-Nutzung.');
+      if (currentCount >= MAX_INPUTS_PER_IP) {
+        throw new Error('Sie haben das Limit für Eingaben erreicht. Bitte registrieren Sie sich für unbegrenzte Nutzung.');
+      }
+
+      // Update IP usage
+      const { error: updateError } = await supabase
+        .from('ip_usage')
+        .upsert({
+          ip: clientIP,
+          usage_count: currentCount + 1,
+          last_used: new Date().toISOString()
+        });
+
+      if (updateError) {
+        throw new Error('Fehler beim Aktualisieren der IP-Nutzung.');
+      }
     }
 
     const apiKey = Deno.env.get('OPENAI_API_KEY');
