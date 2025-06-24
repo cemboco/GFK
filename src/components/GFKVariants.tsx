@@ -43,7 +43,7 @@ const GFKVariants: React.FC<GFKVariantsProps> = ({ output, liveOutput, isTyping 
             animate={{ opacity: 1, y: 0 }}
             className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl p-6 border border-purple-100 shadow"
           >
-            <h4 className="font-semibold text-purple-700 mb-2">GFK als Fließtext </h4>
+            <h4 className="font-semibold text-purple-700 mb-2"> So können Sie es empathisch ausdrücken: </h4>
             <p className="text-gray-900 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: output?.reformulated_text || '— Kein Fließtext generiert —' }} />
           </motion.div>
         ) : (
