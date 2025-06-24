@@ -397,6 +397,9 @@ export default function Profile({ user, onSignOut }: ProfileProps) {
                     transition={{ delay: 0.2 }}
                     className="mt-8"
                   >
+                    <div className="bg-blue-100 p-4 rounded-xl mb-4">
+                      <p className="text-blue-800">Test: GFKProgress sollte hier erscheinen</p>
+                    </div>
                     <GFKProgress user={user} />
                   </motion.div>
                 </motion.div>
