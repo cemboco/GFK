@@ -25,7 +25,7 @@ interface ProfileProps {
 
 export default function Profile({ user, onSignOut }: ProfileProps) {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'profile' | 'messages' | 'settings' | 'progress'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'messages' | 'settings'>('profile');
   const [profile, setProfile] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -251,17 +251,6 @@ export default function Profile({ user, onSignOut }: ProfileProps) {
                     )}
                   </button>
                   <button
-                    onClick={() => setActiveTab('progress')}
-                    className={`w-full flex items-center px-4 py-2 rounded-lg transition-colors ${
-                      activeTab === 'progress'
-                        ? 'bg-purple-100 text-purple-700'
-                        : 'text-gray-600 hover:bg-purple-50'
-                    }`}
-                  >
-                    <TrendingUp className="h-5 w-5 mr-2" />
-                    GFK-Fortschritt
-                  </button>
-                  <button
                     onClick={() => setActiveTab('settings')}
                     className={`w-full flex items-center px-4 py-2 rounded-lg transition-colors ${
                       activeTab === 'settings'
@@ -400,6 +389,16 @@ export default function Profile({ user, onSignOut }: ProfileProps) {
                       </div>
                     )}
                   </div>
+
+                  {/* GFK Level System Box */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="mt-8"
+                  >
+                    <GFKProgress user={user} />
+                  </motion.div>
                 </motion.div>
               )}
 
@@ -496,60 +495,6 @@ export default function Profile({ user, onSignOut }: ProfileProps) {
                       >
                         Account löschen
                       </button>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {activeTab === 'progress' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="space-y-6"
-                >
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold text-gray-900">GFK-Fortschritt</h2>
-                    <Link
-                      to="/"
-                      className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                    >
-                      <Home className="h-4 w-4 mr-2" />
-                      Neue Transformation
-                    </Link>
-                  </div>
-                  
-                  <GFKProgress user={user} />
-                  
-                  <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4">Tipps für Ihren GFK-Fortschritt</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-start space-x-3">
-                        <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-purple-600 text-sm font-bold">1</span>
-                        </div>
-                        <div>
-                          <h4 className="font-medium text-gray-900">Regelmäßig üben</h4>
-                          <p className="text-sm text-gray-600">Versuchen Sie täglich eine GFK-Transformation zu machen, um Ihre Fähigkeiten zu verbessern.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start space-x-3">
-                        <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-purple-600 text-sm font-bold">2</span>
-                        </div>
-                        <div>
-                          <h4 className="font-medium text-gray-900">Verschiedene Kontexte testen</h4>
-                          <p className="text-sm text-gray-600">Experimentieren Sie mit verschiedenen Situationen: Familie, Arbeit, Freunde.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start space-x-3">
-                        <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-purple-600 text-sm font-bold">3</span>
-                        </div>
-                        <div>
-                          <h4 className="font-medium text-gray-900">Reflektieren Sie Ihre Transformationen</h4>
-                          <p className="text-sm text-gray-600">Schauen Sie sich Ihre gespeicherten GFK-Texte an und beobachten Sie Ihre Entwicklung über die Zeit.</p>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </motion.div>
