@@ -113,7 +113,7 @@ ${contextPrompt}
       parsedResponse = JSON.parse(cleanedJson);
     }
 
-    // Validierung der Felder
+    // Validierung der Felder - sehr tolerant
     const requiredFields = ['reformulated_text', 'observation', 'feeling', 'need', 'request'];
     const validationErrors: string[] = [];
     
@@ -123,10 +123,9 @@ ${contextPrompt}
       } else {
         const text = parsedResponse[field];
         
-        // Nur kritische Validierungen - weniger streng
+        // Nur sehr kritische Validierungen
         const criticalErrorPatterns = [
-          { pattern: /\.\./, msg: 'Unvollständige Sätze' },
-          { pattern: /(?:weil mir weil|dass weil)/i, msg: 'Grammatikfehler' }
+          { pattern: /\.\./, msg: 'Unvollständige Sätze' }
         ];
         
         criticalErrorPatterns.forEach(({ pattern, msg }) => {
@@ -137,7 +136,36 @@ ${contextPrompt}
       }
     });
 
-    if (validationErrors.length > 0) {
+    // Wenn nur wenige Felder fehlen, versuche sie zu reparieren
+    if (validationErrors.length > 0 && validationErrors.length <= 2) {
+      console.log("Versuche fehlende Felder zu reparieren...");
+      
+      // Fallback-Werte für fehlende Felder
+      if (!parsedResponse.reformulated_text) {
+        parsedResponse.reformulated_text = `${parsedResponse.observation || 'Beobachtung'} - ${parsedResponse.feeling || 'Gefühl'} - ${parsedResponse.need || 'Bedürfnis'} - ${parsedResponse.request || 'Bitte'}`;
+      }
+      
+      if (!parsedResponse.observation) {
+        parsedResponse.observation = "Ich beobachte die Situation";
+      }
+      
+      if (!parsedResponse.feeling) {
+        parsedResponse.feeling = "Ich fühle mich betroffen";
+      }
+      
+      if (!parsedResponse.need) {
+        parsedResponse.need = "Ich brauche Verständnis";
+      }
+      
+      if (!parsedResponse.request) {
+        parsedResponse.request = "Können wir darüber sprechen?";
+      }
+      
+      console.log("Felder repariert, fahre fort...");
+      return parsedResponse;
+    }
+
+    if (validationErrors.length > 2) {
       console.error("Validierungsfehler:", validationErrors);
       throw new Error(`Validierungsfehler:\n${validationErrors.join('\n')}`);
     }
@@ -146,11 +174,48 @@ ${contextPrompt}
 
   } catch (error) {
     console.error("GFK-Transformationsfehler:", error);
+    console.error("Input:", input);
+    console.error("Context:", context);
+    console.error("RetryCount:", retryCount);
     
     // Automatischer Wiederholungsmechanismus
     if (error.message.includes('Validierungsfehler') && retryCount < 2) {
       console.log(`Wiederholungsversuch ${retryCount + 1}/2`);
       return GFKTransform(input, openai, context, retryCount + 1, systemPrompt);
+    }
+    
+    // Spezifischere Fehlermeldungen
+    if (error.message.includes('rate limit') || error.message.includes('quota')) {
+      throw new Error("API-Limit erreicht. Bitte versuchen Sie es später erneut.");
+    }
+    
+    if (error.message.includes('timeout')) {
+      throw new Error("Zeitüberschreitung. Bitte versuchen Sie es erneut.");
+    }
+    
+    if (error.message.includes('network') || error.message.includes('fetch')) {
+      throw new Error("Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung.");
+    }
+    
+    // Fallback: Versuche mit einfacherem Prompt
+    if (retryCount === 0) {
+      console.log("Versuche mit vereinfachtem Prompt...");
+      const simplePrompt = `Formuliere diesen Text in GFK um:
+1. Beobachtung: Was ist passiert?
+2. Gefühl: Wie fühlst du dich?
+3. Bedürfnis: Was brauchst du?
+4. Bitte: Was wünschst du dir?
+
+Antworte im JSON-Format:
+{
+  "reformulated_text": "Vollständiger GFK-Text",
+  "observation": "Beobachtung",
+  "feeling": "Gefühl", 
+  "need": "Bedürfnis",
+  "request": "Bitte"
+}`;
+      
+      return GFKTransform(input, openai, context, retryCount + 1, simplePrompt);
     }
     
     throw new Error("GFK-Transformation fehlgeschlagen. Bitte Eingabe überprüfen oder neu formulieren.");
