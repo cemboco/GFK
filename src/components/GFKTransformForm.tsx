@@ -27,6 +27,8 @@ interface GFKTransformFormProps {
   context?: string;
   setContext?: (context: string) => void;
   usageInfo?: UsageInfo | null;
+  handleContextSubmit?: (context: string) => void;
+  handleOpenExerciseModal?: () => void;
 }
 
 const GFKTransformForm: React.FC<GFKTransformFormProps> = (props) => {
@@ -45,6 +47,7 @@ const GFKTransformForm: React.FC<GFKTransformFormProps> = (props) => {
         setContext={props.setContext}
         user={props.user}
         usageInfo={props.usageInfo}
+        onOpenExerciseModal={props.handleOpenExerciseModal}
       />
 
       {/* Results */}

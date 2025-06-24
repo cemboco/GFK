@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, ChevronDown, Crown, AlertCircle, Lock, Send } from 'lucide-react';
+import { Sparkles, ChevronDown, Crown, AlertCircle, Lock, Send, Target } from 'lucide-react';
 import { useChatUsage } from '../hooks/useChatUsage';
 
 interface UsageInfo {
@@ -19,6 +19,7 @@ interface GFKInputFormProps {
   setContext?: (context: string) => void;
   user: any;
   usageInfo?: UsageInfo | null;
+  onOpenExerciseModal?: () => void;
 }
 
 const GFKInputForm: React.FC<GFKInputFormProps> = ({
@@ -31,7 +32,8 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
   context = 'general',
   setContext,
   user,
-  usageInfo
+  usageInfo,
+  onOpenExerciseModal
 }) => {
   const { chatUsage, isLoading: chatUsageLoading } = useChatUsage(user);
   
@@ -108,6 +110,20 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
             <label htmlFor="input" className="block text-lg font-semibold text-gray-800">
               Was möchtest du sagen?
             </label>
+            
+            {/* Übungs-Button für registrierte Nutzer */}
+            {user && onOpenExerciseModal && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                type="button"
+                onClick={onOpenExerciseModal}
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-medium rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+              >
+                <Target className="h-4 w-4" />
+                <span>GFK-Übung</span>
+              </motion.button>
+            )}
             
             {/* Usage Display */}
             <div className="flex items-center space-x-2">

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, HelpCircle, MessageSquare, ArrowRight } from 'lucide-react';
+import { X, HelpCircle, MessageSquare, ArrowRight, Target, Brain, Heart } from 'lucide-react';
 
 interface ContextModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (context: string) => void;
   originalText: string;
+  user?: any; // Für die Prüfung, ob der Nutzer registriert ist
 }
 
 const questions = [
@@ -42,9 +43,14 @@ const questions = [
   }
 ];
 
-export default function ContextModal({ isOpen, onClose, onSubmit, originalText }: ContextModalProps) {
+export default function ContextModal({ isOpen, onClose, onSubmit, originalText, user }: ContextModalProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
+
+  // Prüfe, ob der Nutzer registriert ist
+  if (!user) {
+    return null; // Modal nicht anzeigen für nicht-registrierte Nutzer
+  }
 
   const handleAnswerChange = (questionId: string, answer: string) => {
     setAnswers(prev => ({
@@ -101,9 +107,9 @@ export default function ContextModal({ isOpen, onClose, onSubmit, originalText }
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <div className="flex items-center space-x-3">
-              <HelpCircle className="h-6 w-6 text-purple-600" />
+              <Target className="h-6 w-6 text-purple-600" />
               <div>
-                <h2 className="text-xl font-bold text-gray-900">Mehr Informationen für bessere Ergebnisse</h2>
+                <h2 className="text-xl font-bold text-gray-900">GFK-Übung: Deine Situation vertiefen</h2>
                 <p className="text-sm text-gray-600">Deine Aussage: "{originalText}"</p>
               </div>
             </div>
@@ -131,9 +137,17 @@ export default function ContextModal({ isOpen, onClose, onSubmit, originalText }
           {/* Content */}
           <div className="p-6">
             <div className="mb-6">
-              <p className="text-gray-700 mb-4">
-                Für eine präzisere GFK-Formulierung brauchen wir etwas mehr Informationen. 
-                Beantworte die folgenden Fragen, um die Situation besser zu verstehen.
+              <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-4 mb-4">
+                <div className="flex items-start space-x-3">
+                  <Brain className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
+                  <div className="text-sm text-purple-800">
+                    <p className="font-medium mb-1">💡 GFK-Übung für registrierte Nutzer</p>
+                    <p>Vertiefe deine Situation durch diese strukturierten Fragen. Das hilft dir, die vier GFK-Schritte besser zu verstehen und anzuwenden.</p>
+                  </div>
+                </div>
+              </div>
+              <p className="text-gray-700">
+                Beantworte die folgenden Fragen, um deine GFK-Formulierung zu verbessern und mehr über die Situation zu lernen.
               </p>
             </div>
 
@@ -154,10 +168,10 @@ export default function ContextModal({ isOpen, onClose, onSubmit, originalText }
               
               <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
                 <div className="flex items-start space-x-3">
-                  <MessageSquare className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <Heart className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div className="text-sm text-blue-800">
-                    <p className="font-medium mb-1">Tipp:</p>
-                    <p>Sei so konkret wie möglich. Je mehr Details du gibst, desto besser kann die KI deine Situation verstehen und eine passende GFK-Formulierung erstellen.</p>
+                    <p className="font-medium mb-1">GFK-Tipp:</p>
+                    <p>Diese Übung hilft dir, die Beobachtung (Was ist passiert?) und das Bedürfnis (Was ist dir wichtig?) klarer zu erkennen. Das sind die Grundlagen für eine gute GFK-Formulierung.</p>
                   </div>
                 </div>
               </div>
@@ -201,7 +215,7 @@ export default function ContextModal({ isOpen, onClose, onSubmit, originalText }
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
               >
-                <span>{currentQuestionIndex === questions.length - 1 ? 'Fertig' : 'Weiter'}</span>
+                <span>{currentQuestionIndex === questions.length - 1 ? 'Übung beenden' : 'Weiter'}</span>
                 {currentQuestionIndex < questions.length - 1 && <ArrowRight className="h-4 w-4" />}
               </motion.button>
             </div>

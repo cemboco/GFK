@@ -30,6 +30,8 @@ interface HomePageProps {
   message: string;
   setMessage: (value: string) => void;
   messageSuccess: boolean;
+  handleContextSubmit?: (context: string) => void;
+  handleOpenExerciseModal?: () => void;
 }
 
 const HomePage: React.FC<HomePageProps> = (props) => {
@@ -207,6 +209,8 @@ const HomePage: React.FC<HomePageProps> = (props) => {
         context={props.context}
         setContext={props.setContext}
         usageInfo={props.usageInfo}
+        handleContextSubmit={props.handleContextSubmit}
+        handleOpenExerciseModal={props.handleOpenExerciseModal}
       />
 
         {/* Features Section */}

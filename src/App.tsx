@@ -133,14 +133,7 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
       return;
     }
 
-    // Prüfe, ob mehr Kontext benötigt wird
-    if (needsMoreContext(input.trim())) {
-      setPendingInput(input.trim());
-      setShowContextModal(true);
-      return;
-    }
-
-    // Zeige Perspektiven-Auswahl
+    // Zeige direkt Perspektiven-Auswahl (ohne automatische Kontext-Erkennung)
     setPendingInput(input.trim());
     setShowPerspectiveSelector(true);
   }, [input]);
@@ -401,6 +394,10 @@ const perspectivePrompt = perspective === 'sender'
     }
   };
 
+  const handleOpenExerciseModal = () => {
+    setShowContextModal(true);
+  };
+
   const handlePerspectiveSelect = (perspective: 'sender' | 'receiver') => {
     setSelectedPerspective(perspective);
     setShowPerspectiveSelector(false);
@@ -596,6 +593,8 @@ const perspectivePrompt = perspective === 'sender'
                 message={message}
                 setMessage={setMessage}
                 messageSuccess={messageSuccess}
+                handleContextSubmit={handleContextSubmit}
+                handleOpenExerciseModal={handleOpenExerciseModal}
               />
             } />
             <Route path="/" element={<Navigate to="/home" />} />
@@ -722,6 +721,7 @@ const perspectivePrompt = perspective === 'sender'
           onClose={() => setShowContextModal(false)}
           onSubmit={handleContextSubmit}
           originalText={pendingInput}
+          user={user}
         />
 
         {/* Perspective Selector */}
