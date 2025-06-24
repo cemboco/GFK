@@ -1,9 +1,10 @@
 import { supabase } from '../supabaseClient';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, History, Settings, LogOut, MessageSquare, Edit2, Save, X, Home } from 'lucide-react';
+import { User, History, Settings, LogOut, MessageSquare, Edit2, Save, X, Home, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useChatUsage } from '../hooks/useChatUsage';
+import GFKProgress from './GFKProgress';
 
 interface Message {
   id: string;
@@ -24,7 +25,7 @@ interface ProfileProps {
 
 export default function Profile({ user, onSignOut }: ProfileProps) {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'profile' | 'messages' | 'settings'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'messages' | 'settings' | 'progress'>('profile');
   const [profile, setProfile] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -248,6 +249,17 @@ export default function Profile({ user, onSignOut }: ProfileProps) {
                         {messages.length}
                       </span>
                     )}
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('progress')}
+                    className={`w-full flex items-center px-4 py-2 rounded-lg transition-colors ${
+                      activeTab === 'progress'
+                        ? 'bg-purple-100 text-purple-700'
+                        : 'text-gray-600 hover:bg-purple-50'
+                    }`}
+                  >
+                    <TrendingUp className="h-5 w-5 mr-2" />
+                    GFK-Fortschritt
                   </button>
                   <button
                     onClick={() => setActiveTab('settings')}
@@ -484,6 +496,60 @@ export default function Profile({ user, onSignOut }: ProfileProps) {
                       >
                         Account löschen
                       </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === 'progress' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-6"
+                >
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-2xl font-bold text-gray-900">GFK-Fortschritt</h2>
+                    <Link
+                      to="/"
+                      className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                    >
+                      <Home className="h-4 w-4 mr-2" />
+                      Neue Transformation
+                    </Link>
+                  </div>
+                  
+                  <GFKProgress user={user} />
+                  
+                  <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">Tipps für Ihren GFK-Fortschritt</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-purple-600 text-sm font-bold">1</span>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-900">Regelmäßig üben</h4>
+                          <p className="text-sm text-gray-600">Versuchen Sie täglich eine GFK-Transformation zu machen, um Ihre Fähigkeiten zu verbessern.</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-purple-600 text-sm font-bold">2</span>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-900">Verschiedene Kontexte testen</h4>
+                          <p className="text-sm text-gray-600">Experimentieren Sie mit verschiedenen Situationen: Familie, Arbeit, Freunde.</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-purple-600 text-sm font-bold">3</span>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-900">Gefühle und Bedürfnisse reflektieren</h4>
+                          <p className="text-sm text-gray-600">Nutzen Sie die interaktive Bearbeitung, um Ihre persönlichen Gefühle und Bedürfnisse zu erkunden.</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
