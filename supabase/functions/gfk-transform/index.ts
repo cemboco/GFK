@@ -89,7 +89,7 @@ ${contextPrompt}
         },
         {
           role: "user",
-          content: "Please respond in json format."
+          content: "IMPORTANT: You must respond in valid JSON format only. Do not include any text outside the JSON object."
         },
         {
           role: "user",
@@ -204,13 +204,10 @@ ${contextPrompt}
     // Fallback: Versuche mit einfacherem Prompt
     if (retryCount === 0) {
       console.log("Versuche mit vereinfachtem Prompt...");
-      const simplePrompt = `Formuliere diesen Text in GFK um:
-1. Beobachtung: Was ist passiert?
-2. Gefühl: Wie fühlst du dich?
-3. Bedürfnis: Was brauchst du?
-4. Bitte: Was wünschst du dir?
+      const simplePrompt = `Du bist ein GFK-Experte. Formuliere den gegebenen Text in GFK um.
 
-Antworte im JSON-Format:
+WICHTIG: Antworte NUR in gültigem JSON-Format!
+
 {
   "reformulated_text": "Vollständiger GFK-Text",
   "observation": "Beobachtung",
