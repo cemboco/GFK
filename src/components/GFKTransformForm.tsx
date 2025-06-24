@@ -2,7 +2,7 @@ import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Lightbulb } from 'lucide-react';
 import GFKInputForm from './GFKInputForm';
-import GFKResults from './GFKResults';
+import GFKVariants from './GFKVariants';
 import FeedbackSection from './FeedbackSection';
 
 interface UsageInfo {
@@ -52,14 +52,11 @@ const GFKTransformForm: React.FC<GFKTransformFormProps> = (props) => {
         {(liveOutput || output) && (
           <div className="mt-12">
             <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
-              <GFKResults
+              <GFKVariants
                 liveOutput={liveOutput}
                 output={output}
                 isTyping={props.isTyping}
-                user={props.user}
-                setShowChatDialog={props.setShowChatDialog}
               />
-              
               <FeedbackSection
                 output={output}
                 isTyping={props.isTyping}
