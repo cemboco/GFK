@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Lightbulb } from 'lucide-react';
 import GFKInputForm from './GFKInputForm';
 import GFKVariants from './GFKVariants';
 import FeedbackSection from './FeedbackSection';
-import InteractiveGFKOutput from './InteractiveGFKOutput';
 
 interface UsageInfo {
   remaining: number;
@@ -34,11 +33,6 @@ interface GFKTransformFormProps {
 
 const GFKTransformForm: React.FC<GFKTransformFormProps> = (props) => {
   const { liveOutput, output, isTyping } = props;
-  const [updatedOutput, setUpdatedOutput] = useState<any>(null);
-
-  const handleOutputUpdate = (newOutput: any) => {
-    setUpdatedOutput(newOutput);
-  };
 
   return (
     <>
@@ -59,16 +53,7 @@ const GFKTransformForm: React.FC<GFKTransformFormProps> = (props) => {
       {/* Results */}
       <AnimatePresence>
         {(liveOutput || output) && (
-          <div className="mt-12 space-y-8">
-            {/* Interactive GFK Output */}
-            <InteractiveGFKOutput
-              output={updatedOutput || output}
-              isTyping={isTyping}
-              onUpdate={handleOutputUpdate}
-              user={props.user}
-            />
-
-            {/* Original GFK Variants */}
+          <div className="mt-12">
             <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
               <GFKVariants
                 liveOutput={liveOutput}
@@ -91,7 +76,7 @@ const GFKTransformForm: React.FC<GFKTransformFormProps> = (props) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
-                className="bg-yellow-50 border border-yellow-200 rounded-xl p-5 flex items-start space-x-4"
+                className="mt-6 bg-yellow-50 border border-yellow-200 rounded-xl p-5 flex items-start space-x-4"
               >
                 <div className="w-10 h-10 bg-yellow-400/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                   <Lightbulb className="w-5 h-5 text-yellow-600" />

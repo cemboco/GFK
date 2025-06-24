@@ -546,8 +546,8 @@ export default function Profile({ user, onSignOut }: ProfileProps) {
                           <span className="text-purple-600 text-sm font-bold">3</span>
                         </div>
                         <div>
-                          <h4 className="font-medium text-gray-900">Gefühle und Bedürfnisse reflektieren</h4>
-                          <p className="text-sm text-gray-600">Nutzen Sie die interaktive Bearbeitung, um Ihre persönlichen Gefühle und Bedürfnisse zu erkunden.</p>
+                          <h4 className="font-medium text-gray-900">Reflektieren Sie Ihre Transformationen</h4>
+                          <p className="text-sm text-gray-600">Schauen Sie sich Ihre gespeicherten GFK-Texte an und beobachten Sie Ihre Entwicklung über die Zeit.</p>
                         </div>
                       </div>
                     </div>
