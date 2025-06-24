@@ -52,25 +52,25 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.6 }}
-      className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-3xl shadow-xl p-8 lg:p-12"
+      className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 xl:p-12"
     >
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">
+      <div className="text-center mb-6 sm:mb-8">
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
           Probiere es selbst aus
         </h2>
-        <p className="text-lg text-gray-600">
+        <p className="text-base sm:text-lg text-gray-600">
           Gib deinen Text ein und erlebe die Transformation in Echtzeit
         </p>
-        <p className="text-sm text-gray-500 mt-2">
+        <p className="text-xs sm:text-sm text-gray-500 mt-2">
           Je genauer der Text, desto besser ist die Transformation..
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         {/* Context Selection */}
         {setContext && (
           <div>
-            <label htmlFor="context" className="block text-lg font-semibold text-gray-800 mb-3">
+            <label htmlFor="context" className="block text-base sm:text-lg font-semibold text-gray-800 mb-2 sm:mb-3">
               Kontext auswählen
             </label>
             {user ? (
@@ -79,7 +79,7 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
                   id="context"
                   value={context}
                   onChange={(e) => setContext(e.target.value)}
-                  className="w-full border-2 border-gray-200 rounded-2xl p-4 text-lg focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white shadow-sm appearance-none pr-12"
+                  className="w-full border-2 border-gray-200 rounded-2xl p-3 sm:p-4 text-base sm:text-lg focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white shadow-sm appearance-none pr-12"
                 >
                   {contextOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -91,13 +91,13 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
               </div>
             ) : (
               <div className="relative">
-                <div className="w-full border-2 border-gray-200 rounded-2xl p-4 text-lg bg-gray-100 text-gray-500 shadow-sm flex items-center justify-between">
-                  <span>Allgemein - Für verschiedene Situationen</span>
-                  <Lock className="h-5 w-5 text-gray-400" />
+                <div className="w-full border-2 border-gray-200 rounded-2xl p-3 sm:p-4 text-base sm:text-lg bg-gray-100 text-gray-500 shadow-sm flex items-center justify-between">
+                  <span className="text-sm sm:text-base">Allgemein - Für verschiedene Situationen</span>
+                  <Lock className="h-5 w-5 text-gray-400 flex-shrink-0" />
                 </div>
               </div>
             )}
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="text-xs sm:text-sm text-gray-600 mt-2">
               {user 
                 ? "Wähle den passenden Kontext für bessere, angepasste Formulierungen."
                 : "Registriere dich, um weitere Kontexte freizuschalten."}
@@ -106,8 +106,8 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
         )}
 
         <div>
-          <div className="flex items-center justify-between mb-3">
-            <label htmlFor="input" className="block text-lg font-semibold text-gray-800">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 sm:mb-3 space-y-2 sm:space-y-0">
+            <label htmlFor="input" className="block text-base sm:text-lg font-semibold text-gray-800">
               Was möchtest du sagen?
             </label>
             
@@ -118,55 +118,55 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
               type="button"
               onClick={user ? onOpenExerciseModal : undefined}
               disabled={!user}
-              className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-xl shadow-md transition-all duration-200 ${
+              className={`flex items-center justify-center space-x-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-xl shadow-md transition-all duration-200 ${
                 user 
                   ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-lg'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
-              <Target className="h-4 w-4" />
+              <Target className="h-3 w-3 sm:h-4 sm:w-4" />
               <span>GFK-Übung</span>
-              {!user && <span className="text-xs ml-1">(Anmeldung erforderlich)</span>}
+              {!user && <span className="text-xs ml-1 hidden sm:inline">(Anmeldung erforderlich)</span>}
             </motion.button>
+          </div>
+          
+          {/* Usage Display */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end space-y-2 sm:space-y-0 sm:space-x-2 mb-3">
+            {/* Chat Usage Display for authenticated users */}
+            {user && chatUsage && !chatUsageLoading && (
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 bg-white rounded-lg px-2 sm:px-3 py-1 sm:py-2 shadow-sm border border-gray-200">
+                  <Crown className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-600" />
+                  <span className="text-xs sm:text-sm text-gray-700 font-medium">
+                    {chatUsage.remainingMessages}/{chatUsage.maxMessages} Chat
+                  </span>
+                </div>
+                {chatUsage.remainingMessages === 0 && (
+                  <div className="flex items-center space-x-2 bg-red-100 rounded-lg px-2 sm:px-3 py-1 sm:py-2">
+                    <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 text-red-600" />
+                    <span className="text-xs sm:text-sm text-red-700 font-medium">Limit erreicht</span>
+                  </div>
+                )}
+              </div>
+            )}
             
-            {/* Usage Display */}
-            <div className="flex items-center space-x-2">
-              {/* Chat Usage Display for authenticated users */}
-              {user && chatUsage && !chatUsageLoading && (
-                <div className="flex items-center space-x-2">
-                  <div className="flex items-center space-x-2 bg-white rounded-lg px-3 py-2 shadow-sm border border-gray-200">
-                    <Crown className="h-4 w-4 text-yellow-600" />
-                    <span className="text-sm text-gray-700 font-medium">
-                      {chatUsage.remainingMessages}/{chatUsage.maxMessages} Chat-Nachrichten
-                    </span>
-                  </div>
-                  {chatUsage.remainingMessages === 0 && (
-                    <div className="flex items-center space-x-2 bg-red-100 rounded-lg px-3 py-2">
-                      <AlertCircle className="h-4 w-4 text-red-600" />
-                      <span className="text-sm text-red-700 font-medium">Limit erreicht</span>
-                    </div>
-                  )}
+            {/* GFK Transformation Usage Display for non-authenticated users */}
+            {!user && usageInfo && (
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 bg-white rounded-lg px-2 sm:px-3 py-1 sm:py-2 shadow-sm border border-gray-200">
+                  <Crown className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-600" />
+                  <span className="text-xs sm:text-sm text-gray-700 font-medium">
+                    {usageInfo.remaining}/{usageInfo.max} Transformationen
+                  </span>
                 </div>
-              )}
-              
-              {/* GFK Transformation Usage Display for non-authenticated users */}
-              {!user && usageInfo && (
-                <div className="flex items-center space-x-2">
-                  <div className="flex items-center space-x-2 bg-white rounded-lg px-3 py-2 shadow-sm border border-gray-200">
-                    <Crown className="h-4 w-4 text-yellow-600" />
-                    <span className="text-sm text-gray-700 font-medium">
-                      {usageInfo.remaining}/{usageInfo.max} Transformationen
-                    </span>
+                {usageInfo.remaining === 0 && (
+                  <div className="flex items-center space-x-2 bg-red-100 rounded-lg px-2 sm:px-3 py-1 sm:py-2">
+                    <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 text-red-600" />
+                    <span className="text-xs sm:text-sm text-red-700 font-medium">Limit erreicht</span>
                   </div>
-                  {usageInfo.remaining === 0 && (
-                    <div className="flex items-center space-x-2 bg-red-100 rounded-lg px-3 py-2">
-                      <AlertCircle className="h-4 w-4 text-red-600" />
-                      <span className="text-sm text-red-700 font-medium">Limit erreicht</span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
           
           <textarea
@@ -174,14 +174,14 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
             rows={4}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="w-full border-2 border-gray-200 rounded-2xl p-6 text-lg focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white shadow-sm resize-none"
+            className="w-full border-2 border-gray-200 rounded-2xl p-4 sm:p-6 text-base sm:text-lg focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white shadow-sm resize-none"
             placeholder="Schreibe hier deine Nachricht..."
           />
           
           {/* Usage Info for non-authenticated users */}
           {!user && (
-            <div className="mt-3 flex items-center space-x-2 text-sm text-gray-600">
-              <Crown className="h-4 w-4 text-yellow-600" />
+            <div className="mt-2 sm:mt-3 flex items-center space-x-2 text-xs sm:text-sm text-gray-600">
+              <Crown className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-600 flex-shrink-0" />
               <span>Melde dich an für unbegrenzte Transformationen und den GFK-Coach (3 Nachrichten/Monat)</span>
             </div>
           )}
@@ -193,18 +193,18 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
             whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={isLoading || !input.trim() || !canUseService()}
-            className={`px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center space-x-3 ${
+            className={`w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-base sm:text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 ${
               (isLoading || !input.trim() || !canUseService()) && 'opacity-50 cursor-not-allowed'
             }`}
           >
             {isLoading ? (
               <>
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                <div className="animate-spin rounded-full h-5 w-5 sm:h-6 sm:w-6 border-b-2 border-white"></div>
                 <span>Transformiere...</span>
               </>
             ) : (
               <>
-                <Send className="h-6 w-6" />
+                <Send className="h-5 w-5 sm:h-6 sm:w-6" />
                 <span>In GFK umwandeln</span>
               </>
             )}
@@ -215,7 +215,7 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-red-50 border border-red-200 rounded-2xl p-4 text-red-700 text-center"
+            className="bg-red-50 border border-red-200 rounded-2xl p-3 sm:p-4 text-red-700 text-center text-sm sm:text-base"
           >
             {error}
           </motion.div>

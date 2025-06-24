@@ -560,7 +560,7 @@ const perspectivePrompt = perspective === 'sender'
         setIsMobileMenuOpen={setIsMobileMenuOpen}
       />
 
-        <main className="max-w-7xl mx-auto px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
+        <main className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8 lg:py-12 sm:px-6 lg:px-8">
           <Routes>
             <Route path="/auth" element={user ? <Navigate to="/profile" replace /> : <Auth />} />
             <Route path="/profile" element={user ? <Profile user={user} onSignOut={onSignOut} /> : <Navigate to="/auth" replace />} />
@@ -602,34 +602,34 @@ const perspectivePrompt = perspective === 'sender'
         </main>
 
         {/* Footer */}
-        <footer className="bg-white/80 backdrop-blur-xl mt-16 py-12 border-t border-gray-100">
-          <div className="max-w-7xl mx-auto px-4 text-center space-y-4">
-            <div className="flex justify-center items-center space-x-3">
-              <div className="w-[80px] h-[80px] rounded-xl overflow-hidden flex items-center justify-center">
-                <img src="/logo.png" alt="GFKCoach Logo" className="w-[80px] h-[80px] object-contain" />
+        <footer className="bg-white/80 backdrop-blur-xl mt-12 sm:mt-16 py-8 sm:py-12 border-t border-gray-100">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 text-center space-y-3 sm:space-y-4">
+            <div className="flex justify-center items-center space-x-2 sm:space-x-3">
+              <div className="w-16 h-16 sm:w-[80px] sm:h-[80px] rounded-xl overflow-hidden flex items-center justify-center">
+                <img src="/logo.png" alt="GFKCoach Logo" className="w-16 h-16 sm:w-[80px] sm:h-[80px] object-contain" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+              <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
                 GFKCoach
               </span>
             </div>
-            <div className="pt-4 border-t border-gray-200">
-              <p className="text-sm text-gray-500">
+            <div className="pt-3 sm:pt-4 border-t border-gray-200">
+              <p className="text-xs sm:text-sm text-gray-500">
                 © {new Date().getFullYear()} GFKCoach - Empathische Kommunikation für alle
               </p>
               <p className="text-xs text-gray-400 mt-1">
                 Version 1.6.15 - Verbesserte GFK-Prompts & Chat-Integration
               </p>
-              <div className="flex justify-center items-center gap-6 mt-2">
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-6 mt-2">
                 <button
                   onClick={() => setShowPrivacyPolicy(true)}
-                  className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline"
+                  className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline text-sm"
                 >
-                  <Shield className="h-4 w-4" />
+                  <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span>Datenschutz</span>
                 </button>
                 <button
                   onClick={() => setShowTermsModal(true)}
-                  className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline"
+                  className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline text-sm"
                 >
                   <span>AGB</span>
                 </button>
