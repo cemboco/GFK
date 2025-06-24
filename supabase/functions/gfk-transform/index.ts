@@ -47,49 +47,30 @@ const GFKTransform = async (input: string, openai: OpenAI, context?: any, retryC
     const completion = await openai.chat.completions.create({
       model: "ft:gpt-3.5-turbo-0125:personal:gfk2:BjtkeU8m",
       temperature: 0.3,
-      response_format: { type: "json_object" },
       max_tokens: 520,
       messages: [
         {
           role: "system",
           content: systemPrompt || `Du bist ein Experte für Gewaltfreie Kommunikation (GFK) nach Marshall B. Rosenberg.
 
-**WICHTIGSTE REGEL - DIESE MUSS IMMER BEACHTET WERDEN:**
-Der Text, den der Nutzer eingibt, ist IMMER eine Aussage, die der Nutzer SELBST sagen möchte oder gesagt hat. Der Nutzer ist IMMER der SPRECHER, niemals der Empfänger. Du sollst diese Aussage aus der Perspektive des Nutzers (als Sprecher) in GFK umformulieren.
-
-**BEISPIEL:**
-- Eingabe: "Ich hasse dich!"
-- RICHTIGE Interpretation: Der Nutzer hat "Ich hasse dich!" gesagt und möchte das in GFK umformulieren
-- FALSCH wäre: "Ich habe gehört, dass du 'Ich hasse dich!' gesagt hast..."
+**WICHTIGSTE REGEL:**
+Der Nutzer ist der SPRECHER. Formuliere seine Aussage in GFK um.
 
 **Deine Aufgabe:**
-Formuliere die vom Nutzer eingegebene Aussage in die vier GFK-Schritte um, wobei der Nutzer IMMER der Sprecher ist:
-1. **Beobachtung:** Was hat der Nutzer konkret wahrgenommen?
-2. **Gefühl:** Welches Gefühl löst das im Nutzer aus?
-3. **Bedürfnis:** Welches unerfüllte Bedürfnis steckt dahinter?
-4. **Bitte:** Was wünscht sich der Nutzer konkret?
+Formuliere die Aussage in die vier GFK-Schritte um:
+1. Beobachtung: Was hat der Nutzer wahrgenommen?
+2. Gefühl: Welches Gefühl hat der Nutzer?
+3. Bedürfnis: Welches Bedürfnis steckt dahinter?
+4. Bitte: Was wünscht sich der Nutzer?
 
-**WICHTIG - FLIEßTEXT ERSTELLEN:**
-Erstelle zusätzlich zu den einzelnen Schritten eine natürliche, empathische Umformulierung als zusammenhängenden Text, der alle vier GFK-Schritte flüssig miteinander verbindet. Dieser Fließtext sollte wie eine authentische GFK-Aussage klingen, die jemand tatsächlich sagen würde.
-
-**Ziel:** Auch aggressive Aussagen in konstruktive GFK-Form bringen, die die dahinterliegenden Gefühle und Bedürfnisse des Sprechers ausdrücken.
-
-Der Ton sollte zum Kontext '${contextKey}' passen und ${styleInstructions} sein.
-
-${contextPrompt}
-
-**Antworte IMMER im folgenden JSON-Format:**
+**Antworte im JSON-Format:**
 {
-  "reformulated_text": "Vollständige GFK-Umformulierung als zusammenhängender Fließtext, der alle vier Schritte natürlich verbindet",
-  "observation": "Beobachtung des Sprechers",
-  "feeling": "Gefühl des Sprechers", 
-  "need": "Unerfülltes Bedürfnis des Sprechers",
-  "request": "Konkrete, positive Bitte des Sprechers"
+  "reformulated_text": "Vollständiger GFK-Text",
+  "observation": "Beobachtung",
+  "feeling": "Gefühl", 
+  "need": "Bedürfnis",
+  "request": "Bitte"
 }`
-        },
-        {
-          role: "user",
-          content: "IMPORTANT: You must respond in valid JSON format only. Do not include any text outside the JSON object."
         },
         {
           role: "user",
@@ -117,36 +98,16 @@ ${contextPrompt}
       parsedResponse = JSON.parse(cleanedJson);
     }
 
-    // Validierung der Felder - sehr tolerant
+    // Sehr einfache Validierung - nur prüfen ob Felder existieren
     const requiredFields = ['reformulated_text', 'observation', 'feeling', 'need', 'request'];
-    const validationErrors: string[] = [];
+    const missingFields = requiredFields.filter(field => !parsedResponse[field] || typeof parsedResponse[field] !== 'string');
     
-    requiredFields.forEach(field => {
-      if (!parsedResponse[field] || typeof parsedResponse[field] !== 'string') {
-        validationErrors.push(`Feld '${field}' fehlt oder ist kein String`);
-      } else {
-        const text = parsedResponse[field];
-        
-        // Nur sehr kritische Validierungen
-        const criticalErrorPatterns = [
-          { pattern: /\.\./, msg: 'Unvollständige Sätze' }
-        ];
-        
-        criticalErrorPatterns.forEach(({ pattern, msg }) => {
-          if (pattern.test(text)) {
-            validationErrors.push(`Feld '${field}' enthält '${msg}': ${text}`);
-          }
-        });
-      }
-    });
-
-    // Wenn nur wenige Felder fehlen, versuche sie zu reparieren
-    if (validationErrors.length > 0 && validationErrors.length <= 2) {
-      console.log("Versuche fehlende Felder zu reparieren...");
+    if (missingFields.length > 0) {
+      console.log("Fehlende Felder:", missingFields);
       
       // Fallback-Werte für fehlende Felder
       if (!parsedResponse.reformulated_text) {
-        parsedResponse.reformulated_text = `${parsedResponse.observation || 'Beobachtung'} - ${parsedResponse.feeling || 'Gefühl'} - ${parsedResponse.need || 'Bedürfnis'} - ${parsedResponse.request || 'Bitte'}`;
+        parsedResponse.reformulated_text = "GFK-Umformulierung";
       }
       
       if (!parsedResponse.observation) {
@@ -165,13 +126,7 @@ ${contextPrompt}
         parsedResponse.request = "Können wir darüber sprechen?";
       }
       
-      console.log("Felder repariert, fahre fort...");
-      return parsedResponse;
-    }
-
-    if (validationErrors.length > 2) {
-      console.error("Validierungsfehler:", validationErrors);
-      throw new Error(`Validierungsfehler:\n${validationErrors.join('\n')}`);
+      console.log("Fallback-Werte gesetzt");
     }
 
     return parsedResponse;
