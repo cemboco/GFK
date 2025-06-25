@@ -21,8 +21,47 @@ const GFKProgress: React.FC<GFKProgressProps> = ({ user }) => {
     );
   }
 
+  // Fallback wenn kein Progress vorhanden ist
   if (!progress) {
-    return null;
+    return (
+      <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl shadow-lg p-6 border border-purple-100">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+              <span className="text-2xl">🌱</span>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-900">Ihr GFK-Fortschritt</h3>
+              <p className="text-sm text-gray-600">Du beginnst deine GFK-Reise</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-2xl font-bold text-purple-600">0</div>
+            <div className="text-xs text-gray-500">Umformulierungen</div>
+          </div>
+        </div>
+        
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-semibold text-green-600">Anfänger</span>
+            <span className="text-xs text-gray-500">0% abgeschlossen</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="h-2 rounded-full bg-green-400 w-0"></div>
+          </div>
+        </div>
+        
+        <div className="bg-white/60 rounded-xl p-4">
+          <div className="flex items-center space-x-2 mb-2">
+            <Sparkles className="h-4 w-4 text-purple-600" />
+            <span className="text-sm font-semibold text-gray-700">Motivation</span>
+          </div>
+          <p className="text-sm text-gray-600">
+            Starten Sie mit Ihrer ersten GFK-Transformation! 🌱
+          </p>
+        </div>
+      </div>
+    );
   }
 
   const levelInfo = getLevelInfo(progress.current_level);
