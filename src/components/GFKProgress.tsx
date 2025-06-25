@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, TrendingUp, Target, Sparkles, RefreshCw } from 'lucide-react';
+import { Trophy, TrendingUp, Target, Sparkles, RefreshCw, Database, AlertCircle } from 'lucide-react';
 import { useUserProgress } from '../hooks/useUserProgress';
+import { supabase } from '../supabaseClient';
 
 interface GFKProgressProps {
   user: any;
@@ -17,10 +18,71 @@ const GFKProgress: React.FC<GFKProgressProps> = ({ user }) => {
 
   // Debug logging
   useEffect(() => {
-    console.log('GFKProgress - User:', user?.id);
-    console.log('GFKProgress - Progress data:', progress);
-    console.log('GFKProgress - Loading:', isLoading);
+    console.log('=== GFKProgress Debug Info ===');
+    console.log('User ID:', user?.id);
+    console.log('User object:', user);
+    console.log('Progress data:', progress);
+    console.log('Loading state:', isLoading);
+    console.log('==============================');
   }, [user, progress, isLoading]);
+
+  // Test database connection
+  const testDatabaseConnection = async () => {
+    console.log('Testing database connection...');
+    try {
+      // Test 1: Check if user_progress table exists
+      const { data: tableTest, error: tableError } = await supabase
+        .from('user_progress')
+        .select('count')
+        .limit(1);
+      
+      console.log('Table test result:', { data: tableTest, error: tableError });
+
+      // Test 2: Check if user has any progress
+      if (user?.id) {
+        const { data: userProgress, error: userError } = await supabase
+          .from('user_progress')
+          .select('*')
+          .eq('user_id', user.id);
+        
+        console.log('User progress test:', { data: userProgress, error: userError });
+
+        // Test 3: Check messages count
+        const { data: messages, error: messagesError } = await supabase
+          .from('messages')
+          .select('id')
+          .eq('user_id', user.id);
+        
+        console.log('Messages count:', { count: messages?.length, error: messagesError });
+      }
+
+      // Test 4: Try to create a test progress record
+      if (user?.id) {
+        const { data: testInsert, error: insertError } = await supabase
+          .from('user_progress')
+          .upsert([{
+            user_id: user.id,
+            total_transformations: 1,
+            current_level: 'Anfänger',
+            level_progress: 5,
+            last_activity: new Date().toISOString()
+          }])
+          .select();
+        
+        console.log('Test insert result:', { data: testInsert, error: insertError });
+      }
+
+    } catch (err) {
+      console.error('Database test error:', err);
+    }
+  };
+
+  // Run database test on component mount
+  useEffect(() => {
+    if (user?.id) {
+      testDatabaseConnection();
+    }
+  }, [user]);
 
   if (isLoading) {
     return (
@@ -32,6 +94,9 @@ const GFKProgress: React.FC<GFKProgressProps> = ({ user }) => {
       </div>
     );
   }
+
+  // Debug info display
+  const showDebugInfo = process.env.NODE_ENV === 'development';
 
   // Fallback wenn kein Progress vorhanden ist
   if (!progress) {
@@ -62,6 +127,27 @@ const GFKProgress: React.FC<GFKProgressProps> = ({ user }) => {
             <div className="h-2 rounded-full bg-green-400 w-0"></div>
           </div>
         </div>
+        
+        {/* Debug Info */}
+        {showDebugInfo && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-4">
+            <div className="flex items-center space-x-2 mb-2">
+              <AlertCircle className="h-4 w-4 text-yellow-600" />
+              <span className="text-sm font-semibold text-yellow-800">Debug Info</span>
+            </div>
+            <div className="text-xs text-yellow-700 space-y-1">
+              <p>User ID: {user?.id || 'Kein User'}</p>
+              <p>Loading: {isLoading ? 'Ja' : 'Nein'}</p>
+              <p>Progress: {progress ? 'Vorhanden' : 'Nicht vorhanden'}</p>
+              <button
+                onClick={testDatabaseConnection}
+                className="mt-2 px-2 py-1 bg-yellow-600 text-white rounded text-xs hover:bg-yellow-700"
+              >
+                DB Test ausführen
+              </button>
+            </div>
+          </div>
+        )}
         
         <div className="bg-white/60 rounded-xl p-4">
           <div className="flex items-center space-x-2 mb-2">

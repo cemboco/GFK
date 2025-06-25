@@ -118,9 +118,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
               <span>Unterstütze GFKCoach ☕</span>
             </a>
             <p className="text-xs sm:text-sm text-gray-500 mt-2 max-w-2xl mx-auto">
-              Eingeständnis: Diese App entstand, weil ich selber Kommunikations-Chaos bin. – Entwicklungsstatus: 73% weniger passive Aggression 🎉 – Ziel: Weltweites Ende von "Hättest du mal zugehört!"
-              <br />
-              Spendier mit Motivation – Garantiert: Dein Geld wird in Koffein & Empathie investiert.
+              No credit cards required
             </p>
           </motion.div>
         </section>

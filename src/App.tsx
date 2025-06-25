@@ -176,16 +176,16 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
         ? `${textToTransform}\n\n${additionalContext}`
         : textToTransform;
 
-const perspectivePrompt = perspective === 'sender' 
+      const perspectivePrompt = perspective === 'sender' 
   ? `Du bist ein Experte für Gewaltfreie Kommunikation (GFK) nach Marshall Rosenberg und hilfst dabei, Aussagen empathisch umzuformulieren.
 
   KONTEXT: Der Nutzer ist der SENDER der ursprünglichen Aussage und möchte lernen, wie er sie in GFK hätte ausdrücken können.
-  
+
   GRUNDPRINZIPIEN:
-  - Verwende NUR die Informationen, die im ursprünglichen Text enthalten sind
-  - Füge KEINE zusätzlichen Details, Annahmen oder Interpretationen hinzu
-  - Erfinde KEINE neuen Fakten, Zeitangaben, Orte oder Personen
-  - Bleibe so nah wie möglich am ursprünglichen Kontext und Inhalt
+- Verwende NUR die Informationen, die im ursprünglichen Text enthalten sind
+- Füge KEINE zusätzlichen Details, Annahmen oder Interpretationen hinzu
+- Erfinde KEINE neuen Fakten, Zeitangaben, Orte oder Personen
+- Bleibe so nah wie möglich am ursprünglichen Kontext und Inhalt
   - Wenn der Text vage ist, bleibe vage - erfinde keine Spezifität
   
   AUFGABE: Transformiere die Aussage in die vier GFK-Schritte:
@@ -223,8 +223,8 @@ const perspectivePrompt = perspective === 'sender'
   KONTEXT: Der Nutzer ist der EMPFÄNGER einer Aussage und möchte lernen, wie er darauf mit GFK antworten kann.
   
   GRUNDPRINZIPIEN:
-  - Verwende NUR die Informationen, die im ursprünglichen Text enthalten sind
-  - Füge KEINE zusätzlichen Details, Annahmen oder Interpretationen hinzu
+- Verwende NUR die Informationen, die im ursprünglichen Text enthalten sind
+- Füge KEINE zusätzlichen Details, Annahmen oder Interpretationen hinzu
   - Respektiere den ursprünglichen Kontext vollständig
   - Fokussiere auf die Reaktion des Empfängers, nicht auf die Bewertung des Senders
   
@@ -604,6 +604,62 @@ const perspectivePrompt = perspective === 'sender'
   const [showVersionInfo, setShowVersionInfo] = useState(false);
   const firstTransformDone = useRef(false);
 
+  // Debug function to test database connection
+  const debugDatabaseConnection = async () => {
+    if (!user) {
+      console.log('No user logged in');
+      return;
+    }
+
+    console.log('=== Database Debug Test ===');
+    console.log('User ID:', user.id);
+
+    try {
+      // Test 1: Check user_progress table
+      const { data: progressData, error: progressError } = await supabase
+        .from('user_progress')
+        .select('*')
+        .eq('user_id', user.id);
+
+      console.log('Progress data:', progressData);
+      console.log('Progress error:', progressError);
+
+      // Test 2: Check messages count
+      const { data: messagesData, error: messagesError } = await supabase
+        .from('messages')
+        .select('id')
+        .eq('user_id', user.id);
+
+      console.log('Messages count:', messagesData?.length);
+      console.log('Messages error:', messagesError);
+
+      // Test 3: Try to create/update progress manually
+      const { data: testProgress, error: testError } = await supabase
+        .from('user_progress')
+        .upsert([{
+          user_id: user.id,
+          total_transformations: messagesData?.length || 0,
+          current_level: 'Anfänger',
+          level_progress: 0,
+          last_activity: new Date().toISOString()
+        }])
+        .select();
+
+      console.log('Test progress result:', testProgress);
+      console.log('Test progress error:', testError);
+
+    } catch (err) {
+      console.error('Debug test error:', err);
+    }
+  };
+
+  // Add debug function to window for testing
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).debugGFK = debugDatabaseConnection;
+    }
+  }, [user]);
+
   return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
       {/* ScrollToTop für automatisches Scrollen beim Seitenwechsel */}
@@ -618,7 +674,7 @@ const perspectivePrompt = perspective === 'sender'
       />
 
         <main className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8 lg:py-12 sm:px-6 lg:px-8">
-          <Routes>
+        <Routes>
             <Route path="/auth" element={user ? <Navigate to="/profile" replace /> : <Auth />} />
             <Route path="/profile" element={user ? <Profile user={user} onSignOut={onSignOut} /> : <Navigate to="/auth" replace />} />
             <Route path="/faq" element={<FAQ />} />
@@ -626,22 +682,22 @@ const perspectivePrompt = perspective === 'sender'
             <Route path="/kontakt" element={<Contact />} />
             <Route path="/home" element={
               <HomePage
-                input={input}
-                setInput={setInput}
-                isLoading={isLoading}
-                canUseService={canUseService}
-                handleSubmit={handleSubmit}
-                error={error}
-                liveOutput={liveOutput}
-                output={output}
-                isTyping={isTyping}
-                user={user}
-                setShowChatDialog={setShowChatDialog}
-                feedbackGiven={feedbackGiven}
-                handleFeedback={handleFeedback}
-                context={context}
-                setContext={setContext}
-                usageInfo={usageInfo}
+                    input={input}
+                    setInput={setInput}
+                    isLoading={isLoading}
+                    canUseService={canUseService}
+                    handleSubmit={handleSubmit}
+                    error={error}
+                    liveOutput={liveOutput}
+                    output={output}
+                    isTyping={isTyping}
+                    user={user}
+                    setShowChatDialog={setShowChatDialog}
+                    feedbackGiven={feedbackGiven}
+                    handleFeedback={handleFeedback}
+                    context={context}
+                    setContext={setContext}
+                    usageInfo={usageInfo}
                 handleMessageSubmit={handleMessageSubmit}
                 name={name}
                 setName={setName}
@@ -655,7 +711,7 @@ const perspectivePrompt = perspective === 'sender'
               />
             } />
             <Route path="/" element={<Navigate to="/home" />} />
-          </Routes>
+        </Routes>
         </main>
 
         {/* Footer */}
@@ -677,13 +733,13 @@ const perspectivePrompt = perspective === 'sender'
                 Version 1.6.15 - Verbesserte GFK-Prompts & Chat-Integration
               </p>
               <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-6 mt-2">
-                <button
-                  onClick={() => setShowPrivacyPolicy(true)}
+            <button
+              onClick={() => setShowPrivacyPolicy(true)}
                   className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline text-sm"
-                >
+            >
                   <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span>Datenschutz</span>
-                </button>
+              <span>Datenschutz</span>
+            </button>
                 <button
                   onClick={() => setShowTermsModal(true)}
                   className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline text-sm"
@@ -742,7 +798,7 @@ const perspectivePrompt = perspective === 'sender'
             <span className="text-purple-700 text-lg font-medium">Gerne Feedback geben:</span>
             <a href="mailto:info@gfkcoach.com" className="text-purple-600 underline font-medium">info@gfkcoach.com</a>
             <button onClick={() => setShowFirstTransformSnackbar(false)} className="ml-2 text-gray-400 hover:text-purple-600 text-2xl font-bold" aria-label="Schließen">×</button>
-          </div>
+      </div>
         )}
 
         {/* Version Info */}
@@ -851,107 +907,107 @@ function App() {
 
 function AboutContent() {
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="max-w-4xl mx-auto space-y-12"
-    >
-      <div className="text-center space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Über Gewaltfreie Kommunikation
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Entdecke die transformative Kraft der GFK nach Marshall B. Rosenberg
-          </p>
-        </motion.div>
-      </div>
-
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -20 }}
+    className="max-w-4xl mx-auto space-y-12"
+  >
+    <div className="text-center space-y-6">
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="bg-white rounded-3xl shadow-xl p-8 lg:p-12"
+        transition={{ delay: 0.1 }}
       >
-        <div className="space-y-8">
-          <div className="text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <Heart className="h-10 w-10 text-purple-600" />
-            </div>
-            <p className="text-lg text-gray-700 leading-relaxed">
-              Gewaltfreie Kommunikation (GFK) ist ein von Marshall B. Rosenberg entwickelter Ansatz, 
-              der Menschen dabei hilft, selbst in herausfordernden Situationen einfühlsam und authentisch 
-              zu kommunizieren.
-            </p>
-          </div>
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          Über Gewaltfreie Kommunikation
+        </h1>
+        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          Entdecke die transformative Kraft der GFK nach Marshall B. Rosenberg
+        </p>
+      </motion.div>
+    </div>
 
-          <div className="space-y-8">
-            <h2 className="text-2xl font-bold text-purple-600 text-center">Die vier Schritte der GFK</h2>
-            <div className="grid gap-6 md:grid-cols-2">
-              {[
-                {
-                  number: 1,
-                  title: 'Beobachtung',
-                  description: 'Beschreiben Sie die Situation objektiv, ohne zu bewerten oder zu interpretieren.',
-                  color: 'blue',
-                  icon: '👁️'
-                },
-                {
-                  number: 2,
-                  title: 'Gefühl',
-                  description: 'Drücken Sie Ihre Gefühle aus, die durch die Situation entstehen.',
-                  color: 'green',
-                  icon: '💚'
-                },
-                {
-                  number: 3,
-                  title: 'Bedürfnis',
-                  description: 'Benennen Sie die Bedürfnisse, die hinter Ihren Gefühlen stehen.',
-                  color: 'orange',
-                  icon: '🎯'
-                },
-                {
-                  number: 4,
-                  title: 'Bitte',
-                  description: 'Formulieren Sie eine konkrete, positive und machbare Bitte.',
-                  color: 'purple',
-                  icon: '🤝'
-                }
-              ].map((step, index) => (
-                <motion.div
-                  key={step.number}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + index * 0.1 }}
-                  className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition-shadow"
-                >
-                  <div className="flex items-start space-x-4">
-                    <div className={`w-12 h-12 bg-${step.color}-100 rounded-xl flex items-center justify-center flex-shrink-0`}>
-                      <span className="text-2xl">{step.icon}</span>
-                    </div>
-                    <div>
-                      <h3 className={`text-xl font-bold text-${step.color}-700 mb-2`}>
-                        {step.number}. {step.title}
-                      </h3>
-                      <p className="text-gray-600 leading-relaxed">{step.description}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
+      className="bg-white rounded-3xl shadow-xl p-8 lg:p-12"
+    >
+      <div className="space-y-8">
+        <div className="text-center">
+          <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Heart className="h-10 w-10 text-purple-600" />
           </div>
+          <p className="text-lg text-gray-700 leading-relaxed">
+            Gewaltfreie Kommunikation (GFK) ist ein von Marshall B. Rosenberg entwickelter Ansatz, 
+            der Menschen dabei hilft, selbst in herausfordernden Situationen einfühlsam und authentisch 
+            zu kommunizieren.
+          </p>
+        </div>
+
+        <div className="space-y-8">
+          <h2 className="text-2xl font-bold text-purple-600 text-center">Die vier Schritte der GFK</h2>
+          <div className="grid gap-6 md:grid-cols-2">
+            {[
+              {
+                number: 1,
+                title: 'Beobachtung',
+                description: 'Beschreiben Sie die Situation objektiv, ohne zu bewerten oder zu interpretieren.',
+                color: 'blue',
+                icon: '👁️'
+              },
+              {
+                number: 2,
+                title: 'Gefühl',
+                description: 'Drücken Sie Ihre Gefühle aus, die durch die Situation entstehen.',
+                color: 'green',
+                icon: '💚'
+              },
+              {
+                number: 3,
+                title: 'Bedürfnis',
+                description: 'Benennen Sie die Bedürfnisse, die hinter Ihren Gefühlen stehen.',
+                color: 'orange',
+                icon: '🎯'
+              },
+              {
+                number: 4,
+                title: 'Bitte',
+                description: 'Formulieren Sie eine konkrete, positive und machbare Bitte.',
+                color: 'purple',
+                icon: '🤝'
+              }
+            ].map((step, index) => (
+              <motion.div
+                key={step.number}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + index * 0.1 }}
+                className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition-shadow"
+              >
+                <div className="flex items-start space-x-4">
+                  <div className={`w-12 h-12 bg-${step.color}-100 rounded-xl flex items-center justify-center flex-shrink-0`}>
+                    <span className="text-2xl">{step.icon}</span>
+                  </div>
+                  <div>
+                    <h3 className={`text-xl font-bold text-${step.color}-700 mb-2`}>
+                      {step.number}. {step.title}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed">{step.description}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
         </div>
       </motion.div>
 
       {/* Wolfssprache und Giraffensprache */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
         className="space-y-8"
       >
@@ -962,9 +1018,9 @@ function AboutContent() {
         
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Wolfssprache */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.7 }}
             className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-6 border border-red-100"
           >
@@ -995,7 +1051,7 @@ function AboutContent() {
                 </p>
               </div>
             </div>
-          </motion.div>
+              </motion.div>
 
           {/* Giraffensprache */}
           <motion.div
@@ -1030,8 +1086,8 @@ function AboutContent() {
                   "Wenn ich sehe, dass du deine Sachen liegen lässt, fühle ich mich frustriert, weil mir Ordnung wichtig ist. Könntest du bitte deine Sachen wegräumen?"
                 </p>
               </div>
-            </div>
-          </motion.div>
+          </div>
+        </motion.div>
         </div>
 
         {/* Transformationsbeispiel */}
@@ -1059,11 +1115,11 @@ function AboutContent() {
                 "Wenn du später kommst als vereinbart, fühle ich mich enttäuscht, weil mir Pünktlichkeit wichtig ist. Könntest du bitte das nächste Mal rechtzeitig da sein?"
               </p>
             </div>
-          </div>
+      </div>
         </motion.div>
-      </motion.div>
     </motion.div>
-  );
+  </motion.div>
+);
 }
 
 export default App;
