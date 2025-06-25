@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, TrendingUp, Target, Sparkles } from 'lucide-react';
+import { Trophy, TrendingUp, Target, Sparkles, RefreshCw } from 'lucide-react';
 import { useUserProgress } from '../hooks/useUserProgress';
 
 interface GFKProgressProps {
@@ -8,7 +8,11 @@ interface GFKProgressProps {
 }
 
 const GFKProgress: React.FC<GFKProgressProps> = ({ user }) => {
-  const { progress, isLoading, getLevelInfo, getNextLevelInfo } = useUserProgress(user);
+  const { progress, isLoading, getLevelInfo, getNextLevelInfo, refreshProgress } = useUserProgress(user);
+
+  const handleRefresh = () => {
+    refreshProgress();
+  };
 
   if (isLoading) {
     return (
@@ -86,6 +90,13 @@ const GFKProgress: React.FC<GFKProgressProps> = ({ user }) => {
         <div className="text-right">
           <div className="text-2xl font-bold text-purple-600">{progress.total_transformations}</div>
           <div className="text-xs text-gray-500">Umformulierungen</div>
+          <button
+            onClick={handleRefresh}
+            className="mt-2 p-1 text-purple-600 hover:text-purple-700 hover:bg-purple-100 rounded-full transition-colors"
+            title="Aktualisieren"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </button>
         </div>
       </div>
 

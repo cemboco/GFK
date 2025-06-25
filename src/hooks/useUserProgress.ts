@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
 
 interface UserProgress {
@@ -13,56 +13,87 @@ export const useUserProgress = (user: any) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchProgress = useCallback(async () => {
     if (!user) {
       setProgress(null);
       setIsLoading(false);
       return;
     }
 
-    const fetchProgress = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
+    try {
+      setIsLoading(true);
+      setError(null);
 
-        const { data, error: fetchError } = await supabase
+      const { data, error: fetchError } = await supabase
+        .from('user_progress')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        throw fetchError;
+      }
+
+      if (data) {
+        setProgress(data);
+      } else {
+        // Create initial progress record
+        const { data: newProgress, error: insertError } = await supabase
           .from('user_progress')
-          .select('*')
-          .eq('user_id', user.id)
+          .insert([{
+            user_id: user.id,
+            total_transformations: 0,
+            current_level: 'Anfänger',
+            level_progress: 0
+          }])
+          .select()
           .single();
 
-        if (fetchError && fetchError.code !== 'PGRST116') {
-          throw fetchError;
-        }
-
-        if (data) {
-          setProgress(data);
-        } else {
-          // Create initial progress record
-          const { data: newProgress, error: insertError } = await supabase
-            .from('user_progress')
-            .insert([{
-              user_id: user.id,
-              total_transformations: 0,
-              current_level: 'Anfänger',
-              level_progress: 0
-            }])
-            .select()
-            .single();
-
-          if (insertError) throw insertError;
-          setProgress(newProgress);
-        }
-      } catch (err) {
-        console.error('Error fetching user progress:', err);
-        setError(err instanceof Error ? err.message : 'Fehler beim Laden des Fortschritts');
-      } finally {
-        setIsLoading(false);
+        if (insertError) throw insertError;
+        setProgress(newProgress);
       }
-    };
-
-    fetchProgress();
+    } catch (err) {
+      console.error('Error fetching user progress:', err);
+      setError(err instanceof Error ? err.message : 'Fehler beim Laden des Fortschritts');
+    } finally {
+      setIsLoading(false);
+    }
   }, [user]);
+
+  useEffect(() => {
+    fetchProgress();
+  }, [fetchProgress]);
+
+  // Real-time subscription for user_progress changes
+  useEffect(() => {
+    if (!user) return;
+
+    const subscription = supabase
+      .channel('user_progress_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_progress',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          console.log('User progress changed:', payload);
+          // Refresh data when user_progress changes
+          fetchProgress();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [user, fetchProgress]);
+
+  const refreshProgress = useCallback(() => {
+    fetchProgress();
+  }, [fetchProgress]);
 
   const getLevelInfo = (level: string) => {
     const levelConfig = {
@@ -131,6 +162,7 @@ export const useUserProgress = (user: any) => {
     isLoading,
     error,
     getLevelInfo,
-    getNextLevelInfo
+    getNextLevelInfo,
+    refreshProgress
   };
 }; 
