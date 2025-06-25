@@ -68,8 +68,10 @@ export const useUserProgress = (user: any) => {
   useEffect(() => {
     if (!user) return;
 
+    console.log('Setting up real-time subscription for user:', user.id);
+
     const subscription = supabase
-      .channel('user_progress_changes')
+      .channel(`user_progress_${user.id}`)
       .on(
         'postgres_changes',
         {
@@ -84,9 +86,21 @@ export const useUserProgress = (user: any) => {
           fetchProgress();
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('Subscription status:', status);
+        if (status === 'SUBSCRIBED') {
+          console.log('Successfully subscribed to user_progress changes');
+        } else if (status === 'CHANNEL_ERROR') {
+          console.error('Subscription error, retrying...');
+          // Retry subscription after a delay
+          setTimeout(() => {
+            fetchProgress();
+          }, 1000);
+        }
+      });
 
     return () => {
+      console.log('Cleaning up subscription for user:', user.id);
       subscription.unsubscribe();
     };
   }, [user, fetchProgress]);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, TrendingUp, Target, Sparkles, RefreshCw } from 'lucide-react';
 import { useUserProgress } from '../hooks/useUserProgress';
@@ -11,8 +11,16 @@ const GFKProgress: React.FC<GFKProgressProps> = ({ user }) => {
   const { progress, isLoading, getLevelInfo, getNextLevelInfo, refreshProgress } = useUserProgress(user);
 
   const handleRefresh = () => {
+    console.log('Manual refresh triggered');
     refreshProgress();
   };
+
+  // Debug logging
+  useEffect(() => {
+    console.log('GFKProgress - User:', user?.id);
+    console.log('GFKProgress - Progress data:', progress);
+    console.log('GFKProgress - Loading:', isLoading);
+  }, [user, progress, isLoading]);
 
   if (isLoading) {
     return (

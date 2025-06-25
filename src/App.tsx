@@ -352,6 +352,62 @@ const perspectivePrompt = perspective === 'sender'
           output_text: data
         }]);
 
+      // Manually update user progress if user is logged in
+      if (user) {
+        try {
+          const { data: progressData, error: progressError } = await supabase
+            .from('user_progress')
+            .select('total_transformations')
+            .eq('user_id', user.id)
+            .single();
+
+          if (progressError && progressError.code !== 'PGRST116') {
+            console.error('Error fetching progress:', progressError);
+          } else {
+            const currentTransformations = progressData?.total_transformations || 0;
+            const newTransformations = currentTransformations + 1;
+            
+            // Calculate new level
+            let newLevel = 'Anfänger';
+            let newProgress = 0;
+            
+            if (newTransformations >= 200) {
+              newLevel = 'GFK Meister';
+              newProgress = 100;
+            } else if (newTransformations >= 100) {
+              newLevel = 'Experte';
+              newProgress = ((newTransformations - 100) * 100) / 100;
+            } else if (newTransformations >= 50) {
+              newLevel = 'Profi';
+              newProgress = ((newTransformations - 50) * 100) / 50;
+            } else if (newTransformations >= 20) {
+              newLevel = 'Fortgeschritten';
+              newProgress = ((newTransformations - 20) * 100) / 30;
+            } else {
+              newLevel = 'Anfänger';
+              newProgress = (newTransformations * 100) / 20;
+            }
+
+            // Update or insert progress
+            const { error: updateError } = await supabase
+              .from('user_progress')
+              .upsert([{
+                user_id: user.id,
+                total_transformations: newTransformations,
+                current_level: newLevel,
+                level_progress: Math.min(newProgress, 100),
+                last_activity: new Date().toISOString()
+              }]);
+
+            if (updateError) {
+              console.error('Error updating progress:', updateError);
+            }
+          }
+        } catch (err) {
+          console.error('Error updating user progress:', err);
+        }
+      }
+
       if (!firstTransformDone.current && !showFirstTransformSnackbar) {
         setTimeout(() => {
           setShowFirstTransformSnackbar(true);
