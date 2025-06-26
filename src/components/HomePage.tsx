@@ -118,7 +118,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
               <span>Unterstütze GFKCoach ☕</span>
             </a>
             <p className="text-xs sm:text-sm text-gray-500 mt-2 max-w-2xl mx-auto">
-              No credit cards required
+              Keine Kreditkarte notwenidg
             </p>
           </motion.div>
         </section>
