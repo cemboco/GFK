@@ -177,7 +177,7 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
         : textToTransform;
 
       const perspectivePrompt = perspective === 'sender' 
-  ? `Du bist ein Experte für Gewaltfreie Kommunikation (GFK) nach Marshall Rosenberg und hilfst dabei, Aussagen empathisch umzuformulieren.
+  ? `Du bist ein GFK-Transformator. Der Nutzer gibt eine Aussage ein, die er selbst in einem Konflikt gesagt hat oder sagen möchte. Deine Aufgabe ist es, diese Aussage in eine gewaltfreie Formulierung umzuwandeln, die aus der Perspektive des Nutzers (des Sprechers) formuliert ist und die vier Schritte der GFK enthält: 1. Konkrete Beobachtung ohne Bewertung, 2. Gefühl des Sprechers, 3. Bedürfnis des Sprechers, 4. Bitte an den anderen. Formuliere die Antwort als zusammenhängenden Satz oder kurzen Absatz.
 
   KONTEXT: Der Nutzer ist der SENDER der ursprünglichen Aussage und möchte lernen, wie er sie in GFK hätte ausdrücken können.
 
@@ -730,7 +730,7 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
                 © {new Date().getFullYear()} GFKCoach - Empathische Kommunikation für alle
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                Version 1.6.15 - Verbesserte GFK-Prompts & Chat-Integration
+                Version 1.6.16 - Debug-Tools & Verbesserte Fortschritts-Tracking
               </p>
               <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-6 mt-2">
             <button
@@ -814,8 +814,8 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               <div>
-                <span className="text-sm font-medium">Beta Version 1.6.15</span>
-                <p className="text-xs text-purple-100">Fließtext-Integration & Debug-Logging</p>
+                <span className="text-sm font-medium">Beta Version 1.6.16</span>
+                <p className="text-xs text-purple-100">Debug-Tools & Fortschritts-Tracking</p>
               </div>
             </div>
             <button 
@@ -898,7 +898,7 @@ function App() {
       />
       {showVersionInfo && (
         <div className="fixed bottom-4 right-4 bg-gray-800 text-white text-xs px-2 py-1 rounded-full shadow-lg z-50">
-          Version 1.6.15
+          Version 1.6.16
         </div>
       )}
     </Router>
