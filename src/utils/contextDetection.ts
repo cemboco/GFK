@@ -65,4 +65,4 @@ export function needsMoreContext(text: string): boolean {
   
   // Wenn eine vage Phrase gefunden wird oder der Text zu kurz ist
   return hasVaguePhrase || !hasSufficientContext(trimmedText);
-} 
+}

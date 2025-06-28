@@ -1,26 +1,59 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { OpenAI } from "npm:openai@4.28.0";
 import { createClient } from "npm:@supabase/supabase-js@2.39.7";
-import { getContextPrompt } from "./contextExamples.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const MAX_INPUTS_PER_IP = 5;
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, {
+      headers: corsHeaders
+    });
+  }
 
-/**
- * Definiert die Anleitung für den Tonfall basierend auf dem Kontext.
- */
-const toneGuidanceMap: Record<string, string> = {
-  familie: "familiär und herzlich, aber respektvoll",
-  arbeit: "professionell und sachlich, aber menschlich",
-  partnerschaft: "intim und liebevoll",
-  kind: "einfach und altersgerecht",
-  freunde: "entspannt und authentisch",
-  allgemein: "höflich und ausgewogen"
-};
+  try {
+    const { input, systemPrompt, context } = await req.json();
+    
+    if (!input?.trim()) {
+      throw new Error('Bitte geben Sie einen Text ein.');
+    }
+
+    const apiKey = Deno.env.get('OPENAI_API_KEY');
+    if (!apiKey) {
+      throw new Error('OpenAI API Konfigurationsfehler.');
+    }
+
+    const openai = new OpenAI({ apiKey });
+    
+    const parsedResponse = await GFKTransform(input, openai, context, 0, systemPrompt);
+    
+    // Add HTML spans for styling
+    const styledResponse = {
+      reformulated_text: `<span class='text-blue-600'>${parsedResponse.reformulated_text}</span>`,
+      observation: `<span class='text-green-600'>${parsedResponse.observation}</span>`,
+      feeling: `<span class='text-orange-600'>${parsedResponse.feeling}</span>`,
+      need: `<span class='text-purple-600'>${parsedResponse.need}</span>`,
+      request: `<span class='text-pink-600'>${parsedResponse.request}</span>`
+    };
+    
+    return new Response(
+      JSON.stringify(styledResponse),
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    );
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ error: error.message || 'Ein unerwarteter Fehler ist aufgetreten.' }), 
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    );
+  }
+});
 
 const GFKTransform = async (input: string, openai: OpenAI, context?: any, retryCount = 0, systemPrompt?: string): Promise<any> => {
   try {
@@ -178,107 +211,22 @@ WICHTIG: Antworte NUR in gültigem JSON-Format!
   }
 };
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      headers: corsHeaders
-    });
-  }
+/**
+ * Definiert die Anleitung für den Tonfall basierend auf dem Kontext.
+ */
+const toneGuidanceMap: Record<string, string> = {
+  familie: "familiär und herzlich, aber respektvoll",
+  arbeit: "professionell und sachlich, aber menschlich",
+  partnerschaft: "intim und liebevoll",
+  kind: "einfach und altersgerecht",
+  freunde: "entspannt und authentisch",
+  allgemein: "höflich und ausgewogen"
+};
 
-  try {
-    const body = await req.json();
-    const { input, context, systemPrompt } = body;
-    
-    if (!input?.trim()) {
-      throw new Error('Bitte geben Sie einen Text ein.');
-    }
-
-    // Get client IP
-    const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
-
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-
-    // Prüfe, ob der Benutzer authentifiziert ist
-    const authHeader = req.headers.get('authorization');
-    let isAuthenticated = false;
-    
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      try {
-        const token = authHeader.substring(7);
-        const { data: { user }, error } = await supabase.auth.getUser(token);
-        isAuthenticated = !!user && !error;
-      } catch (error) {
-        console.log('Auth error:', error);
-        isAuthenticated = false;
-      }
-    }
-
-    // Nur für nicht-authentifizierte Benutzer: IP-Limit prüfen
-    if (!isAuthenticated) {
-      // Check IP usage
-      const { data: ipData, error: ipError } = await supabase
-        .from('ip_usage')
-        .select('usage_count')
-        .eq('ip', clientIP)
-        .single();
-
-      if (ipError && ipError.code !== 'PGRST116') { // PGRST116 means no rows found
-        throw new Error('Fehler beim Überprüfen der IP-Nutzung.');
-      }
-
-      const currentCount = ipData?.usage_count || 0;
-
-      if (currentCount >= MAX_INPUTS_PER_IP) {
-        throw new Error('Sie haben das Limit für Eingaben erreicht. Bitte registrieren Sie sich für unbegrenzte Nutzung.');
-      }
-
-      // Update IP usage
-      const { error: updateError } = await supabase
-        .from('ip_usage')
-        .upsert({
-          ip: clientIP,
-          usage_count: currentCount + 1,
-          last_used: new Date().toISOString()
-        });
-
-      if (updateError) {
-        throw new Error('Fehler beim Aktualisieren der IP-Nutzung.');
-      }
-    }
-
-    const apiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!apiKey) {
-      throw new Error('OpenAI API Konfigurationsfehler.');
-    }
-
-    const openai = new OpenAI({ apiKey });
-    
-    const parsedResponse = await GFKTransform(input, openai, context, 0, systemPrompt);
-    
-    // Add HTML spans for styling
-    const styledResponse = {
-      reformulated_text: `<span class='text-blue-600'>${parsedResponse.reformulated_text}</span>`,
-      observation: `<span class='text-green-600'>${parsedResponse.observation}</span>`,
-      feeling: `<span class='text-orange-600'>${parsedResponse.feeling}</span>`,
-      need: `<span class='text-purple-600'>${parsedResponse.need}</span>`,
-      request: `<span class='text-pink-600'>${parsedResponse.request}</span>`
-    };
-    
-    return new Response(
-      JSON.stringify(styledResponse),
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
-    );
-  } catch (error) {
-    return new Response(
-      JSON.stringify({ error: error.message || 'Ein unerwarteter Fehler ist aufgetreten.' }), 
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
-    );
-  }
-});
+const getContextPrompt = (contextKey: string): string => {
+  // Hier würden die kontextspezifischen Beispiele eingefügt
+  // Dies ist ein Platzhalter - in einer realen Implementierung würden hier
+  // Beispiele für verschiedene Kontexte zurückgegeben
+  return `\n\nBeispiele für den Kontext "${contextKey}":\n` +
+    `Wenn ich sehe, dass du zu spät kommst, fühle ich mich frustriert, weil mir Pünktlichkeit wichtig ist. Könntest du mir bitte Bescheid geben, wenn du dich verspätest?`;
+};

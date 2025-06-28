@@ -46,4 +46,4 @@ export const getContextStyle = (context: string) => {
   };
   
   return styles[context as keyof typeof styles] || 'empathetic';
-}; 
+};
