@@ -37,31 +37,6 @@ const testimonials = [
   }
 ];
 
-const variants = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? 500 : -500,
-    opacity: 0,
-    scale: 0.8,
-  }),
-  center: {
-    zIndex: 1,
-    x: 0,
-    opacity: 1,
-    scale: 1,
-  },
-  exit: (direction: number) => ({
-      zIndex: 0,
-    x: direction < 0 ? 500 : -500,
-    opacity: 0,
-    scale: 0.8,
-  }),
-};
-
-const swipeConfidenceThreshold = 10000;
-const swipePower = (offset: number, velocity: number) => {
-  return Math.abs(offset) * velocity;
-};
-
 export default function Testimonials() {
   const [[page, direction], setPage] = useState([0, 0]);
 
@@ -73,33 +48,20 @@ export default function Testimonials() {
 
   return (
     <div className="relative w-full max-w-3xl mx-auto flex flex-col items-center py-12">
-       <div className="w-full h-[380px] sm:h-[320px] relative flex items-center justify-center">
+      <div className="w-full h-[380px] sm:h-[320px] relative flex items-center justify-center">
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
             key={page}
             custom={direction}
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
+            initial={{ opacity: 0, x: direction > 0 ? 500 : -500, scale: 0.8 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: direction < 0 ? 500 : -500, scale: 0.8 }}
             transition={{
               x: { type: 'spring', stiffness: 300, damping: 30 },
               opacity: { duration: 0.2 },
               scale: { duration: 0.2 },
             }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.7}
-            onDragEnd={(e, { offset, velocity }) => {
-              const swipe = swipePower(offset.x, velocity.x);
-
-              if (swipe < -swipeConfidenceThreshold) {
-                paginate(1);
-              } else if (swipe > swipeConfidenceThreshold) {
-                paginate(-1);
-              }
-            }}
-            className="absolute w-[90%] h-full"
+            className="absolute w-full h-full"
           >
             <div className="h-full bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-xl flex flex-col justify-center items-center p-8 space-y-4 border border-gray-100">
               <p className="text-base sm:text-lg text-center text-gray-700 leading-relaxed italic max-w-xl mx-auto">
@@ -144,18 +106,18 @@ export default function Testimonials() {
       
       {/* Dots */}
       <div className="mt-8 flex space-x-2">
-          {testimonials.map((_, i) => (
+        {testimonials.map((_, i) => (
           <motion.button
-              key={i}
+            key={i}
             animate={{ scale: i === testimonialIndex ? 1.2 : 1 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-              onClick={() => setPage([i, i > testimonialIndex ? 1 : -1])}
-              className={`w-3 h-3 rounded-full transition-colors duration-200 ${
-                i === testimonialIndex ? 'bg-purple-600' : 'bg-gray-300 hover:bg-purple-300'
-              }`}
-            />
-          ))}
+            transition={{ duration: 0.3, type: "spring" }}
+            onClick={() => setPage([i, i > testimonialIndex ? 1 : -1])}
+            className={`w-3 h-3 rounded-full transition-colors duration-200 ${
+              i === testimonialIndex ? 'bg-purple-600' : 'bg-gray-300 hover:bg-purple-300'
+            }`}
+          />
+        ))}
       </div>
     </div>
   );
-} 
+}
