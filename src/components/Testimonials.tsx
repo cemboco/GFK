@@ -1,15 +1,33 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
+import { 
+  Card, 
+  CardContent 
+} from "@/components/ui/card";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 
-const testimonials = [
+interface Testimonial {
+  text: string;
+  name: string;
+  role: string;
+  tag: string;
+  tagColor: string;
+  initials: string;
+  bgColor: string;
+}
+
+const testimonials: Testimonial[] = [
   {
     text: "Der GFK Coach hat unsere Familienkommunikation völlig verändert. Statt ständiger Diskussionen haben wir jetzt echte Gespräche. Meine Kinder hören mir zu und ich verstehe ihre Bedürfnisse besser. Die KI-Reformulierungen haben mir geholfen zu verstehen, wie ich meine Frustration ausdrücken kann, ohne zu verletzen.",
     name: "Sarah M.",
     role: "Mutter von zwei Kindern",
     tag: "Familie",
     tagColor: "bg-green-100 text-green-700",
-    avatar: "https://ui-avatars.com/api/?name=S+M&background=dcfce7&color=166534&bold=true",
+    initials: "SM",
+    bgColor: "bg-green-100"
   },
   {
     text: "Als Angestellter war ich oft frustriert über ineffektive Meetings und Konflikte im Team. Der GFK Coach hat mir gezeigt, wie ich konstruktives Feedback geben und annehmen kann. Mein Team ist jetzt offener für Kritik und wir lösen Probleme gemeinsam statt gegeneinander.",
@@ -17,7 +35,8 @@ const testimonials = [
     role: "Angestellter",
     tag: "Arbeit",
     tagColor: "bg-amber-100 text-amber-700",
-    avatar: "https://ui-avatars.com/api/?name=M+K&background=fefce8&color=854d0e&bold=true",
+    initials: "MK",
+    bgColor: "bg-amber-100"
   },
   {
     text: "Nach 15 Jahren Ehe dachten wir, wir kennen uns in- und auswendig. Aber wir haben gemerkt, dass wir oft aneinander vorbei geredet haben. Die GFK-Prinzipien haben uns geholfen, wieder wirklich miteinander zu sprechen und uns zu verstehen.",
@@ -25,7 +44,8 @@ const testimonials = [
     role: "Ehepaar",
     tag: "Partnerschaft",
     tagColor: "bg-rose-100 text-rose-700",
-    avatar: "https://ui-avatars.com/api/?name=A+T&background=ffe4e6&color=9f1239&bold=true",
+    initials: "AT",
+    bgColor: "bg-rose-100"
   },
   {
     text: "Ich empfehle den GFK Coach meinen Klienten als Ergänzung zur Therapie. Die praktischen Übungen und sofortigen Reformulierungen helfen dabei, das Gelernte im Alltag anzuwenden. Besonders wertvoll ist die Möglichkeit, verschiedene Kontexte zu üben.",
@@ -33,129 +53,140 @@ const testimonials = [
     role: "Psychotherapeutin",
     tag: "Professionell",
     tagColor: "bg-sky-100 text-sky-700",
-    avatar: "https://ui-avatars.com/api/?name=L+W&background=e0f2fe&color=0369a1&bold=true",
+    initials: "LW",
+    bgColor: "bg-sky-100"
   }
 ];
 
-const variants = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? 500 : -500,
-    opacity: 0,
-    scale: 0.8,
-  }),
-  center: {
-    zIndex: 1,
-    x: 0,
-    opacity: 1,
-    scale: 1,
-  },
-  exit: (direction: number) => ({
-    zIndex: 0,
-    x: direction < 0 ? 500 : -500,
-    opacity: 0,
-    scale: 0.8,
-  }),
-};
-
-const swipeConfidenceThreshold = 10000;
-const swipePower = (offset: number, velocity: number) => {
-  return Math.abs(offset) * velocity;
-};
-
 export default function Testimonials() {
-  const [[page, direction], setPage] = useState([0, 0]);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const paginate = (newDirection: number) => {
-    setPage([(page + newDirection + testimonials.length) % testimonials.length, newDirection]);
+  const handlePrevious = () => {
+    setCurrentIndex((prevIndex) => 
+      prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1
+    );
   };
 
-  const testimonialIndex = page;
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) => 
+      prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const goToTestimonial = (index: number) => {
+    setCurrentIndex(index);
+  };
 
   return (
-    <div className="relative w-full max-w-3xl mx-auto flex flex-col items-center py-12">
-      <div className="w-full h-[380px] sm:h-[320px] relative flex items-center justify-center">
-        <AnimatePresence initial={false} custom={direction}>
-          <motion.div
-            key={page}
-            custom={direction}
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{
-              x: { type: 'spring', stiffness: 300, damping: 30 },
-              opacity: { duration: 0.2 },
-              scale: { duration: 0.2 },
-            }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.7}
-            onDragEnd={(e, { offset, velocity }) => {
-              const swipe = swipePower(offset.x, velocity.x);
+    <motion.section
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 1.0 }}
+      className="bg-purple-50/50 rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 xl:p-12 my-16 relative"
+    >
+      <div className="text-center mb-8 sm:mb-12">
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
+          Was unsere Nutzer über uns sagen
+        </h2>
+        <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto px-4">
+          Echte Erfahrungen von Menschen, die ihre Kommunikation mit unserem GFK Coach transformiert haben.
+        </p>
+      </div>
 
-              if (swipe < -swipeConfidenceThreshold) {
-                paginate(1);
-              } else if (swipe > swipeConfidenceThreshold) {
-                paginate(-1);
-              }
-            }}
-            className="absolute w-[90%] h-full"
+      <div className="relative max-w-4xl mx-auto">
+        {/* Navigation buttons */}
+        <div className="absolute inset-y-0 left-0 flex items-center z-10">
+          <Button 
+            onClick={handlePrevious} 
+            size="icon" 
+            variant="ghost" 
+            className="h-12 w-12 rounded-full bg-white/70 backdrop-blur-sm shadow-lg hover:bg-purple-50"
           >
-            <div className="h-full bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-xl flex flex-col justify-center items-center p-8 space-y-4 border border-gray-100">
-              <p className="text-base sm:text-lg text-center text-gray-700 leading-relaxed italic max-w-xl mx-auto">
-                "{testimonials[testimonialIndex].text}"
-              </p>
-              <div className="pt-4 flex flex-col items-center text-center">
-                <img
-                  src={testimonials[testimonialIndex].avatar}
-                  alt={testimonials[testimonialIndex].name}
-                  className="w-14 h-14 rounded-full mb-3 border-2 border-purple-100 shadow-md"
-                />
-                <div className="font-semibold text-gray-900">{testimonials[testimonialIndex].name}</div>
-                <div className="text-gray-500 text-sm">{testimonials[testimonialIndex].role}</div>
-                <div className={`mt-2 px-3 py-1 text-xs font-medium rounded-full ${testimonials[testimonialIndex].tagColor}`}>
-                  {testimonials[testimonialIndex].tag}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-      </div>
+            <ChevronLeft className="h-6 w-6 text-purple-600" />
+            <span className="sr-only">Vorheriges Testimonial</span>
+          </Button>
+        </div>
+        
+        <div className="absolute inset-y-0 right-0 flex items-center z-10">
+          <Button 
+            onClick={handleNext} 
+            size="icon" 
+            variant="ghost" 
+            className="h-12 w-12 rounded-full bg-white/70 backdrop-blur-sm shadow-lg hover:bg-purple-50"
+          >
+            <ChevronRight className="h-6 w-6 text-purple-600" />
+            <span className="sr-only">Nächstes Testimonial</span>
+          </Button>
+        </div>
 
-      {/* Navigation Controls */}
-      <div className="absolute top-1/2 -translate-y-1/2 w-full flex justify-between px-0 sm:px-4 z-10">
-        <motion.button
-          whileHover={{ scale: 1.1, x: -5 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => paginate(-1)}
-          className="w-12 h-12 rounded-full bg-white/70 backdrop-blur-sm border border-gray-200 text-purple-600 flex items-center justify-center hover:bg-purple-50 transition-colors duration-200 shadow-lg"
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.1, x: 5 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => paginate(1)}
-          className="w-12 h-12 rounded-full bg-white/70 backdrop-blur-sm border border-gray-200 text-purple-600 flex items-center justify-center hover:bg-purple-50 transition-colors duration-200 shadow-lg"
-        >
-          <ChevronRight className="w-6 h-6" />
-        </motion.button>
+        {/* Testimonial card */}
+        <div className="px-4 sm:px-12">
+          <Card className="shadow-lg border-0">
+            <CardContent className="p-6 sm:p-8">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentIndex}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex flex-col items-center"
+                >
+                  {/* Stars */}
+                  <div className="flex mb-6 text-yellow-400">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-5 w-5 fill-current" />
+                    ))}
+                  </div>
+                  
+                  {/* Testimonial text */}
+                  <blockquote className="text-center mb-8">
+                    <p className="text-lg sm:text-xl text-gray-700 italic leading-relaxed">
+                      "{testimonials[currentIndex].text}"
+                    </p>
+                  </blockquote>
+                  
+                  {/* Author info */}
+                  <div className="flex flex-col items-center">
+                    <Avatar className={`h-16 w-16 ${testimonials[currentIndex].bgColor}`}>
+                      <AvatarFallback className="text-lg font-semibold">
+                        {testimonials[currentIndex].initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    
+                    <div className="mt-4 text-center">
+                      <h3 className="font-semibold text-lg">{testimonials[currentIndex].name}</h3>
+                      <p className="text-gray-500 text-sm">{testimonials[currentIndex].role}</p>
+                      <Badge variant="outline" className={`mt-2 ${testimonials[currentIndex].tagColor}`}>
+                        {testimonials[currentIndex].tag}
+                      </Badge>
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Dots indicator */}
+        <div className="flex justify-center mt-6 space-x-2">
+          {testimonials.map((_, index) => (
+            <Button
+              key={index}
+              variant="ghost"
+              size="icon"
+              className={`w-2 h-2 p-0 rounded-full ${
+                index === currentIndex 
+                  ? 'bg-purple-600' 
+                  : 'bg-gray-300 hover:bg-purple-300'
+              }`}
+              onClick={() => goToTestimonial(index)}
+            >
+              <span className="sr-only">Testimonial {index + 1}</span>
+            </Button>
+          ))}
+        </div>
       </div>
-      
-      {/* Dots */}
-      <div className="mt-8 flex space-x-2">
-        {testimonials.map((_, i) => (
-          <motion.button
-            key={i}
-            animate={{ scale: i === testimonialIndex ? 1.2 : 1 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-            onClick={() => setPage([i, i > testimonialIndex ? 1 : -1])}
-            className={`w-3 h-3 rounded-full transition-colors duration-200 ${
-              i === testimonialIndex ? 'bg-purple-600' : 'bg-gray-300 hover:bg-purple-300'
-            }`}
-          />
-        ))}
-      </div>
-    </div>
+    </motion.section>
   );
 }
