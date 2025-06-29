@@ -397,10 +397,14 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
                 current_level: newLevel,
                 level_progress: Math.min(newProgress, 100),
                 last_activity: new Date().toISOString()
-              }]);
+              }], {
+                onConflict: 'user_id',
+                ignoreDuplicates: false
+              });
 
             if (updateError) {
               console.error('Error updating progress:', updateError);
+              // Don't throw error, just log it - progress update is not critical
             }
           }
         } catch (err) {

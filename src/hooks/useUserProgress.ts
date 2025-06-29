@@ -37,20 +37,40 @@ export const useUserProgress = (user: any) => {
       if (data) {
         setProgress(data);
       } else {
-        // Create initial progress record
+        // Create initial progress record with upsert to avoid duplicate key errors
         const { data: newProgress, error: insertError } = await supabase
           .from('user_progress')
-          .insert([{
+          .upsert([{
             user_id: user.id,
             total_transformations: 0,
             current_level: 'Anfänger',
-            level_progress: 0
-          }])
+            level_progress: 0,
+            last_activity: new Date().toISOString()
+          }], {
+            onConflict: 'user_id',
+            ignoreDuplicates: false
+          })
           .select()
           .single();
 
-        if (insertError) throw insertError;
-        setProgress(newProgress);
+        if (insertError) {
+          // If upsert fails, try to fetch again (might have been created by another process)
+          if (insertError.code === '23505') {
+            console.log('Duplicate key detected, fetching existing record...');
+            const { data: existingData, error: retryError } = await supabase
+              .from('user_progress')
+              .select('*')
+              .eq('user_id', user.id)
+              .single();
+            
+            if (retryError) throw retryError;
+            setProgress(existingData);
+          } else {
+            throw insertError;
+          }
+        } else {
+          setProgress(newProgress);
+        }
       }
     } catch (err) {
       console.error('Error fetching user progress:', err);
