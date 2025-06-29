@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Send, MessageSquare, Heart, Sparkles, ThumbsUp, ThumbsDown, Info, MessageCircle, Shield, Mail, LogIn, LogOut, Menu, X as XIcon, Bot, ArrowRight, CheckCircle, Star, Users, Zap, Target, User, Coffee, HelpCircle } from 'lucide-react';
 import { supabase } from './supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation, useOutletContext, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation, useOutletContext } from 'react-router-dom';
 import CTAForm from './components/CTAForm';
 import FeedbackDialog from './components/FeedbackDialog';
 import PositiveFeedbackDialog from './components/PositiveFeedbackDialog';
@@ -711,8 +711,6 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
               />
             } />
             <Route path="/" element={<Navigate to="/home" />} />
-            {/* 404 Route für unbekannte Pfade */}
-            <Route path="*" element={<NotFoundPage />} />
         </Routes>
         </main>
 
@@ -856,28 +854,10 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [showVersionInfo, setShowVersionInfo] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state change:', event, session?.user?.id);
-      
-      if (event === 'SIGNED_IN') {
-        setUser(session?.user ?? null);
-        setAuthError(null);
-        // Redirect to home after successful sign in
-        setTimeout(() => {
-          window.location.href = '/home';
-        }, 100);
-      } else if (event === 'SIGNED_OUT') {
-        setUser(null);
-        setAuthError(null);
-      } else if (event === 'TOKEN_REFRESHED') {
-        setUser(session?.user ?? null);
-      } else if (event === 'USER_UPDATED') {
-        setUser(session?.user ?? null);
-      }
-      
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
       setLoading(false);
     });
 
@@ -897,29 +877,19 @@ function App() {
   }, []);
 
   const handleSignOut = async () => {
-    try {
-      await supabase.auth.signOut();
-      setAuthError(null);
-    } catch (error) {
-      console.error('Sign out error:', error);
-      setAuthError('Fehler beim Abmelden. Bitte versuchen Sie es erneut.');
-    }
+    await supabase.auth.signOut();
   };
   
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500 mx-auto"></div>
-          <p className="text-gray-600">Lade GFKCoach...</p>
-        </div>
+      <div className="flex justify-center items-center h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
       </div>
     );
   }
 
   return (
     <Router>
-      <ScrollToTop />
       <AppContent 
         user={user} 
         onSignOut={handleSignOut} 
@@ -930,25 +900,6 @@ function App() {
         <div className="fixed bottom-4 right-4 bg-gray-800 text-white text-xs px-2 py-1 rounded-full shadow-lg z-50">
           Version 1.6.16
         </div>
-      )}
-      {/* Global Error Display */}
-      {authError && (
-        <motion.div
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -50 }}
-          className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg"
-        >
-          <div className="flex items-center space-x-3">
-            <span>{authError}</span>
-            <button
-              onClick={() => setAuthError(null)}
-              className="text-white/80 hover:text-white text-xl font-bold"
-            >
-              ×
-            </button>
-          </div>
-        </motion.div>
       )}
     </Router>
   );
@@ -1169,43 +1120,6 @@ function AboutContent() {
     </motion.div>
   </motion.div>
 );
-}
-
-// 404 Not Found Page Component
-function NotFoundPage() {
-  const navigate = useNavigate();
-  
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="min-h-[60vh] flex items-center justify-center"
-    >
-      <div className="text-center space-y-6 max-w-md mx-auto px-4">
-        <div className="w-24 h-24 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto">
-          <HelpCircle className="h-12 w-12 text-purple-600" />
-        </div>
-        <h1 className="text-3xl font-bold text-gray-900">Seite nicht gefunden</h1>
-        <p className="text-gray-600">
-          Die angeforderte Seite existiert nicht oder wurde verschoben.
-        </p>
-        <div className="space-y-3">
-          <button
-            onClick={() => navigate('/home')}
-            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:from-purple-700 hover:to-indigo-700 transition-all duration-200"
-          >
-            Zur Startseite
-          </button>
-          <button
-            onClick={() => navigate(-1)}
-            className="w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-medium hover:bg-gray-200 transition-all duration-200"
-          >
-            Zurück
-          </button>
-        </div>
-      </div>
-    </motion.div>
-  );
 }
 
 export default App;
