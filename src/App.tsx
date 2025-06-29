@@ -682,7 +682,7 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
         <Routes>
             <Route path="/auth" element={user ? <Navigate to="/profile" replace /> : <Auth />} />
             <Route path="/profile" element={user ? <Profile user={user} onSignOut={onSignOut} /> : <Navigate to="/auth" replace />} />
-            <Route path="/statistiken" element={<StatisticsPage />} />
+            <Route path="/statistiken" element={user ? <StatisticsPage /> : <Navigate to="/auth" replace />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/ueber" element={<AboutContent />} />
             <Route path="/kontakt" element={<Contact />} />

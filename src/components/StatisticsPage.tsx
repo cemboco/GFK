@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import { useNavigate } from 'react-router-dom';
 import { 
   Trophy, 
   TrendingUp, 
@@ -68,12 +69,40 @@ export default function StatisticsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'personal' | 'global'>('personal');
+  const [user, setUser] = useState<any>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    loadStatistics();
-  }, []);
+    // Check authentication status
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate('/auth');
+        return;
+      }
+      setUser(user);
+      loadStatistics();
+    };
+
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN') {
+        setUser(session?.user || null);
+        loadStatistics();
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+        navigate('/auth');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const loadStatistics = async () => {
+    if (!user) return;
+    
     try {
       setLoading(true);
       setError(null);
