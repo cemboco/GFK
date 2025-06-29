@@ -96,6 +96,10 @@ Formuliere die Aussage in die vier GFK-Schritte um:
 3. Bedürfnis: Welches Bedürfnis steckt dahinter?
 4. Bitte: Was wünscht sich der Nutzer?
 
+**Beispiel für eine gute GFK-Transformation:**
+Input: "Ich möchte, dass hier Ruhe einkehrt!"
+GFK-Umformulierung: "Mir fällt auf, dass es hier gerade ziemlich laut ist. Ich fühle mich dadurch unruhig, weil ich Ruhe brauche, um mich konzentrieren zu können. Wärt ihr bereit, für die nächste Zeit etwas leiser zu sein?"
+
 **Antworte im JSON-Format:**
 {
   "reformulated_text": "Vollständiger GFK-Text",
