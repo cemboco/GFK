@@ -24,13 +24,14 @@ export const useUserProgress = (user: any) => {
       setIsLoading(true);
       setError(null);
 
+      // Use maybeSingle() instead of single() to handle cases where no rows exist
       const { data, error: fetchError } = await supabase
         .from('user_progress')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (fetchError && fetchError.code !== 'PGRST116') {
+      if (fetchError) {
         throw fetchError;
       }
 
@@ -179,4 +180,4 @@ export const useUserProgress = (user: any) => {
     getNextLevelInfo,
     refreshProgress
   };
-}; 
+};
