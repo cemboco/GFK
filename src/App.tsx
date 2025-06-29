@@ -388,7 +388,7 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
               newProgress = (newTransformations * 100) / 20;
             }
 
-            // Update or insert progress
+            // Update or insert progress with proper conflict resolution
             const { error: updateError } = await supabase
               .from('user_progress')
               .upsert([{
@@ -397,7 +397,9 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
                 current_level: newLevel,
                 level_progress: Math.min(newProgress, 100),
                 last_activity: new Date().toISOString()
-              }]);
+              }], {
+                onConflict: 'user_id'
+              });
 
             if (updateError) {
               console.error('Error updating progress:', updateError);
