@@ -24,35 +24,27 @@ export const useUserProgress = (user: any) => {
       setIsLoading(true);
       setError(null);
 
-      // Use maybeSingle() instead of single() to handle cases where no rows exist
-      const { data, error: fetchError } = await supabase
+      // Use upsert to handle both creating and updating user progress
+      const { data, error: upsertError } = await supabase
         .from('user_progress')
-        .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle();
+        .upsert([{
+          user_id: user.id,
+          total_transformations: 0,
+          current_level: 'Anfänger',
+          level_progress: 0,
+          last_activity: new Date().toISOString()
+        }], {
+          onConflict: 'user_id',
+          ignoreDuplicates: false
+        })
+        .select()
+        .single();
 
-      if (fetchError) {
-        throw fetchError;
+      if (upsertError) {
+        throw upsertError;
       }
 
-      if (data) {
-        setProgress(data);
-      } else {
-        // Create initial progress record
-        const { data: newProgress, error: insertError } = await supabase
-          .from('user_progress')
-          .insert([{
-            user_id: user.id,
-            total_transformations: 0,
-            current_level: 'Anfänger',
-            level_progress: 0
-          }])
-          .select()
-          .single();
-
-        if (insertError) throw insertError;
-        setProgress(newProgress);
-      }
+      setProgress(data);
     } catch (err) {
       console.error('Error fetching user progress:', err);
       setError(err instanceof Error ? err.message : 'Fehler beim Laden des Fortschritts');
