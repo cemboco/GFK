@@ -24,37 +24,41 @@ export const useUserProgress = (user: any) => {
       setIsLoading(true);
       setError(null);
 
+      // Use maybeSingle() instead of single() to handle cases where no record exists
       const { data, error: fetchError } = await supabase
         .from('user_progress')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (fetchError && fetchError.code !== 'PGRST116') {
+      if (fetchError) {
+        console.error('Error fetching user progress:', fetchError);
         throw fetchError;
       }
 
       if (data) {
         setProgress(data);
       } else {
-        // Create initial progress record
-        const { data: newProgress, error: insertError } = await supabase
-          .from('user_progress')
-          .insert([{
-            user_id: user.id,
-            total_transformations: 0,
-            current_level: 'Anfänger',
-            level_progress: 0
-          }])
-          .select()
-          .single();
-
-        if (insertError) throw insertError;
-        setProgress(newProgress);
+        // No progress record exists yet - set default values
+        // The database trigger will create the actual record when the first message is sent
+        setProgress({
+          total_transformations: 0,
+          current_level: 'Anfänger',
+          level_progress: 0,
+          last_activity: new Date().toISOString()
+        });
       }
     } catch (err) {
       console.error('Error fetching user progress:', err);
       setError(err instanceof Error ? err.message : 'Fehler beim Laden des Fortschritts');
+      
+      // Set fallback progress on error
+      setProgress({
+        total_transformations: 0,
+        current_level: 'Anfänger',
+        level_progress: 0,
+        last_activity: new Date().toISOString()
+      });
     } finally {
       setIsLoading(false);
     }
@@ -179,4 +183,4 @@ export const useUserProgress = (user: any) => {
     getNextLevelInfo,
     refreshProgress
   };
-}; 
+};
