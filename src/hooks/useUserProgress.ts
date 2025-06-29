@@ -24,18 +24,20 @@ export const useUserProgress = (user: any) => {
       setIsLoading(true);
       setError(null);
 
-      const { data, error: fetchError } = await supabase
+      // First try to fetch existing progress
+      const { data: existingProgress, error: fetchError } = await supabase
         .from('user_progress')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (fetchError && fetchError.code !== 'PGRST116') {
         throw fetchError;
       }
 
-      if (data) {
-        setProgress(data);
+      if (existingProgress) {
+        // User already has progress, use it
+        setProgress(existingProgress);
       } else {
         // Create initial progress record with upsert to avoid duplicate key errors
         const { data: newProgress, error: insertError } = await supabase
@@ -199,4 +201,4 @@ export const useUserProgress = (user: any) => {
     getNextLevelInfo,
     refreshProgress
   };
-}; 
+};
