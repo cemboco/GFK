@@ -24,27 +24,54 @@ export const useUserProgress = (user: any) => {
       setIsLoading(true);
       setError(null);
 
-      // Use upsert to handle both creating and updating user progress
-      const { data, error: upsertError } = await supabase
+      // First try to fetch existing progress
+      const { data: existingProgress, error: fetchError } = await supabase
         .from('user_progress')
-        .upsert([{
-          user_id: user.id,
-          total_transformations: 0,
-          current_level: 'Anfänger',
-          level_progress: 0,
-          last_activity: new Date().toISOString()
-        }], {
-          onConflict: 'user_id',
-          ignoreDuplicates: false
-        })
-        .select()
-        .single();
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-      if (upsertError) {
-        throw upsertError;
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        throw fetchError;
       }
 
-      setProgress(data);
+      if (existingProgress) {
+        // User already has progress, use it
+        setProgress(existingProgress);
+      } else {
+        // User doesn't have progress, create it
+        const { data: newProgress, error: insertError } = await supabase
+          .from('user_progress')
+          .insert([{
+            user_id: user.id,
+            total_transformations: 0,
+            current_level: 'Anfänger',
+            level_progress: 0,
+            last_activity: new Date().toISOString()
+          }])
+          .select()
+          .single();
+
+        if (insertError) {
+          // If insert fails due to duplicate key (race condition), try to fetch again
+          if (insertError.code === '23505') {
+            const { data: retryProgress, error: retryError } = await supabase
+              .from('user_progress')
+              .select('*')
+              .eq('user_id', user.id)
+              .single();
+
+            if (retryError) {
+              throw retryError;
+            }
+            setProgress(retryProgress);
+          } else {
+            throw insertError;
+          }
+        } else {
+          setProgress(newProgress);
+        }
+      }
     } catch (err) {
       console.error('Error fetching user progress:', err);
       setError(err instanceof Error ? err.message : 'Fehler beim Laden des Fortschritts');
