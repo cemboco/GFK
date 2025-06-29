@@ -12,6 +12,7 @@ interface ChatUsage {
 export const useChatUsage = (user: any) => {
   const [chatUsage, setChatUsage] = useState<ChatUsage | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -19,41 +20,55 @@ export const useChatUsage = (user: any) => {
     } else {
       setChatUsage(null);
       setIsLoading(false);
+      setError(null);
     }
   }, [user]);
 
   const initializeChatUsage = async () => {
     try {
       setIsLoading(true);
+      setError(null);
       
+      // Test connection first
+      const { error: connectionError } = await supabase
+        .from('chat_usage')
+        .select('count', { count: 'exact', head: true });
+
+      if (connectionError) {
+        throw new Error(`Database connection failed: ${connectionError.message}`);
+      }
+
       // Check if user has chat usage record
       const { data: existingUsage, error: fetchError } = await supabase
         .from('chat_usage')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (fetchError && fetchError.code !== 'PGRST116') {
-        throw fetchError;
+      if (fetchError) {
+        throw new Error(`Failed to fetch chat usage: ${fetchError.message}`);
       }
 
       let usageData;
 
       if (!existingUsage) {
         // Create new chat usage record
+        const resetDate = new Date();
+        resetDate.setMonth(resetDate.getMonth() + 1);
+
         const { data: newUsage, error: createError } = await supabase
           .from('chat_usage')
           .insert([{
             user_id: user.id,
             message_count: 0,
             max_messages: 3,
-            reset_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days from now
+            reset_date: resetDate.toISOString()
           }])
           .select()
           .single();
 
         if (createError) {
-          throw createError;
+          throw new Error(`Failed to create chat usage record: ${createError.message}`);
         }
 
         usageData = newUsage;
@@ -64,18 +79,22 @@ export const useChatUsage = (user: any) => {
 
         if (now > resetDate) {
           // Reset the counter
+          const newResetDate = new Date();
+          newResetDate.setMonth(newResetDate.getMonth() + 1);
+
           const { data: resetUsage, error: resetError } = await supabase
             .from('chat_usage')
             .update({
               message_count: 0,
-              reset_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+              reset_date: newResetDate.toISOString(),
+              updated_at: new Date().toISOString()
             })
             .eq('user_id', user.id)
             .select()
             .single();
 
           if (resetError) {
-            throw resetError;
+            throw new Error(`Failed to reset chat usage: ${resetError.message}`);
           }
 
           usageData = resetUsage;
@@ -85,23 +104,28 @@ export const useChatUsage = (user: any) => {
       }
 
       setChatUsage({
-        messageCount: usageData.message_count,
-        maxMessages: usageData.max_messages,
-        remainingMessages: usageData.max_messages - usageData.message_count,
+        messageCount: usageData.message_count || 0,
+        maxMessages: usageData.max_messages || 3,
+        remainingMessages: (usageData.max_messages || 3) - (usageData.message_count || 0),
         resetDate: new Date(usageData.reset_date),
-        canSendMessage: usageData.message_count < usageData.max_messages
+        canSendMessage: (usageData.message_count || 0) < (usageData.max_messages || 3)
       });
 
     } catch (error) {
       console.error('Error initializing chat usage:', error);
-      // Fallback to default values
-      setChatUsage({
-        messageCount: 0,
-        maxMessages: 3,
-        remainingMessages: 3,
-        resetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        canSendMessage: true
-      });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setError(errorMessage);
+      
+      // Fallback to default values only if it's not a critical connection error
+      if (!errorMessage.includes('Database connection failed')) {
+        setChatUsage({
+          messageCount: 0,
+          maxMessages: 3,
+          remainingMessages: 3,
+          resetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          canSendMessage: true
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -115,11 +139,14 @@ export const useChatUsage = (user: any) => {
       
       const { error } = await supabase
         .from('chat_usage')
-        .update({ message_count: newCount })
+        .update({ 
+          message_count: newCount,
+          updated_at: new Date().toISOString()
+        })
         .eq('user_id', user.id);
 
       if (error) {
-        throw error;
+        throw new Error(`Failed to increment message count: ${error.message}`);
       }
 
       setChatUsage(prev => prev ? {
@@ -132,6 +159,7 @@ export const useChatUsage = (user: any) => {
       return true;
     } catch (error) {
       console.error('Error incrementing message count:', error);
+      setError(error instanceof Error ? error.message : 'Failed to update message count');
       return false;
     }
   };
@@ -146,10 +174,18 @@ export const useChatUsage = (user: any) => {
     Bald wird es Premium-Pläne mit mehr Nachrichten geben!`;
   };
 
+  const retryInitialization = () => {
+    if (user) {
+      initializeChatUsage();
+    }
+  };
+
   return {
     chatUsage,
     isLoading,
+    error,
     incrementMessageCount,
-    getUpgradeMessage
+    getUpgradeMessage,
+    retryInitialization
   };
-}; 
+};
