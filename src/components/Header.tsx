@@ -52,10 +52,17 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Heart className="h-5 w-5 text-white" />
+              <div className="w-[80px] h-[80px] rounded-xl overflow-hidden flex items-center justify-center">
+                <img src="/logo.png" alt="GFKCoach Logo" className="w-[80px] h-[80px] object-contain" />
               </div>
-              <h1 className="text-xl font-medium text-gray-900">GFKCoach</h1>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                  GFKCoach
+                </h1>
+                <span className="text-xs text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">
+                  Beta
+                </span>
+              </div>
             </Link>
           </div>
           
