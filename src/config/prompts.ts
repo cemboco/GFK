@@ -57,6 +57,57 @@ Deine Aufgabe ist es, schwierige oder konfliktreiche Kommunikation in empathisch
 ${GFK_TRANSFORM_EXAMPLES.map((ex, i) => `${i+1}. ${ex}`).join("\n")}
 
 **Beispiel-Transformationen:**
+// Sender-Beispiele
+1. Ausgangssituation: "Du bist immer zu spät!"
+   Perspektive: Sender
+   GFK-Umformulierung: "Wenn ich wahrnehme, dass du später kommst als vereinbart, fühle ich mich enttäuscht, weil mir Zuverlässigkeit wichtig ist. Wärst du bereit, mir beim nächsten Mal vorher Bescheid zu geben?"
+
+2. Ausgangssituation: "Du hast immer das letzte Wort, das nervt mich."
+   Perspektive: Sender
+   GFK-Umformulierung: "Wenn ich wahrnehme, dass du oft das letzte Wort hast, fühle ich mich genervt, weil mir gegenseitiger Austausch und Gehör wichtig sind. Wärst du bereit, mir auch Raum für meine Sichtweise zu lassen?"
+
+3. Ausgangssituation: "Nie hilfst du mir im Haushalt!"
+   Perspektive: Sender
+   GFK-Umformulierung: "Wenn ich sehe, dass ich die Hausarbeit meistens alleine mache, fühle ich mich überfordert, weil mir Unterstützung und Fairness wichtig sind. Wärst du bereit, mich beim nächsten Mal zu unterstützen?"
+
+4. Ausgangssituation: "Du hörst mir nie richtig zu."
+   Perspektive: Sender
+   GFK-Umformulierung: "Wenn ich wahrnehme, dass du während unseres Gesprächs aufs Handy schaust, fühle ich mich traurig, weil mir Aufmerksamkeit und Verbindung wichtig sind. Wärst du bereit, das Handy während unserer Gespräche wegzulegen?"
+
+5. Ausgangssituation: "Du bist so rücksichtslos!"
+   Perspektive: Sender
+   GFK-Umformulierung: "Wenn ich sehe, dass du die Tür laut zuschlägst, fühle ich mich erschrocken, weil mir Rücksicht und Ruhe wichtig sind. Wärst du bereit, die Tür leise zu schließen?"
+
+6. Ausgangssituation: "Immer muss ich alles alleine entscheiden!"
+   Perspektive: Sender
+   GFK-Umformulierung: "Wenn ich merke, dass ich oft Entscheidungen alleine treffe, fühle ich mich unsicher, weil mir Austausch und gemeinsame Verantwortung wichtig sind. Wärst du bereit, dich beim nächsten Mal mit mir abzusprechen?"
+
+// Empfänger-Beispiele
+7. Ausgangssituation: "Du bist immer zu spät!"
+   Perspektive: Empfänger
+   GFK-Umformulierung: "Wenn ich höre, dass dir Zuverlässigkeit wichtig ist und du enttäuscht bist, weil ich zu spät komme, fühle ich mich angesprochen und möchte verstehen, wie wir das gemeinsam lösen können."
+
+8. Ausgangssituation: "Du hast immer das letzte Wort, das nervt mich."
+   Perspektive: Empfänger
+   GFK-Umformulierung: "Wenn ich höre, dass du dir mehr Raum für deine Sichtweise wünschst, weil dir Austausch wichtig ist, bin ich bereit, darauf zu achten und dich öfter ausreden zu lassen."
+
+9. Ausgangssituation: "Nie hilfst du mir im Haushalt!"
+   Perspektive: Empfänger
+   GFK-Umformulierung: "Wenn ich höre, dass du dich überfordert fühlst und dir Unterstützung wünschst, weil dir Fairness wichtig ist, bin ich bereit, beim nächsten Mal mehr mitzuhelfen."
+
+10. Ausgangssituation: "Du hörst mir nie richtig zu."
+    Perspektive: Empfänger
+    GFK-Umformulierung: "Wenn ich höre, dass du dir mehr Aufmerksamkeit und Verbindung wünschst, weil ich während des Gesprächs aufs Handy schaue, bin ich bereit, das Handy wegzulegen und dir zuzuhören."
+
+11. Ausgangssituation: "Du bist so rücksichtslos!"
+    Perspektive: Empfänger
+    GFK-Umformulierung: "Wenn ich höre, dass dir Rücksicht und Ruhe wichtig sind und du dich erschrocken fühlst, weil ich die Tür laut zugeschlagen habe, kann ich das nachvollziehen und werde versuchen, die Tür leiser zu schließen."
+
+12. Ausgangssituation: "Immer muss ich alles alleine entscheiden!"
+    Perspektive: Empfänger
+    GFK-Umformulierung: "Wenn ich höre, dass du dir mehr Austausch und gemeinsame Verantwortung wünschst, weil du dich unsicher fühlst, bin ich bereit, mich beim nächsten Mal mit dir abzusprechen."
+
+**Beispiel-Transformationen:**
 1. Ausgangssituation: "Du bist immer zu spät!"
    Perspektive: Sender
    GFK-Umformulierung: "Wenn ich wahrnehme, dass du später kommst als vereinbart, fühle ich mich enttäuscht, weil mir Zuverlässigkeit wichtig ist. Wärst du bereit, mir beim nächsten Mal vorher Bescheid zu geben?"
