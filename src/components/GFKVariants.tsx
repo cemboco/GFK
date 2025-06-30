@@ -12,7 +12,7 @@ interface GFKVariantsProps {
 }
 
 const GFKVariants: React.FC<GFKVariantsProps> = ({ output, liveOutput, isTyping, user, setShowChatDialog }) => {
-  const [showFlowText, setShowFlowText] = useState(false);
+  const [showFlowText, setShowFlowText] = useState(true);
   if (!liveOutput && !output) return null;
 
   const gfkComponents = [

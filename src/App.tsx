@@ -22,7 +22,6 @@ import PerspectiveSelector from './components/PerspectiveSelector';
 import { needsMoreContext } from './utils/contextDetection';
 import FAQ from './components/FAQ';
 import HomePage from './components/HomePage';
-import StatisticsPage from './components/StatisticsPage';
 
 // const supabase = createClient(
 //   import.meta.env.VITE_SUPABASE_URL,
@@ -297,7 +296,7 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
         reformulated_text: (data.reformulated_text || '').replace(/<[^>]*>/g, '')
       };
 
-      // Initialize live output
+      // Initialize live output - nur reformulated_text
       setLiveOutput({
         observation: '',
         feeling: '',
@@ -306,39 +305,19 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
         reformulated_text: ''
       });
 
-      // Type each component with delays
-      await typeText(cleanData.observation, (text) => {
-        setLiveOutput(prev => prev ? { ...prev, observation: text } : null);
-      }, 20);
-
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      await typeText(cleanData.feeling, (text) => {
-        setLiveOutput(prev => prev ? { ...prev, feeling: text } : null);
-      }, 25);
-
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      await typeText(cleanData.need, (text) => {
-        setLiveOutput(prev => prev ? { ...prev, need: text } : null);
-      }, 25);
-
-      await typeText(cleanData.request, (text) => {
-        setLiveOutput(prev => prev ? { ...prev, request: text } : null);
-      }, 20);
-
+      // Type only the reformulated text
       await typeText(cleanData.reformulated_text, (text) => {
         setLiveOutput(prev => prev ? { ...prev, reformulated_text: text } : null);
       }, 15);
 
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      // Set final output with HTML styling - ensure all fields exist
+      // Set final output - nur reformulated_text mit HTML styling
       setOutput({
-        observation: data.observation || '',
-        feeling: data.feeling || '',
-        need: data.need || '',
-        request: data.request || '',
+        observation: '',
+        feeling: '',
+        need: '',
+        request: '',
         reformulated_text: data.reformulated_text || ''
       });
       setIsTyping(false);
@@ -682,7 +661,6 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
         <Routes>
             <Route path="/auth" element={user ? <Navigate to="/profile" replace /> : <Auth />} />
             <Route path="/profile" element={user ? <Profile user={user} onSignOut={onSignOut} /> : <Navigate to="/auth" replace />} />
-            <Route path="/statistiken" element={user ? <StatisticsPage /> : <Navigate to="/auth" replace />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/ueber" element={<AboutContent />} />
             <Route path="/kontakt" element={<Contact />} />

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Sparkles, Info, Mail, LogIn, LogOut, Menu, X as XIcon, User as UserIcon, HelpCircle, BarChart3 } from 'lucide-react';
+import { MessageSquare, Sparkles, Info, Mail, LogIn, LogOut, Menu, X as XIcon, User as UserIcon, HelpCircle } from 'lucide-react';
 
 // Typ für User (kann ggf. noch angepasst werden, je nach Supabase-User-Objekt)
 interface User {
@@ -24,7 +24,6 @@ const navItems = [
 ];
 
 const userNavItems = [
-    { id: 'statistiken', label: 'Statistiken', icon: BarChart3, path: '/statistiken' },
 ];
 
 const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
@@ -88,22 +87,6 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
                 <span>{item.label}</span>
               </motion.button>
             ))}
-            {user && userNavItems.map((item) => (
-              <motion.button
-                key={item.id}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => handleNavigation(item.path)}
-                className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 ${
-                  isActive(item.path)
-                    ? 'bg-purple-100 text-purple-700 shadow-sm'
-                    : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
-                }`}
-              >
-                <item.icon className="h-4 w-4" />
-                <span>{item.label}</span>
-              </motion.button>
-            ))}
             {user ? (
               <div className="flex items-center space-x-2 ml-4">
                 <Link
@@ -152,20 +135,6 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
               className="md:hidden mt-4 space-y-2 border-t border-gray-100 pt-4"
             >
               {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavigation(item.path)}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
-                    isActive(item.path)
-                      ? 'bg-purple-100 text-purple-700'
-                      : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
-                  }`}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.label}</span>
-                </button>
-              ))}
-              {user && userNavItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => handleNavigation(item.path)}
