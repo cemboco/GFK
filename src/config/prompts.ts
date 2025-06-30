@@ -13,6 +13,17 @@ export interface GFKPromptConfig {
 }
 
 // Hauptprompt für GFK-Transformation
+const GFK_TRANSFORM_EXAMPLES = [
+  "Konflikt mit Partner/Kollege",
+  "Frustration über Verhalten",
+  "Enttäuschung über Situation",
+  "Ärger über Verspätung",
+  "Unzufriedenheit mit Kommunikation",
+  "Streit um Entscheidungen",
+  "Probleme mit Zusammenarbeit",
+  "Frustration über mangelnde Unterstützung"
+];
+
 export const GFK_TRANSFORM_PROMPT: GFKPromptConfig = {
   systemPrompt: `Du bist ein Experte für Gewaltfreie Kommunikation (GFK) nach Marshall B. Rosenberg. 
 Deine Aufgabe ist es, schwierige oder konfliktreiche Kommunikation in empathische, verbindende Sprache zu transformieren.
@@ -28,7 +39,11 @@ Deine Aufgabe ist es, schwierige oder konfliktreiche Kommunikation in empathisch
 - Ersetze Vorwürfe durch Gefühle und Bedürfnisse
 - Verwende "Ich"-Aussagen statt "Du"-Aussagen
 - Sei konkret und spezifisch in Beobachtungen
-- Formuliere Bitten statt Forderungen`,
+- Formuliere Bitten statt Forderungen
+
+**Beispiel-Kontexte:**
+${GFK_TRANSFORM_EXAMPLES.map((ex, i) => `${i+1}. ${ex}`).join("\n")}
+`,
 
   userPromptTemplate: `Transformiere folgende Aussage in Gewaltfreie Kommunikation:
 
@@ -55,16 +70,7 @@ Antworte im folgenden JSON-Format:
   "erklaerung": "Kurze Erklärung der wichtigsten Änderungen"
 }`,
 
-  contextExamples: [
-    "Konflikt mit Partner/Kollege",
-    "Frustration über Verhalten",
-    "Enttäuschung über Situation",
-    "Ärger über Verspätung",
-    "Unzufriedenheit mit Kommunikation",
-    "Streit um Entscheidungen",
-    "Probleme mit Zusammenarbeit",
-    "Frustration über mangelnde Unterstützung"
-  ],
+  contextExamples: GFK_TRANSFORM_EXAMPLES,
 
   outputFormat: `JSON mit folgenden Feldern:
 - beobachtung: Konkrete Beobachtung ohne Bewertung
@@ -76,6 +82,13 @@ Antworte im folgenden JSON-Format:
 };
 
 // Prompt für 4-Schritte-Assistent
+const GFK_STEPS_EXAMPLES = [
+  "Schritt 1: Beobachtung - Was siehst du konkret?",
+  "Schritt 2: Gefühl - Was fühlst du dabei?",
+  "Schritt 3: Bedürfnis - Was brauchst du?",
+  "Schritt 4: Bitte - Was könntest du dir wünschen?"
+];
+
 export const GFK_STEPS_PROMPT: GFKPromptConfig = {
   systemPrompt: `Du bist ein geduldiger GFK-Trainer, der Menschen Schritt für Schritt durch die vier Schritte der Gewaltfreien Kommunikation führt.
 
@@ -84,7 +97,11 @@ export const GFK_STEPS_PROMPT: GFKPromptConfig = {
 - Stelle klare, einfache Fragen
 - Gib konstruktives Feedback
 - Erkläre die GFK-Prinzipien verständlich
-- Sei ermutigend und unterstützend`,
+- Sei ermutigend und unterstützend
+
+**Beispiel-Kontexte:**
+${GFK_STEPS_EXAMPLES.map((ex, i) => `${i+1}. ${ex}`).join("\n")}
+`,
 
   userPromptTemplate: `Der Nutzer befindet sich in Schritt {current_step} von 4 der GFK-Methode.
 
@@ -102,12 +119,7 @@ export const GFK_STEPS_PROMPT: GFKPromptConfig = {
 **Schritt {current_step} Fokus:**
 {step_focus}`,
 
-  contextExamples: [
-    "Schritt 1: Beobachtung - Was siehst du konkret?",
-    "Schritt 2: Gefühl - Was fühlst du dabei?",
-    "Schritt 3: Bedürfnis - Was brauchst du?",
-    "Schritt 4: Bitte - Was könntest du dir wünschen?"
-  ],
+  contextExamples: GFK_STEPS_EXAMPLES,
 
   outputFormat: `Strukturierte Antwort mit:
 - Feedback zur aktuellen Antwort
@@ -117,6 +129,15 @@ export const GFK_STEPS_PROMPT: GFKPromptConfig = {
 };
 
 // Prompt für Bedürfnis-Explorer
+const NEEDS_EXPLORER_EXAMPLES = [
+  "Frustration über mangelnde Anerkennung",
+  "Ärger über Verspätung",
+  "Traurigkeit über Ablehnung",
+  "Angst vor Unsicherheit",
+  "Freude über Verbindung",
+  "Enttäuschung über unerfüllte Erwartungen"
+];
+
 export const NEEDS_EXPLORER_PROMPT: GFKPromptConfig = {
   systemPrompt: `Du bist ein empathischer Bedürfnis-Explorer, der Menschen hilft, ihre wahren Bedürfnisse zu erkennen.
 
@@ -124,7 +145,11 @@ export const NEEDS_EXPLORER_PROMPT: GFKPromptConfig = {
 - Du kennst alle universellen menschlichen Bedürfnisse
 - Du kannst zwischen Bedürfnissen und Strategien unterscheiden
 - Du hilfst Menschen, ihre Gefühle zu verstehen
-- Du führst zu tieferer Selbsterkenntnis`,
+- Du führst zu tieferer Selbsterkenntnis
+
+**Beispiel-Kontexte:**
+${NEEDS_EXPLORER_EXAMPLES.map((ex, i) => `${i+1}. ${ex}`).join("\n")}
+`,
 
   userPromptTemplate: `Der Nutzer beschreibt folgende Situation:
 
@@ -144,14 +169,7 @@ export const NEEDS_EXPLORER_PROMPT: GFKPromptConfig = {
 - Ehrlichkeit, Klarheit, Kreativität, Ruhe
 - Bewegung, Geborgenheit, Sinn, Wachstum`,
 
-  contextExamples: [
-    "Frustration über mangelnde Anerkennung",
-    "Ärger über Verspätung",
-    "Traurigkeit über Ablehnung",
-    "Angst vor Unsicherheit",
-    "Freude über Verbindung",
-    "Enttäuschung über unerfüllte Erwartungen"
-  ],
+  contextExamples: NEEDS_EXPLORER_EXAMPLES,
 
   outputFormat: `Empathische Antwort mit:
 - Identifizierte mögliche Bedürfnisse
@@ -161,6 +179,15 @@ export const NEEDS_EXPLORER_PROMPT: GFKPromptConfig = {
 };
 
 // Prompt für Konflikt-Mediator
+const CONFLICT_MEDIATOR_EXAMPLES = [
+  "Konflikt um Zeitplan",
+  "Streit um Entscheidungen",
+  "Probleme mit Kommunikation",
+  "Unzufriedenheit mit Zusammenarbeit",
+  "Frustration über Verhalten",
+  "Enttäuschung über unerfüllte Erwartungen"
+];
+
 export const CONFLICT_MEDIATOR_PROMPT: GFKPromptConfig = {
   systemPrompt: `Du bist ein erfahrener GFK-Mediator, der Konflikte durch empathische Kommunikation löst.
 
@@ -169,7 +196,11 @@ export const CONFLICT_MEDIATOR_PROMPT: GFKPromptConfig = {
 - Du hilfst, Bedürfnisse zu erkennen
 - Du förderst Verständnis und Verbindung
 - Du suchst nach Lösungen, die alle Bedürfnisse berücksichtigen
-- Du bleibst neutral und unterstützend`,
+- Du bleibst neutral und unterstützend
+
+**Beispiel-Kontexte:**
+${CONFLICT_MEDIATOR_EXAMPLES.map((ex, i) => `${i+1}. ${ex}`).join("\n")}
+`,
 
   userPromptTemplate: `Es gibt einen Konflikt zwischen zwei Personen:
 
@@ -185,14 +216,7 @@ export const CONFLICT_MEDIATOR_PROMPT: GFKPromptConfig = {
 4. Fördere eine Lösung, die alle Bedürfnisse berücksichtigt
 5. Gib konkrete GFK-Formulierungen für beide Seiten`,
 
-  contextExamples: [
-    "Konflikt um Zeitplan",
-    "Streit um Entscheidungen",
-    "Probleme mit Kommunikation",
-    "Unzufriedenheit mit Zusammenarbeit",
-    "Frustration über Verhalten",
-    "Enttäuschung über unerfüllte Erwartungen"
-  ],
+  contextExamples: CONFLICT_MEDIATOR_EXAMPLES,
 
   outputFormat: `Mediations-Antwort mit:
 - Empathisches Verständnis für beide Seiten
@@ -202,6 +226,14 @@ export const CONFLICT_MEDIATOR_PROMPT: GFKPromptConfig = {
 };
 
 // Prompt für Feedback und Verbesserungen
+const FEEDBACK_PROMPT_EXAMPLES = [
+  "Bewertung von Beobachtungen",
+  "Feedback zu Gefühlsäußerungen",
+  "Überprüfung von Bedürfnis-Formulierungen",
+  "Kritik von Bitten",
+  "Gesamtbewertung von GFK-Texten"
+];
+
 export const FEEDBACK_PROMPT: GFKPromptConfig = {
   systemPrompt: `Du bist ein konstruktiver GFK-Coach, der Feedback zu GFK-Formulierungen gibt.
 
@@ -209,7 +241,11 @@ export const FEEDBACK_PROMPT: GFKPromptConfig = {
 - Du gibst wertschätzendes und konstruktives Feedback
 - Du erklärst GFK-Prinzipien verständlich
 - Du zeigst Verbesserungsmöglichkeiten auf
-- Du ermutigst und unterstützt das Lernen`,
+- Du ermutigst und unterstützt das Lernen
+
+**Beispiel-Kontexte:**
+${FEEDBACK_PROMPT_EXAMPLES.map((ex, i) => `${i+1}. ${ex}`).join("\n")}
+`,
 
   userPromptTemplate: `Der Nutzer hat folgende GFK-Formulierung erstellt:
 
@@ -223,13 +259,7 @@ export const FEEDBACK_PROMPT: GFKPromptConfig = {
 4. Erkläre die angewendeten GFK-Prinzipien
 5. Ermutige und unterstütze das Lernen`,
 
-  contextExamples: [
-    "Bewertung von Beobachtungen",
-    "Feedback zu Gefühlsäußerungen",
-    "Überprüfung von Bedürfnis-Formulierungen",
-    "Kritik von Bitten",
-    "Gesamtbewertung von GFK-Texten"
-  ],
+  contextExamples: FEEDBACK_PROMPT_EXAMPLES,
 
   outputFormat: `Konstruktives Feedback mit:
 - Positive Aspekte
