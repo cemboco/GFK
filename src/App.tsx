@@ -22,6 +22,8 @@ import PerspectiveSelector from './components/PerspectiveSelector';
 import { needsMoreContext } from './utils/contextDetection';
 import FAQ from './components/FAQ';
 import HomePage from './components/HomePage';
+import { LanguageProvider } from './contexts/LanguageContext';
+import InternationalizationDemo from './components/InternationalizationDemo';
 
 // const supabase = createClient(
 //   import.meta.env.VITE_SUPABASE_URL,
@@ -664,6 +666,7 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
             <Route path="/faq" element={<FAQ />} />
             <Route path="/ueber" element={<AboutContent />} />
             <Route path="/kontakt" element={<Contact />} />
+            <Route path="/i18n-demo" element={<InternationalizationDemo />} />
             <Route path="/home" element={
               <HomePage
                     input={input}
@@ -904,12 +907,14 @@ function App() {
 
   return (
     <Router>
-      <AppContent 
-        user={user} 
-        onSignOut={handleSignOut} 
-        isMobileMenuOpen={isMobileMenuOpen}
-        setIsMobileMenuOpen={setIsMobileMenuOpen}
-      />
+      <LanguageProvider>
+        <AppContent 
+          user={user} 
+          onSignOut={handleSignOut} 
+          isMobileMenuOpen={isMobileMenuOpen}
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
+        />
+      </LanguageProvider>
       {showVersionInfo && (
         <div className="fixed bottom-4 right-4 bg-gray-800 text-white text-xs px-2 py-1 rounded-full shadow-lg z-50">
           Version 1.6.16

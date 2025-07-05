@@ -2,6 +2,8 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Sparkles, Info, Mail, LogIn, LogOut, Menu, X as XIcon, User as UserIcon, HelpCircle, Heart } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
+import LanguageSelector from './LanguageSelector';
 
 // Typ für User (kann ggf. noch angepasst werden, je nach Supabase-User-Objekt)
 interface User {
@@ -16,16 +18,6 @@ interface HeaderProps {
   setIsMobileMenuOpen: (open: boolean) => void;
 }
 
-const navItems = [
-    { id: 'home', label: 'GFK Transform', icon: Sparkles, path: '/home' },
-    { id: 'ueber', label: 'Über GFK', icon: Info, path: '/ueber' },
-    { id: 'kontakt', label: 'Kontakt', icon: Mail, path: '/kontakt' },
-    { id: 'faq', label: 'FAQ', icon: HelpCircle, path: '/faq' },
-];
-
-const userNavItems = [
-];
-
 const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
   const {
     user,
@@ -34,8 +26,16 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
     setIsMobileMenuOpen
   } = props;
 
+  const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const navItems = [
+    { id: 'home', label: t.nav.home, icon: Sparkles, path: '/home' },
+    { id: 'ueber', label: t.nav.about, icon: Info, path: '/ueber' },
+    { id: 'kontakt', label: t.nav.contact, icon: Mail, path: '/kontakt' },
+    { id: 'faq', label: t.nav.faq, icon: HelpCircle, path: '/faq' },
+  ];
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -81,6 +81,11 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
               </button>
             ))}
             
+            {/* Language Selector */}
+            <div className="ml-4 pl-4 border-l border-gray-200">
+              <LanguageSelector />
+            </div>
+            
             {/* Auth Buttons */}
             <div className="ml-4 pl-4 border-l border-gray-200">
               {user ? (
@@ -93,13 +98,13 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                     }`}
                   >
-                    👤 {user.email?.split('@')[0] || 'Profil'}
+                    👤 {user.email?.split('@')[0] || t.nav.profile}
                   </Link>
                   <button
                     onClick={handleSignOut}
                     className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-50 transition-all"
                   >
-                    Abmelden
+                    {t.nav.logout}
                   </button>
                 </div>
               ) : (
@@ -107,7 +112,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
                   to="/auth"
                   className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors font-medium text-sm"
                 >
-                  Anmelden
+                  {t.nav.login}
                 </Link>
               )}
             </div>
@@ -149,6 +154,14 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
                   </button>
                 ))}
                 
+                {/* Mobile Language Selector */}
+                <div className="px-4 py-3 border-t border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">Sprache / Language</span>
+                    <LanguageSelector />
+                  </div>
+                </div>
+                
                 {user ? (
                   <>
                     <Link
@@ -161,7 +174,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
                       }`}
                     >
                       <UserIcon className="h-5 w-5" />
-                      <span>Profil</span>
+                      <span>{t.nav.profile}</span>
                     </Link>
                     <button
                       onClick={() => {
@@ -171,7 +184,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
                       className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-all text-red-600 hover:bg-red-50"
                     >
                       <LogOut className="h-5 w-5" />
-                      <span>Abmelden</span>
+                      <span>{t.nav.logout}</span>
                     </button>
                   </>
                 ) : (
@@ -181,7 +194,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
                     className="w-full flex items-center space-x-3 px-4 py-3 bg-purple-600 text-white rounded-lg font-medium"
                   >
                     <LogIn className="h-5 w-5" />
-                    <span>Anmelden</span>
+                    <span>{t.nav.login}</span>
                   </Link>
                 )}
               </div>
