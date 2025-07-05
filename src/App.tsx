@@ -840,10 +840,40 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    // Initial session check
+    const getInitialSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
       setLoading(false);
+    };
+
+    getInitialSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event, session?.user?.email);
+      setUser(session?.user ?? null);
+      setLoading(false);
+      
+      // Force a small delay to ensure the state is properly updated
+      if (event === 'SIGNED_IN') {
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
+      }
     });
+
+    // Check if we're on an auth callback URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get('access_token');
+    const refreshToken = urlParams.get('refresh_token');
+    
+    if (accessToken && refreshToken) {
+      // We're on an auth callback, wait a moment for Supabase to process it
+      setTimeout(() => {
+        window.location.href = '/home';
+      }, 500);
+    }
 
     return () => {
       subscription.unsubscribe();
