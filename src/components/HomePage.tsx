@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Users, MessageCircle, Coffee, Sparkles, ArrowRight, CheckCircle, X as XIcon, Zap, Target, Heart, Send } from 'lucide-react';
 import GFKTransformForm from './GFKTransformForm';
 import Testimonials from './Testimonials';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface HomePageProps {
   // Define types for props that are passed down
@@ -35,6 +36,8 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = (props) => {
+    const { t } = useLanguage();
+    
     // Debug-Ausgabe
     console.log('HomePage Props:', {
       input: props.input,
@@ -62,19 +65,15 @@ const HomePage: React.FC<HomePageProps> = (props) => {
           >
             <div className="inline-flex items-center space-x-2 bg-purple-50 text-purple-700 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium">
               <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span>KI-gestützte Gewaltfreie Kommunikation</span>
+              <span>{t.home.hero.subtitle}</span>
             </div>
             
             <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight px-4">
-              Verwandle deine Worte in
-              <span className="block bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                empathische Kommunikation
-              </span>
+              {t.home.hero.title}
             </h1>
             
             <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed px-4">
-              Entdecke die Kraft der Gewaltfreien Kommunikation. Unsere KI hilft dir dabei, 
-              alltägliche Nachrichten in einfühlsame und wirkungsvolle Botschaften zu verwandeln.
+              {t.home.hero.description}
             </p>
           </motion.div>
 
@@ -86,8 +85,8 @@ const HomePage: React.FC<HomePageProps> = (props) => {
             className="flex flex-wrap justify-center gap-4 sm:gap-8 text-center px-4"
           >
             {[
-              { icon: Users, value: '1.200+', label: 'Aktive Nutzer' },
-              { icon: MessageCircle, value: '4.000+', label: 'Transformationen' },
+              { icon: Users, value: '1.200+', label: t.home.stats.activeUsers },
+              { icon: MessageCircle, value: '4.000+', label: t.home.stats.transformations },
             ].map((stat, index) => (
               <div key={index} className="flex items-center space-x-2 sm:space-x-3">
                 <div className="w-8 h-8 sm:w-12 sm:h-12 bg-purple-100 rounded-xl flex items-center justify-center">
@@ -115,10 +114,10 @@ const HomePage: React.FC<HomePageProps> = (props) => {
               className="inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <Coffee className="h-4 w-4 sm:h-5 sm:w-5" />
-              <span>Unterstütze GFKCoach ☕</span>
+              <span>{t.home.support.button}</span>
             </a>
             <p className="text-xs sm:text-sm text-gray-500 mt-2 max-w-2xl mx-auto">
-              Keine Kreditkarte notwenidg
+              {t.home.support.note}
             </p>
           </motion.div>
         </section>
@@ -132,10 +131,10 @@ const HomePage: React.FC<HomePageProps> = (props) => {
         >
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
-              Sieh die Transformation in Aktion
+              {t.home.examples.title}
             </h2>
             <p className="text-base sm:text-lg text-gray-600">
-              Erlebe, wie alltägliche Aussagen zu empathischen Botschaften werden
+              {t.home.examples.subtitle}
             </p>
           </div>
 
@@ -163,7 +162,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
                       <XIcon className="h-3 w-3 sm:h-4 sm:w-4 text-red-600" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-red-800 mb-2 text-sm sm:text-base">Vorher</h4>
+                      <h4 className="font-semibold text-red-800 mb-2 text-sm sm:text-base">{t.home.examples.before}</h4>
                       <p className="text-red-700 text-sm sm:text-base">"{example.before}"</p>
                     </div>
                   </div>
@@ -179,7 +178,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
                       <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-green-800 mb-2 text-sm sm:text-base">Nachher (GFK)</h4>
+                      <h4 className="font-semibold text-green-800 mb-2 text-sm sm:text-base">{t.home.examples.after}</h4>
                       <p className="text-green-700 text-sm sm:text-base">"{example.after}"</p>
                     </div>
                   </div>

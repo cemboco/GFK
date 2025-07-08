@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, ChevronDown, Crown, AlertCircle, Lock, Send, Target } from 'lucide-react';
 import { useChatUsage } from '../hooks/useChatUsage';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface UsageInfo {
   remaining: number;
@@ -35,14 +36,15 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
   usageInfo,
   onOpenExerciseModal
 }) => {
+  const { t } = useLanguage();
   const { chatUsage, isLoading: chatUsageLoading } = useChatUsage(user);
   
   const contextOptions = [
-    { value: 'general', label: 'Allgemein', description: 'Für verschiedene Situationen' },
-    { value: 'child', label: 'Kind/Jugendliche', description: 'Einfühlsame Kommunikation mit Kindern' },
-    { value: 'business', label: 'Geschäftsgespräch', description: 'Professionelle Kommunikation' },
-    { value: 'partner', label: 'Partner/In', description: 'Intime Beziehungen' },
-    { value: 'colleague', label: 'Kollegen', description: 'Arbeitsumgebung' }
+    { value: 'general', label: t.gfkForm.contextOptions.general },
+    { value: 'child', label: t.gfkForm.contextOptions.child },
+    { value: 'business', label: t.gfkForm.contextOptions.business },
+    { value: 'partner', label: t.gfkForm.contextOptions.partner },
+    { value: 'colleague', label: t.gfkForm.contextOptions.colleague }
   ];
 
   const selectedContext = contextOptions.find(option => option.value === context) || contextOptions[0];
@@ -56,10 +58,10 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
     >
       <div className="text-center mb-6 sm:mb-8">
         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
-          Probiere es selbst aus
+          {t.gfkForm.title}
         </h2>
         <p className="text-base sm:text-lg text-gray-600">
-          Gib deinen Text ein und erlebe die Transformation in Echtzeit
+          {t.gfkForm.subtitle}
         </p>
         <p className="text-xs sm:text-sm text-gray-500 mt-2">
           Je genauer der Text, desto besser ist die Transformation..
@@ -71,7 +73,7 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
         {setContext && (
           <div>
             <label htmlFor="context" className="block text-base sm:text-lg font-semibold text-gray-800 mb-2 sm:mb-3">
-              Kontext auswählen
+              {t.gfkForm.contextLabel}
             </label>
             {user ? (
               <div className="relative">
@@ -83,7 +85,7 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
                 >
                   {contextOptions.map((option) => (
                     <option key={option.value} value={option.value}>
-                      {option.label} - {option.description}
+                      {option.label}
                     </option>
                   ))}
                 </select>
@@ -92,15 +94,13 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
             ) : (
               <div className="relative">
                 <div className="w-full border-2 border-gray-200 rounded-2xl p-3 sm:p-4 text-base sm:text-lg bg-gray-100 text-gray-500 shadow-sm flex items-center justify-between">
-                  <span className="text-sm sm:text-base">Allgemein - Für verschiedene Situationen</span>
+                  <span className="text-sm sm:text-base">{t.gfkForm.contextOptions.general}</span>
                   <Lock className="h-5 w-5 text-gray-400 flex-shrink-0" />
                 </div>
               </div>
             )}
             <p className="text-xs sm:text-sm text-gray-600 mt-2">
-              {user 
-                ? "Wähle den passenden Kontext für bessere, angepasste Formulierungen."
-                : "Registriere dich, um weitere Kontexte freizuschalten."}
+              {t.gfkForm.contextDescription}
             </p>
           </div>
         )}
@@ -175,7 +175,7 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             className="w-full border-2 border-gray-200 rounded-2xl p-4 sm:p-6 text-base sm:text-lg focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white shadow-sm resize-none"
-            placeholder="Schreibe hier deine Nachricht..."
+            placeholder={t.gfkForm.inputPlaceholder}
           />
           
           {/* Usage Info for non-authenticated users */}
@@ -200,12 +200,12 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
             {isLoading ? (
               <>
                 <div className="animate-spin rounded-full h-5 w-5 sm:h-6 sm:w-6 border-b-2 border-white"></div>
-                <span>Transformiere...</span>
+                <span>{t.gfkForm.loading}</span>
               </>
             ) : (
               <>
                 <Send className="h-5 w-5 sm:h-6 sm:w-6" />
-                <span>In GFK umwandeln</span>
+                <span>{t.gfkForm.submitButton}</span>
               </>
             )}
           </motion.button>

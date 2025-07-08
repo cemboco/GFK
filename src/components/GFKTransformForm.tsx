@@ -4,6 +4,7 @@ import { Lightbulb } from 'lucide-react';
 import GFKInputForm from './GFKInputForm';
 import GFKVariants from './GFKVariants';
 import FeedbackSection from './FeedbackSection';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface UsageInfo {
   remaining: number;
@@ -32,6 +33,7 @@ interface GFKTransformFormProps {
 }
 
 const GFKTransformForm: React.FC<GFKTransformFormProps> = (props) => {
+  const { t } = useLanguage();
   const { liveOutput, output, isTyping } = props;
 
   return (

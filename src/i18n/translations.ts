@@ -76,6 +76,20 @@ export interface Translations {
         answer: string;
       }[];
     };
+    examples: {
+      title: string;
+      subtitle: string;
+      before: string;
+      after: string;
+    };
+    stats: {
+      activeUsers: string;
+      transformations: string;
+    };
+    support: {
+      button: string;
+      note: string;
+    };
   };
 
   // GFK Form
@@ -273,8 +287,8 @@ export const translations: Record<Language, Translations> = {
     home: {
       hero: {
         title: 'Transformiere deine Kommunikation mit GFK',
-        subtitle: 'Lerne gewaltfreie Kommunikation mit KI-Unterstützung',
-        description: 'Verwandle schwierige Aussagen in empathische, verbindende Kommunikation. Basierend auf den vier Schritten der Gewaltfreien Kommunikation nach Marshall B. Rosenberg.',
+        subtitle: 'KI-gestützte Gewaltfreie Kommunikation',
+        description: 'Entdecke die Kraft der Gewaltfreien Kommunikation. Unsere KI hilft dir dabei, alltägliche Nachrichten in einfühlsame und wirkungsvolle Botschaften zu verwandeln.',
         cta: 'Jetzt starten',
       },
       features: {
@@ -326,6 +340,20 @@ export const translations: Record<Language, Translations> = {
             answer: 'Unsere KI analysiert deinen Text und erkennt automatisch die vier GFK-Komponenten. Sie formuliert dann eine empathische Version, die deine Beobachtungen, Gefühle, Bedürfnisse und Bitten klar ausdrückt. Du kannst verschiedene Kontexte wählen (Familie, Arbeit, Partnerschaft), um maßgeschneiderte Formulierungen zu erhalten.',
           },
         ],
+      },
+      examples: {
+        title: 'Sieh die Transformation in Aktion',
+        subtitle: 'Erlebe, wie alltägliche Aussagen zu empathischen Botschaften werden',
+        before: 'Vorher',
+        after: 'Nachher (GFK)',
+      },
+      stats: {
+        activeUsers: 'Aktive Nutzer',
+        transformations: 'Transformationen',
+      },
+      support: {
+        button: 'Unterstütze GFKCoach ☕',
+        note: 'Keine Kreditkarte notwenidg',
       },
     },
     gfkForm: {
@@ -510,8 +538,8 @@ export const translations: Record<Language, Translations> = {
     home: {
       hero: {
         title: 'Transform your communication with NVC',
-        subtitle: 'Learn nonviolent communication with AI support',
-        description: 'Transform difficult statements into empathetic, connecting communication. Based on the four steps of Nonviolent Communication by Marshall B. Rosenberg.',
+        subtitle: 'AI-powered Nonviolent Communication',
+        description: 'Discover the power of Nonviolent Communication. Our AI helps you transform everyday messages into empathetic and effective communication.',
         cta: 'Get started',
       },
       features: {
@@ -563,6 +591,20 @@ export const translations: Record<Language, Translations> = {
             answer: 'Our AI analyzes your text and automatically recognizes the four NVC components. It then formulates an empathetic version that clearly expresses your observations, feelings, needs, and requests. You can choose different contexts (family, work, partnership) to receive tailored formulations.',
           },
         ],
+      },
+      examples: {
+        title: 'See the transformation in action',
+        subtitle: 'Experience how everyday statements become empathetic messages',
+        before: 'Before',
+        after: 'After (NVC)',
+      },
+      stats: {
+        activeUsers: 'Active Users',
+        transformations: 'Transformations',
+      },
+      support: {
+        button: 'Support GFKCoach ☕',
+        note: 'No credit card required',
       },
     },
     gfkForm: {
