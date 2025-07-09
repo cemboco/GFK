@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface AnonFeedbackModalProps {
   isOpen: boolean;
@@ -7,6 +8,7 @@ interface AnonFeedbackModalProps {
 }
 
 export default function AnonFeedbackModal({ isOpen, onClose, onSubmit }: AnonFeedbackModalProps) {
+  const { t } = useLanguage();
   const [feedback, setFeedback] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,7 +18,7 @@ export default function AnonFeedbackModal({ isOpen, onClose, onSubmit }: AnonFee
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!feedback.trim()) {
-      setError('Bitte gib ein kurzes Feedback ein.');
+      setError(t.modals.anonFeedback.error);
       return;
     }
     setIsSubmitting(true);
@@ -33,21 +35,21 @@ export default function AnonFeedbackModal({ isOpen, onClose, onSubmit }: AnonFee
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-purple-600 text-2xl font-bold"
-          aria-label="Schließen"
+          aria-label={t.modals.anonFeedback.close}
         >
           ×
         </button>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Ihr Feedback ist wertvoll</h2>
-        <p className="mb-4 text-gray-700">Helfen Sie uns, unseren Service zu verbessern und erhalten Sie 5 zusätzliche kostenlose Umformulierungen.</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">{t.modals.anonFeedback.title}</h2>
+        <p className="mb-4 text-gray-700">{t.modals.anonFeedback.description}</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-800 font-medium mb-1">Was können wir verbessern?</label>
+            <label className="block text-gray-800 font-medium mb-1">{t.modals.anonFeedback.label}</label>
             <textarea
               value={feedback}
               onChange={e => setFeedback(e.target.value)}
               rows={4}
               className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50 transition"
-              placeholder="Teilen Sie uns Ihre Gedanken mit..."
+              placeholder={t.modals.anonFeedback.placeholder}
               required
             />
           </div>
@@ -58,19 +60,19 @@ export default function AnonFeedbackModal({ isOpen, onClose, onSubmit }: AnonFee
               onClick={onClose}
               className="flex-1 py-3 px-4 rounded-xl border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 font-medium transition"
             >
-              Später
+              {t.modals.anonFeedback.later}
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
               className="flex-1 py-3 px-4 rounded-xl text-white bg-green-200 hover:bg-green-300 font-medium transition disabled:opacity-60"
             >
-              {isSubmitting ? 'Wird gesendet...' : 'Feedback senden'}
+              {isSubmitting ? t.modals.anonFeedback.sending : t.modals.anonFeedback.submit}
             </button>
           </div>
           <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded text-sm text-orange-800 flex items-center gap-2">
             <span role="img" aria-label="Belohnung">🎁</span>
-            <span><b>Belohnung für Ihr Feedback</b>: Nach dem Absenden erhalten Sie 5 zusätzliche kostenlose Umformulierungen als Dankeschön.</span>
+            <span><b>{t.modals.anonFeedback.rewardTitle}</b>: {t.modals.anonFeedback.rewardText}</span>
           </div>
         </form>
       </div>

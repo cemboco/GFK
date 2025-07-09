@@ -228,6 +228,33 @@ export interface Translations {
       betterFormulation: string;
       submit: string;
     };
+    terms: {
+      title: string;
+      sections: {
+        heading: string;
+        text: string;
+      }[];
+    };
+    privacy: {
+      title: string;
+      sections: {
+        heading: string;
+        text: string;
+      }[];
+    };
+    anonFeedback: {
+      title: string;
+      description: string;
+      label: string;
+      placeholder: string;
+      error: string;
+      close: string;
+      later: string;
+      submit: string;
+      sending: string;
+      rewardTitle: string;
+      rewardText: string;
+    };
   };
 
   // Contact
@@ -483,6 +510,67 @@ export const translations: Record<Language, Translations> = {
         betterFormulation: 'Bessere Formulierung',
         submit: 'Feedback senden',
       },
+      terms: {
+        title: 'Allgemeine Geschäftsbedingungen (AGB)',
+        sections: [
+          {
+            heading: '1. Geltungsbereich',
+            text: 'Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für die Nutzung der Plattform GFKCoach. Mit der Registrierung und Nutzung der Plattform erkennen Sie diese Bedingungen an.'
+          },
+          {
+            heading: '2. Leistungen',
+            text: 'GFKCoach bietet digitale Unterstützung zur Gewaltfreien Kommunikation. Es besteht kein Anspruch auf Verfügbarkeit oder bestimmte Funktionalitäten.'
+          },
+          {
+            heading: '3. Haftung',
+            text: 'Die Nutzung erfolgt auf eigene Verantwortung. GFKCoach übernimmt keine Haftung für die Richtigkeit der bereitgestellten Inhalte oder für Handlungen, die auf Basis der Vorschläge erfolgen.'
+          },
+          {
+            heading: '4. Datenschutz',
+            text: 'Es gilt die Datenschutzerklärung. Personenbezogene Daten werden gemäß den gesetzlichen Vorgaben behandelt.'
+          },
+          {
+            heading: '5. Änderungen',
+            text: 'GFKCoach behält sich vor, die AGB jederzeit zu ändern. Die jeweils aktuelle Version ist auf der Plattform einsehbar.'
+          },
+          {
+            heading: '6. Schlussbestimmungen',
+            text: 'Es gilt deutsches Recht. Sollten einzelne Bestimmungen unwirksam sein, bleibt die Wirksamkeit der übrigen unberührt.'
+          }
+        ]
+      },
+      privacy: {
+        title: 'Datenschutzerklärung',
+        sections: [
+          { heading: '1. Datenschutz auf einen Blick', text: '' },
+          { heading: 'Allgemeine Hinweise', text: 'Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können.' },
+          { heading: 'Datenerfassung auf dieser Website', text: 'Wer ist verantwortlich für die Datenerfassung auf dieser Website? Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber.' },
+          { heading: 'Wie erfassen wir Ihre Daten?', text: 'Ihre Daten werden zum einen dadurch erhoben, dass Sie uns diese mitteilen. Hierbei kann es sich z.B. um Daten handeln, die Sie in ein Kontaktformular eingeben. Andere Daten werden automatisch oder nach Ihrer Einwilligung beim Besuch der Website durch unsere IT-Systeme erfasst. Das sind vor allem technische Daten (z.B. Internetbrowser, Betriebssystem oder Uhrzeit des Seitenaufrufs).' },
+          { heading: '2. Allgemeine Hinweise und Pflichtinformationen', text: '' },
+          { heading: 'Datenschutz', text: 'Die Betreiber dieser Seiten nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.' },
+          { heading: 'Hinweis zur verantwortlichen Stelle', text: 'Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist: GFKCoach, Stuttgart-Nord, info@gfkcoach.com' },
+          { heading: '3. Datenerfassung auf dieser Website', text: '' },
+          { heading: 'Kontaktformular', text: 'Wenn Sie uns per Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben aus dem Anfrageformular inklusive der von Ihnen dort angegebenen Kontaktdaten zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.' },
+          { heading: 'Speicherdauer', text: 'Ihre Daten werden nur so lange gespeichert, wie es für die jeweiligen Zwecke erforderlich ist. Wenn Sie sich für unseren Newsletter anmelden, speichern wir Ihre E-Mail-Adresse, bis Sie sich vom Newsletter abmelden.' },
+          { heading: '4. Newsletter', text: 'Wenn Sie den auf der Website angebotenen Newsletter beziehen möchten, benötigen wir von Ihnen eine E-Mail-Adresse sowie Informationen, welche uns die Überprüfung gestatten, dass Sie der Inhaber der angegebenen E-Mail-Adresse sind und mit dem Empfang des Newsletters einverstanden sind.' },
+          { heading: '5. Ihre Rechte', text: 'Sie haben jederzeit das Recht: Auskunft über Ihre bei uns gespeicherten Daten zu erhalten, diese Daten berichtigen zu lassen, die Löschung dieser Daten zu verlangen, die Verarbeitung dieser Daten einschränken zu lassen, der Verarbeitung zu widersprechen, diese Daten übertragen zu lassen.' },
+          { heading: '6. Änderungen', text: 'Wir behalten uns vor, diese Datenschutzerklärung anzupassen, damit sie stets den aktuellen rechtlichen Anforderungen entspricht oder um Änderungen unserer Leistungen in der Datenschutzerklärung umzusetzen, z.B. bei der Einführung neuer Services.' },
+          { heading: '', text: 'Wenn Sie den GFKCoach nutzen, werden Ihre eingegebenen Texte und die KI-Umformulierungen sowohl bei eingeloggten als auch bei anonymen Nutzern temporär in unserer Datenbank gespeichert. Dies dient ausschließlich der Verbesserung des Dienstes und der statistischen Auswertung. Es erfolgt keine personenbezogene Auswertung bei anonymen Nutzern.' }
+        ]
+      },
+      anonFeedback: {
+        title: 'Ihr Feedback ist wertvoll',
+        description: 'Helfen Sie uns, unseren Service zu verbessern und erhalten Sie 5 zusätzliche kostenlose Umformulierungen.',
+        label: 'Was können wir verbessern?',
+        placeholder: 'Teilen Sie uns Ihre Gedanken mit...',
+        error: 'Bitte gib ein kurzes Feedback ein.',
+        close: 'Schließen',
+        later: 'Später',
+        submit: 'Feedback senden',
+        sending: 'Wird gesendet...',
+        rewardTitle: 'Belohnung für Ihr Feedback',
+        rewardText: 'Nach dem Absenden erhalten Sie 5 zusätzliche kostenlose Umformulierungen als Dankeschön.'
+      },
     },
     contact: {
       title: 'Kontakt',
@@ -733,6 +821,49 @@ export const translations: Record<Language, Translations> = {
         otherReason: 'Other reason',
         betterFormulation: 'Better formulation',
         submit: 'Submit feedback',
+      },
+      terms: {
+        title: 'Terms and Conditions',
+        sections: [
+          { heading: '1. Scope', text: 'Placeholder for English terms.' },
+          { heading: '2. Services', text: 'Placeholder for English terms.' },
+          { heading: '3. Liability', text: 'Placeholder for English terms.' },
+          { heading: '4. Privacy', text: 'Placeholder for English terms.' },
+          { heading: '5. Changes', text: 'Placeholder for English terms.' },
+          { heading: '6. Final Provisions', text: 'Placeholder for English terms.' }
+        ]
+      },
+      privacy: {
+        title: 'Privacy Policy',
+        sections: [
+          { heading: '1. Privacy at a glance', text: 'Placeholder for English privacy policy.' },
+          { heading: 'General notes', text: 'Placeholder for English privacy policy.' },
+          { heading: 'Data collection on this website', text: 'Placeholder for English privacy policy.' },
+          { heading: 'How do we collect your data?', text: 'Placeholder for English privacy policy.' },
+          { heading: '2. General notes and mandatory information', text: 'Placeholder for English privacy policy.' },
+          { heading: 'Privacy', text: 'Placeholder for English privacy policy.' },
+          { heading: 'Note on the responsible body', text: 'Placeholder for English privacy policy.' },
+          { heading: '3. Data collection on this website', text: 'Placeholder for English privacy policy.' },
+          { heading: 'Contact form', text: 'Placeholder for English privacy policy.' },
+          { heading: 'Storage period', text: 'Placeholder for English privacy policy.' },
+          { heading: '4. Newsletter', text: 'Placeholder for English privacy policy.' },
+          { heading: '5. Your rights', text: 'Placeholder for English privacy policy.' },
+          { heading: '6. Changes', text: 'Placeholder for English privacy policy.' },
+          { heading: '', text: 'Placeholder for English privacy policy.' }
+        ]
+      },
+      anonFeedback: {
+        title: 'Your feedback is valuable',
+        description: 'Help us improve our service and receive 5 additional free reformulations.',
+        label: 'What can we improve?',
+        placeholder: 'Share your thoughts with us...',
+        error: 'Please enter a short feedback.',
+        close: 'Close',
+        later: 'Later',
+        submit: 'Send feedback',
+        sending: 'Sending...',
+        rewardTitle: 'Reward for your feedback',
+        rewardText: 'After submitting, you will receive 5 additional free reformulations as a thank you.'
       },
     },
     contact: {

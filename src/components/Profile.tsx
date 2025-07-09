@@ -5,6 +5,7 @@ import { User, History, Settings, LogOut, MessageSquare, Edit2, Save, X, Home, T
 import { motion } from 'framer-motion';
 import { useChatUsage } from '../hooks/useChatUsage';
 import GFKProgress from './GFKProgress';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Message {
   id: string;
@@ -24,6 +25,7 @@ interface ProfileProps {
 }
 
 export default function Profile({ user, onSignOut }: ProfileProps) {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'profile' | 'messages' | 'settings'>('profile');
   const [profile, setProfile] = useState<any>(null);
@@ -201,7 +203,7 @@ export default function Profile({ user, onSignOut }: ProfileProps) {
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <h1 className="text-xl font-semibold text-gray-900">Mein Profil</h1>
+              <h1 className="text-xl font-semibold text-gray-900">{t.profile.title}</h1>
             </div>
           </div>
         </div>
@@ -219,7 +221,7 @@ export default function Profile({ user, onSignOut }: ProfileProps) {
                   className="w-full flex items-center px-4 py-2 rounded-lg text-purple-600 hover:bg-purple-50 transition-colors border border-purple-200"
                 >
                   <Home className="h-5 w-5 mr-2" />
-                  Zur Hauptseite
+                  {t.profile.messages.backToHome}
                 </Link>
                 
                 <div className="border-t border-gray-200 pt-4">
@@ -232,7 +234,7 @@ export default function Profile({ user, onSignOut }: ProfileProps) {
                     }`}
                   >
                     <User className="h-5 w-5 mr-2" />
-                    Profil
+                    {t.profile.title}
                   </button>
                   <button
                     onClick={() => setActiveTab('messages')}
@@ -243,7 +245,7 @@ export default function Profile({ user, onSignOut }: ProfileProps) {
                     }`}
                   >
                     <MessageSquare className="h-5 w-5 mr-2" />
-                    Meine GFK-Texte
+                    {t.profile.messages.title}
                     {messages.length > 0 && (
                       <span className="ml-auto bg-purple-600 text-white text-xs rounded-full px-2 py-1">
                         {messages.length}
@@ -301,7 +303,7 @@ export default function Profile({ user, onSignOut }: ProfileProps) {
                   className="space-y-6"
                 >
                   <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold text-gray-900">Profil</h2>
+                    <h2 className="text-2xl font-bold text-gray-900">{t.profile.title}</h2>
                     {!isEditing && (
                       <motion.button
                         whileHover={{ scale: 1.05 }}
@@ -409,7 +411,7 @@ export default function Profile({ user, onSignOut }: ProfileProps) {
                   className="space-y-6"
                 >
                   <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold text-gray-900">Meine GFK-Texte</h2>
+                    <h2 className="text-2xl font-bold text-gray-900">{t.profile.messages.title}</h2>
                     <Link
                       to="/"
                       className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"

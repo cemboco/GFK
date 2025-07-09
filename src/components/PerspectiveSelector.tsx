@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { MessageSquare, User, Users } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface PerspectiveSelectorProps {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface PerspectiveSelectorProps {
 }
 
 export default function PerspectiveSelector({ isOpen, onClose, onSelect, originalText }: PerspectiveSelectorProps) {
+  const { t } = useLanguage();
   if (!isOpen) return null;
 
   return (
@@ -30,8 +32,8 @@ export default function PerspectiveSelector({ isOpen, onClose, onSelect, origina
           <div className="flex items-center space-x-3">
             <MessageSquare className="h-6 w-6 text-purple-600" />
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Perspektive wählen</h2>
-              <p className="text-sm text-gray-600">Deine Aussage: "{originalText}"</p>
+              <h2 className="text-xl font-bold text-gray-900">{t.modals.perspective.title}</h2>
+              <p className="text-sm text-gray-600">{t.modals.perspective.senderDescription}</p>
             </div>
           </div>
         </div>
@@ -39,7 +41,7 @@ export default function PerspectiveSelector({ isOpen, onClose, onSelect, origina
         {/* Content */}
         <div className="p-6">
           <p className="text-gray-700 mb-6">
-            Bist du der Sender oder der Empfänger dieser Aussage? Das hilft der KI, die richtige GFK-Formulierung zu erstellen.
+            {t.modals.perspective.title}
           </p>
 
           <div className="space-y-4">
@@ -55,13 +57,10 @@ export default function PerspectiveSelector({ isOpen, onClose, onSelect, origina
                   <User className="h-6 w-6 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Ich bin der Sender</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1">{t.modals.perspective.sender}</h3>
                   <p className="text-sm text-gray-600">
-                    Ich habe diese Aussage gesagt und möchte sie in GFK umformulieren.
+                    {t.modals.perspective.senderDescription}
                   </p>
-                  <div className="mt-2 text-xs text-gray-500">
-                    Beispiel: "Als ich das gesagt habe, habe ich mich frustriert gefühlt..."
-                  </div>
                 </div>
               </div>
             </motion.button>
@@ -78,13 +77,10 @@ export default function PerspectiveSelector({ isOpen, onClose, onSelect, origina
                   <Users className="h-6 w-6 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Ich bin der Empfänger</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1">{t.modals.perspective.receiver}</h3>
                   <p className="text-sm text-gray-600">
-                    Jemand hat das zu mir gesagt und ich möchte eine GFK-Antwort formulieren.
+                    {t.modals.perspective.receiverDescription}
                   </p>
-                  <div className="mt-2 text-xs text-gray-500">
-                    Beispiel: "Als ich deine Aussage gehört habe, habe ich mich verletzt gefühlt..."
-                  </div>
                 </div>
               </div>
             </motion.button>

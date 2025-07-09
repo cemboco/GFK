@@ -22,7 +22,7 @@ import PerspectiveSelector from './components/PerspectiveSelector';
 import { needsMoreContext } from './utils/contextDetection';
 import FAQ from './components/FAQ';
 import HomePage from './components/HomePage';
-import { LanguageProvider } from './contexts/LanguageContext';
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import InternationalizationDemo from './components/InternationalizationDemo';
 
 // const supabase = createClient(
@@ -95,6 +95,8 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
   const { session, isLoading: userTrackingLoading, canUseService, incrementUsage, getRemainingUsage, getUsageInfo } = useUserTracking(user);
 
   const location = useLocation();
+
+  const { t } = useLanguage();
 
   // Handle navigation state from Header component
   useEffect(() => {
@@ -709,15 +711,15 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
                 <img src="/logo.png" alt="GFKCoach Logo" className="w-16 h-16 sm:w-[80px] sm:h-[80px] object-contain" />
               </div>
               <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                GFKCoach
+                {t.app.title.split(' - ')[0]}
               </span>
             </div>
             <div className="pt-3 sm:pt-4 border-t border-gray-200">
               <p className="text-xs sm:text-sm text-gray-500">
-                © {new Date().getFullYear()} GFKCoach - Empathische Kommunikation für alle
+                {t.app.copyright.replace('2024', new Date().getFullYear().toString())}
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                Version 1.6.16 - Debug-Tools & Verbesserte Fortschritts-Tracking
+                {t.app.version}
               </p>
               <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-6 mt-2">
             <button
@@ -725,13 +727,13 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
                   className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline text-sm"
             >
                   <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span>Datenschutz</span>
+              <span>{t.app.dataProtection}</span>
             </button>
                 <button
                   onClick={() => setShowTermsModal(true)}
                   className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline text-sm"
                 >
-                  <span>AGB</span>
+                  <span>{t.app.terms}</span>
                 </button>
               </div>
             </div>
@@ -925,6 +927,7 @@ function App() {
 }
 
 function AboutContent() {
+  const { t } = useLanguage();
   return (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
@@ -939,10 +942,10 @@ function AboutContent() {
         transition={{ delay: 0.1 }}
       >
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Über Gewaltfreie Kommunikation
+          {t.about.title}
         </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          Entdecke die transformative Kraft der GFK nach Marshall B. Rosenberg
+          {t.about.subtitle}
         </p>
       </motion.div>
     </div>
@@ -959,61 +962,30 @@ function AboutContent() {
             <Heart className="h-10 w-10 text-purple-600" />
           </div>
           <p className="text-lg text-gray-700 leading-relaxed">
-            Gewaltfreie Kommunikation (GFK) ist ein von Marshall B. Rosenberg entwickelter Ansatz, 
-            der Menschen dabei hilft, selbst in herausfordernden Situationen einfühlsam und authentisch 
-            zu kommunizieren.
+            {t.about.description}
           </p>
         </div>
 
         <div className="space-y-8">
-          <h2 className="text-2xl font-bold text-purple-600 text-center">Die vier Schritte der GFK</h2>
+          <h2 className="text-2xl font-bold text-purple-600 text-center">{t.about.fourSteps.title}</h2>
           <div className="grid gap-6 md:grid-cols-2">
-            {[
-              {
-                number: 1,
-                title: 'Beobachtung',
-                description: 'Beschreiben Sie die Situation objektiv, ohne zu bewerten oder zu interpretieren.',
-                color: 'blue',
-                icon: '👁️'
-              },
-              {
-                number: 2,
-                title: 'Gefühl',
-                description: 'Drücken Sie Ihre Gefühle aus, die durch die Situation entstehen.',
-                color: 'green',
-                icon: '💚'
-              },
-              {
-                number: 3,
-                title: 'Bedürfnis',
-                description: 'Benennen Sie die Bedürfnisse, die hinter Ihren Gefühlen stehen.',
-                color: 'orange',
-                icon: '🎯'
-              },
-              {
-                number: 4,
-                title: 'Bitte',
-                description: 'Formulieren Sie eine konkrete, positive und machbare Bitte.',
-                color: 'purple',
-                icon: '🤝'
-              }
-            ].map((step, index) => (
+            {t.about.fourSteps.steps.map((step, index) => (
               <motion.div
-                key={step.number}
+                key={index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + index * 0.1 }}
                 className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition-shadow"
               >
                 <div className="flex items-start space-x-4">
-                  <div className={`w-12 h-12 bg-${step.color}-100 rounded-xl flex items-center justify-center flex-shrink-0`}>
-                    <span className="text-2xl">{step.icon}</span>
+                  <div className={`w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0`}>
+                    <span className="text-2xl">{['👁️','💚','🎯','🤝'][index]}</span>
                   </div>
                   <div>
-                    <h3 className={`text-xl font-bold text-${step.color}-700 mb-2`}>
-                      {step.number}. {step.title}
+                    <h3 className="text-xl font-bold text-blue-700 mb-2">
+                      {Object.values(step)[0]}
                     </h3>
-                    <p className="text-gray-600 leading-relaxed">{step.description}</p>
+                    <p className="text-gray-600 leading-relaxed">{Object.values(step)[1]}</p>
                   </div>
                 </div>
               </motion.div>
@@ -1030,11 +1002,10 @@ function AboutContent() {
         transition={{ delay: 0.6 }}
         className="space-y-8"
       >
-        <h2 className="text-2xl font-bold text-purple-600 text-center">Wolfssprache vs. Giraffensprache</h2>
+        <h2 className="text-2xl font-bold text-purple-600 text-center">{t.about.transformation.title}</h2>
         <p className="text-center text-gray-600 max-w-3xl mx-auto">
-          Marshall Rosenberg verwendete diese Metaphern, um die verschiedenen Kommunikationsweisen zu veranschaulichen
+          {t.about.transformation.wolf} vs. {t.about.transformation.giraffe}
         </p>
-        
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Wolfssprache */}
               <motion.div
@@ -1047,14 +1018,14 @@ function AboutContent() {
               <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
                 <span className="text-2xl">🐺</span>
               </div>
-              <h3 className="text-xl font-bold text-red-700">Wolfssprache</h3>
+              <h3 className="text-xl font-bold text-red-700">{t.about.wolfLanguage.title}</h3>
             </div>
             <p className="text-gray-700 mb-4">
-              Die Sprache der Gewalt – Urteile, Vorwürfe und Forderungen, die zu Konflikten führen.
+              {t.about.wolfLanguage.description}
             </p>
             <div className="space-y-3">
               <div className="bg-white/60 rounded-lg p-3">
-                <h4 className="font-semibold text-red-600 mb-2">Typische Merkmale:</h4>
+                <h4 className="font-semibold text-red-600 mb-2">{t.about.wolfLanguage.characteristics}</h4>
                 <ul className="text-sm text-gray-600 space-y-1">
                   <li>• Urteile und Bewertungen ("Du bist faul!")</li>
                   <li>• Vorwürfe und Schuldzuweisungen</li>
@@ -1064,7 +1035,7 @@ function AboutContent() {
                 </ul>
               </div>
               <div className="bg-white/60 rounded-lg p-3">
-                <h4 className="font-semibold text-red-600 mb-2">Beispiel:</h4>
+                <h4 className="font-semibold text-red-600 mb-2">{t.about.wolfLanguage.example}</h4>
                 <p className="text-sm text-gray-600 italic">
                   "Du bist so egoistisch! Du denkst nur an dich selbst. Du musst das sofort ändern!"
                 </p>
@@ -1083,14 +1054,14 @@ function AboutContent() {
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                 <span className="text-2xl">🦒</span>
               </div>
-              <h3 className="text-xl font-bold text-green-700">Giraffensprache</h3>
+              <h3 className="text-xl font-bold text-green-700">{t.about.giraffeLanguage.title}</h3>
             </div>
             <p className="text-gray-700 mb-4">
-              Die Sprache des Herzens – einfühlsam, authentisch und verbindend.
+              {t.about.giraffeLanguage.description}
             </p>
             <div className="space-y-3">
               <div className="bg-white/60 rounded-lg p-3">
-                <h4 className="font-semibold text-green-600 mb-2">Typische Merkmale:</h4>
+                <h4 className="font-semibold text-green-600 mb-2">{t.about.giraffeLanguage.characteristics}</h4>
                 <ul className="text-sm text-gray-600 space-y-1">
                   <li>• Beobachtungen ohne Bewertung</li>
                   <li>• Gefühle und Bedürfnisse ausdrücken</li>
@@ -1100,7 +1071,7 @@ function AboutContent() {
                 </ul>
               </div>
               <div className="bg-white/60 rounded-lg p-3">
-                <h4 className="font-semibold text-green-600 mb-2">Beispiel:</h4>
+                <h4 className="font-semibold text-green-600 mb-2">{t.about.giraffeLanguage.example}</h4>
                 <p className="text-sm text-gray-600 italic">
                   "Wenn ich sehe, dass du deine Sachen liegen lässt, fühle ich mich frustriert, weil mir Ordnung wichtig ist. Könntest du bitte deine Sachen wegräumen?"
                 </p>
@@ -1116,11 +1087,11 @@ function AboutContent() {
           transition={{ delay: 0.9 }}
           className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100"
         >
-          <h3 className="text-xl font-bold text-blue-700 mb-4 text-center">Transformation: Von Wolf zu Giraffe</h3>
+          <h3 className="text-xl font-bold text-blue-700 mb-4 text-center">{t.about.transformation.title}</h3>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="bg-white/60 rounded-lg p-4">
               <h4 className="font-semibold text-red-600 mb-2 flex items-center">
-                <span className="text-lg mr-2">🐺</span> Wolfssprache
+                <span className="text-lg mr-2">🐺</span> {t.about.transformation.wolf}
               </h4>
               <p className="text-gray-700 italic">
                 "Du bist so unzuverlässig! Du kommst immer zu spät. Das ist respektlos!"
@@ -1128,7 +1099,7 @@ function AboutContent() {
             </div>
             <div className="bg-white/60 rounded-lg p-4">
               <h4 className="font-semibold text-green-600 mb-2 flex items-center">
-                <span className="text-lg mr-2">🦒</span> Giraffensprache
+                <span className="text-lg mr-2">🦒</span> {t.about.transformation.giraffe}
               </h4>
               <p className="text-gray-700 italic">
                 "Wenn du später kommst als vereinbart, fühle ich mich enttäuscht, weil mir Pünktlichkeit wichtig ist. Könntest du bitte das nächste Mal rechtzeitig da sein?"

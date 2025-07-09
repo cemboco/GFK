@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, HelpCircle, MessageSquare, ArrowRight, Target, Brain, Heart } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface ContextModalProps {
   isOpen: boolean;
@@ -10,43 +11,45 @@ interface ContextModalProps {
   user?: any; // Für die Prüfung, ob der Nutzer registriert ist
 }
 
-const questions = [
-  {
-    id: 'who',
-    question: 'Mit wem sprichst du?',
-    placeholder: 'z.B.: Mein Partner, mein Kind, mein Kollege...',
-    key: 'wer'
-  },
-  {
-    id: 'when',
-    question: 'Wann ist das passiert?',
-    placeholder: 'z.B.: Gestern Abend, vor einer Woche, immer wieder...',
-    key: 'wann'
-  },
-  {
-    id: 'where',
-    question: 'Wo hat es stattgefunden?',
-    placeholder: 'z.B.: Zu Hause, im Büro, beim Abendessen...',
-    key: 'wo'
-  },
-  {
-    id: 'what',
-    question: 'Was ist genau passiert?',
-    placeholder: 'z.B.: Er hat nicht zugehört, sie hat versprochen zu helfen...',
-    key: 'was'
-  },
-  {
-    id: 'why',
-    question: 'Warum ist dir das wichtig?',
-    placeholder: 'z.B.: Weil ich mich wertgeschätzt fühlen möchte...',
-    key: 'warum'
-  }
-];
-
 export default function ContextModal({ isOpen, onClose, onSubmit, originalText, user }: ContextModalProps) {
+  const { t } = useLanguage();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showSummary, setShowSummary] = useState(false);
+
+  // Fragen dynamisch aus Übersetzungen generieren
+  const questions = [
+    {
+      id: 'who',
+      question: t.modals.context.questions.who,
+      placeholder: t.modals.context.placeholders.who,
+      key: 'wer'
+    },
+    {
+      id: 'when',
+      question: t.modals.context.questions.when,
+      placeholder: t.modals.context.placeholders.when,
+      key: 'wann'
+    },
+    {
+      id: 'where',
+      question: t.modals.context.questions.where,
+      placeholder: t.modals.context.placeholders.where,
+      key: 'wo'
+    },
+    {
+      id: 'what',
+      question: t.modals.context.questions.what,
+      placeholder: t.modals.context.placeholders.what,
+      key: 'was'
+    },
+    {
+      id: 'why',
+      question: t.modals.context.questions.why,
+      placeholder: t.modals.context.placeholders.why,
+      key: 'warum'
+    }
+  ];
 
   // Prüfe, ob der Nutzer registriert ist
   if (!user) {
