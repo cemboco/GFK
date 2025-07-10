@@ -182,7 +182,7 @@ const GFKInputForm: React.FC<GFKInputFormProps> = ({
           {!user && (
             <div className="mt-2 sm:mt-3 flex items-center space-x-2 text-xs sm:text-sm text-gray-600">
               <Crown className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-600 flex-shrink-0" />
-              <span>Melde dich an für unbegrenzte Transformationen und den GFK-Coach (3 Nachrichten/Monat)</span>
+              <span>{t.gfkForm.loginHint}</span>
             </div>
           )}
         </div>

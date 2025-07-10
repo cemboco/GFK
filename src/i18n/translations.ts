@@ -115,6 +115,7 @@ export interface Translations {
       timeout: string;
       unexpected: string;
     };
+    loginHint: string;
   };
 
   // Output
@@ -307,7 +308,7 @@ export const translations: Record<Language, Translations> = {
       title: 'GFKCoach - Gewaltfreie Kommunikation mit KI',
       description: 'Verbessern Sie Ihre Kommunikation mit KI-gestützter gewaltfreier Kommunikation (GFK).',
       version: 'Version 1.6.16 - Debug-Tools & Verbesserte Fortschritts-Tracking',
-      copyright: '© 2024 GFKCoach - Empathische Kommunikation für alle',
+      copyright: '© 2024 GFKCoach - Empatische Kommunikation für alle',
       dataProtection: 'Datenschutz',
       terms: 'AGB',
     },
@@ -405,6 +406,7 @@ export const translations: Record<Language, Translations> = {
         timeout: 'Zeitüberschreitung. Bitte versuchen Sie es erneut.',
         unexpected: 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.',
       },
+      loginHint: 'Melde dich an für unbegrenzte Transformationen und den GFK-Coach (3 Nachrichten/Monat)',
     },
     output: {
       title: 'Deine GFK-Formulierung',
@@ -717,6 +719,7 @@ export const translations: Record<Language, Translations> = {
         timeout: 'Timeout. Please try again.',
         unexpected: 'An unexpected error occurred. Please try again.',
       },
+      loginHint: 'Sign up for unlimited transformations and the NVC Coach (3 messages/month)',
     },
     output: {
       title: 'Your NVC Formulation',
