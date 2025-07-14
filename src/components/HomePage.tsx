@@ -219,10 +219,10 @@ const HomePage: React.FC<HomePageProps> = (props) => {
         >
           <div>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
-              Warum GFKCoach?
+              {t.home.features.title}
             </h2>
             <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
-              Entdecke die Vorteile unserer KI-gestützten Kommunikationsplattform
+              {t.home.features.subtitle}
             </p>
           </div>
 
