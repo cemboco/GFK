@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, Lightbulb, Sparkles, Quote, AlertTriangle } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface TransformationInputProps {
   inputText: string;
@@ -19,6 +20,7 @@ const TransformationInput: React.FC<TransformationInputProps> = ({
   isAuthenticated,
   remainingTransformations
 }) => {
+  const { t } = useLanguage();
   const isDisabled = !isAuthenticated && remainingTransformations <= 0;
 
   const fadeInVariants = {
@@ -186,12 +188,7 @@ const TransformationInput: React.FC<TransformationInputProps> = ({
       >
         <h4 className="text-sm font-medium text-gray-900 mb-3">Beispiele zum Ausprobieren:</h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {[
-            "Du hörst mir nie zu!",
-            "Ihr seid immer zu spät!",
-            "Das ist unfair!",
-            "Du verstehst mich nicht!"
-          ].map((example, index) => (
+          {t.transformationExamples.map((example, index) => (
             <motion.button
               key={index}
               initial={{ opacity: 0, y: 10 }}

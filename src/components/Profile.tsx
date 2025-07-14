@@ -424,24 +424,24 @@ export default function Profile({ user, onSignOut }: ProfileProps) {
                     {messages.map((message) => (
                       <div key={message.id} className="bg-gray-50 rounded-xl p-6">
                         <div className="mb-4">
-                          <h3 className="text-lg font-medium text-gray-900">Ursprünglicher Text:</h3>
+                          <h3 className="text-lg font-medium text-gray-900">{t.profileMessages.originalText}</h3>
                           <p className="mt-2 text-gray-700">{message.input_text}</p>
                         </div>
                         <div className="space-y-4">
                           <div>
-                            <h4 className="font-medium text-purple-700">Beobachtung:</h4>
+                            <h4 className="font-medium text-purple-700">{t.profileMessages.observation}</h4>
                             <p className="text-gray-700" dangerouslySetInnerHTML={{ __html: message.output_text.observation }} />
                           </div>
                           <div>
-                            <h4 className="font-medium text-purple-700">Gefühl:</h4>
+                            <h4 className="font-medium text-purple-700">{t.profileMessages.feeling}</h4>
                             <p className="text-gray-700" dangerouslySetInnerHTML={{ __html: message.output_text.feeling }} />
                           </div>
                           <div>
-                            <h4 className="font-medium text-purple-700">Bedürfnis:</h4>
+                            <h4 className="font-medium text-purple-700">{t.profileMessages.need}</h4>
                             <p className="text-gray-700" dangerouslySetInnerHTML={{ __html: message.output_text.need }} />
                           </div>
                           <div>
-                            <h4 className="font-medium text-purple-700">Bitte:</h4>
+                            <h4 className="font-medium text-purple-700">{t.profileMessages.request}</h4>
                             <p className="text-gray-700" dangerouslySetInnerHTML={{ __html: message.output_text.request }} />
                           </div>
                         </div>
@@ -453,14 +453,14 @@ export default function Profile({ user, onSignOut }: ProfileProps) {
                     {messages.length === 0 && (
                       <div className="text-center text-gray-500 py-8">
                         <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                        <p>Noch keine GFK-Texte vorhanden.</p>
-                        <p className="text-sm mt-2">Besuchen Sie die Hauptseite, um Ihre erste GFK-Transformation zu erstellen.</p>
+                        <p>{t.profileMessages.noMessages}</p>
+                        <p className="text-sm mt-2">{t.profileMessages.noMessagesDescription}</p>
                         <Link
                           to="/"
                           className="inline-flex items-center mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
                         >
                           <Home className="h-4 w-4 mr-2" />
-                          Zur Hauptseite
+                          {t.profileMessages.backToHome}
                         </Link>
                       </div>
                     )}

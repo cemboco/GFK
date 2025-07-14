@@ -1094,7 +1094,7 @@ function AboutContent() {
                 <span className="text-lg mr-2">🐺</span> {t.about.transformation.wolf}
               </h4>
               <p className="text-gray-700 italic">
-                "Du bist so unzuverlässig! Du kommst immer zu spät. Das ist respektlos!"
+                "{t.examples.messy.before}"
               </p>
             </div>
             <div className="bg-white/60 rounded-lg p-4">
@@ -1102,7 +1102,7 @@ function AboutContent() {
                 <span className="text-lg mr-2">🦒</span> {t.about.transformation.giraffe}
               </h4>
               <p className="text-gray-700 italic">
-                "Wenn du später kommst als vereinbart, fühle ich mich enttäuscht, weil mir Pünktlichkeit wichtig ist. Könntest du bitte das nächste Mal rechtzeitig da sein?"
+                "{t.examples.messy.after}"
               </p>
             </div>
       </div>

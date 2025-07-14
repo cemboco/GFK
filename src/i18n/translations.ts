@@ -271,6 +271,76 @@ export interface Translations {
       error: string;
     };
   };
+
+  // Examples
+  examples: {
+    late: {
+      before: string;
+      after: string;
+    };
+    listening: {
+      before: string;
+      after: string;
+    };
+    selfish: {
+      before: string;
+      after: string;
+    };
+    messy: {
+      before: string;
+      after: string;
+    };
+  };
+
+  // Testimonials
+  testimonials: {
+    title: string;
+    subtitle: string;
+    items: {
+      name: string;
+      role: string;
+      text: string;
+    }[];
+  };
+
+  // Profile Messages
+  profileMessages: {
+    originalText: string;
+    observation: string;
+    feeling: string;
+    need: string;
+    request: string;
+    noMessages: string;
+    noMessagesDescription: string;
+    backToHome: string;
+  };
+
+  // Context Modal Tips
+  contextTips: {
+    who: string[];
+    when: string[];
+    where: string[];
+    what: string[];
+    why: string[];
+  };
+
+  // Transformation Examples
+  transformationExamples: string[];
+
+  // CTA Form
+  ctaForm: {
+    title: string;
+    description: string;
+    namePlaceholder: string;
+    emailPlaceholder: string;
+    submit: string;
+    error: string;
+  };
+
+  // Positive Feedback
+  positiveFeedback: {
+    placeholder: string;
+  };
 }
 
 export const translations: Record<Language, Translations> = {
@@ -586,6 +656,94 @@ export const translations: Record<Language, Translations> = {
         error: 'Fehler beim Senden der Nachricht.',
       },
     },
+    examples: {
+      late: {
+        before: 'Du kommst schon wieder zu spät!',
+        after: 'Mir ist aufgefallen, dass du 15 Minuten nach der vereinbarten Zeit kommst. Das frustriert mich, weil mir Verlässlichkeit wichtig ist. Könntest du mir bitte Bescheid geben, wenn du dich verspätest?'
+      },
+      listening: {
+        before: 'Du hörst mir nie richtig zu!',
+        after: 'Wenn ich merke, dass du während unseres Gesprächs auf dein Handy schaust, fühle ich mich traurig, weil mir der Austausch mit dir wichtig ist. Wärst du bereit, dir Zeit für ein ungestörtes Gespräch zu nehmen?'
+      },
+      selfish: {
+        before: 'Du bist so egoistisch! Du denkst nur an dich selbst. Du musst das sofort ändern!',
+        after: 'Wenn ich sehe, dass du deine Bedürfnisse über die anderer stellst, fühle ich mich frustriert, weil mir Fairness und gegenseitige Rücksichtnahme wichtig sind. Könntest du bitte auch die Perspektive anderer berücksichtigen?'
+      },
+      messy: {
+        before: 'Du bist so unzuverlässig! Du kommst immer zu spät. Das ist respektlos!',
+        after: 'Wenn du später kommst als vereinbart, fühle ich mich enttäuscht, weil mir Pünktlichkeit wichtig ist. Könntest du bitte das nächste Mal rechtzeitig da sein?'
+      }
+    },
+    testimonials: {
+      title: 'Was unsere Nutzer über uns sagen',
+      subtitle: 'Echte Erfahrungen von Menschen, die ihre Kommunikation mit unserem GFK Coach transformiert haben.',
+      items: [
+        {
+          name: 'Sarah M.',
+          role: 'Mutter von zwei Kindern',
+          text: 'Der GFK Coach hat unsere Familienkommunikation völlig verändert. Statt ständiger Diskussionen haben wir jetzt echte Gespräche. Meine Kinder hören mir zu und ich verstehe ihre Bedürfnisse besser. Die praktischen Übungen sind Gold wert!'
+        },
+        {
+          name: 'Michael K.',
+          role: 'Teamleiter',
+          text: 'Als Angestellter war ich oft frustriert über ineffektive Meetings und Konflikte im Team. Der GFK Coach hat mir gezeigt, wie ich konstruktives Feedback geben und annehmen kann. Mein Team ist jetzt offener und produktiver.'
+        },
+        {
+          name: 'Dr. Lisa R.',
+          role: 'Therapeutin',
+          text: 'Ich empfehle den GFK Coach meinen Klienten als Ergänzung zur Therapie. Die praktischen Übungen und sofortigen Reformulierungen helfen dabei, das Gelernte im Alltag anzuwenden. Besonders wertvoll ist die Kontext-Auswahl.'
+        }
+      ]
+    },
+    profileMessages: {
+      originalText: 'Ursprünglicher Text:',
+      observation: 'Beobachtung:',
+      feeling: 'Gefühl:',
+      need: 'Bedürfnis:',
+      request: 'Bitte:',
+      noMessages: 'Noch keine GFK-Texte vorhanden.',
+      noMessagesDescription: 'Besuchen Sie die Hauptseite, um Ihre erste GFK-Transformation zu erstellen.',
+      backToHome: 'Zur Hauptseite'
+    },
+    contextTips: {
+      who: [
+        '💡 Überlege dir, ob du die Person spezifischer beschreiben kannst.',
+        '✅ Du hast beschrieben, mit wem du sprichst. Das hilft bei der Kontextualisierung.'
+      ],
+      when: [
+        '💡 Überlege dir, ob du die Zeitangabe präziser machen kannst.',
+        '✅ Du hast beschrieben, wann es passiert ist. Das macht die Situation klarer.'
+      ],
+      where: [
+        '💡 Überlege dir, ob du den Ort genauer beschreiben kannst.',
+        '✅ Du hast beschrieben, wo es stattgefunden hat. Das gibt wichtige Kontextinformationen.'
+      ],
+      what: [
+        '💡 Überlege dir, ob du das Geschehen objektiver beschreiben kannst.',
+        '✅ Du hast beschrieben, was passiert ist. Das ist die Grundlage für die Beobachtung.'
+      ],
+      why: [
+        '💡 Überlege dir, welches universelle Bedürfnis hinter deinem Gefühl steht.',
+        '✅ Du hast dein Bedürfnis erkannt. Das ist der Schlüssel für eine gute GFK-Formulierung.'
+      ]
+    },
+    transformationExamples: [
+      'Du hörst mir nie zu!',
+      'Ihr seid immer zu spät!',
+      'Das ist unfair!',
+      'Du verstehst mich nicht!'
+    ],
+    ctaForm: {
+      title: 'Unterstütze GFKCoach',
+      description: 'Hilf uns dabei, gewaltfreie Kommunikation für alle zugänglich zu machen.',
+      namePlaceholder: 'Dein Name',
+      emailPlaceholder: 'Deine E-Mail',
+      submit: 'Unterstützen',
+      error: 'Fehler beim Senden. Bitte versuche es erneut.'
+    },
+    positiveFeedback: {
+      placeholder: 'Dein zusätzlicher Kommentar...'
+    }
   },
   en: {
     nav: {
@@ -881,5 +1039,93 @@ export const translations: Record<Language, Translations> = {
         error: 'Error sending message.',
       },
     },
+    examples: {
+      late: {
+        before: 'You\'re late again!',
+        after: 'I noticed that you arrive 15 minutes after the agreed time. This frustrates me because reliability is important to me. Could you please let me know when you\'re running late?'
+      },
+      listening: {
+        before: 'You never listen to me properly!',
+        after: 'When I notice that you\'re looking at your phone during our conversation, I feel sad because connection with you is important to me. Would you be willing to take time for an undisturbed conversation?'
+      },
+      selfish: {
+        before: 'You\'re so selfish! You only think about yourself. You need to change this immediately!',
+        after: 'When I see that you put your needs above others\', I feel frustrated because fairness and mutual consideration are important to me. Could you please also consider others\' perspectives?'
+      },
+      messy: {
+        before: 'You\'re so unreliable! You\'re always late. That\'s disrespectful!',
+        after: 'When you come later than agreed, I feel disappointed because punctuality is important to me. Could you please be on time next time?'
+      }
+    },
+    testimonials: {
+      title: 'What our users say about us',
+      subtitle: 'Real experiences from people who have transformed their communication with our NVC Coach.',
+      items: [
+        {
+          name: 'Sarah M.',
+          role: 'Mother of two children',
+          text: 'The NVC Coach has completely changed our family communication. Instead of constant arguments, we now have real conversations. My children listen to me and I understand their needs better. The practical exercises are gold!'
+        },
+        {
+          name: 'Michael K.',
+          role: 'Team Leader',
+          text: 'As an employee, I was often frustrated with ineffective meetings and team conflicts. The NVC Coach showed me how to give and receive constructive feedback. My team is now more open and productive.'
+        },
+        {
+          name: 'Dr. Lisa R.',
+          role: 'Therapist',
+          text: 'I recommend the NVC Coach to my clients as a supplement to therapy. The practical exercises and immediate reformulations help apply what\'s learned in everyday life. The context selection is particularly valuable.'
+        }
+      ]
+    },
+    profileMessages: {
+      originalText: 'Original text:',
+      observation: 'Observation:',
+      feeling: 'Feeling:',
+      need: 'Need:',
+      request: 'Request:',
+      noMessages: 'No NVC texts available yet.',
+      noMessagesDescription: 'Visit the main page to create your first NVC transformation.',
+      backToHome: 'Back to home'
+    },
+    contextTips: {
+      who: [
+        '💡 Consider whether you can describe the person more specifically.',
+        '✅ You have described who you are talking to. This helps with contextualization.'
+      ],
+      when: [
+        '💡 Consider whether you can make the time reference more precise.',
+        '✅ You have described when it happened. This makes the situation clearer.'
+      ],
+      where: [
+        '💡 Consider whether you can describe the location more accurately.',
+        '✅ You have described where it took place. This gives important context information.'
+      ],
+      what: [
+        '💡 Consider whether you can describe what happened more objectively.',
+        '✅ You have described what happened. This is the foundation for observation.'
+      ],
+      why: [
+        '💡 Consider what universal need lies behind your feeling.',
+        '✅ You have recognized your need. This is the key to good NVC formulation.'
+      ]
+    },
+    transformationExamples: [
+      'You never listen to me!',
+      'You are always late!',
+      'That\'s unfair!',
+      'You don\'t understand me!'
+    ],
+    ctaForm: {
+      title: 'Support GFKCoach',
+      description: 'Help us make nonviolent communication accessible to everyone.',
+      namePlaceholder: 'Your name',
+      emailPlaceholder: 'Your email',
+      submit: 'Support',
+      error: 'Error sending. Please try again.'
+    },
+    positiveFeedback: {
+      placeholder: 'Your additional comment...'
+    }
   },
 }; 

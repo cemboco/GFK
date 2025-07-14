@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../supabaseClient';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface CTAFormProps {
   onSubmit: (email: string, name: string) => Promise<void>;
@@ -11,6 +12,7 @@ interface CTAFormProps {
 }
 
 export default function CTAForm({ onSubmit, isLoading, error, subscribeSuccess }: CTAFormProps) {
+  const { t } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -73,10 +75,10 @@ export default function CTAForm({ onSubmit, isLoading, error, subscribeSuccess }
           <div className="text-center mb-6">
             <Heart className="h-8 w-8 text-purple-600 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-gray-900">
-              Bleib auf dem Laufenden!
+              {t.ctaForm.title}
             </h3>
             <p className="text-gray-600 mt-2">
-              Damit wir die App weiterentwickeln können, würden wir uns freuen, dich kontaktieren zu dürfen.
+              {t.ctaForm.description}
             </p>
           </div>
 
@@ -86,7 +88,7 @@ export default function CTAForm({ onSubmit, isLoading, error, subscribeSuccess }
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Dein Name"
+                placeholder={t.ctaForm.namePlaceholder}
                 className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
                 required
               />
@@ -96,7 +98,7 @@ export default function CTAForm({ onSubmit, isLoading, error, subscribeSuccess }
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Deine E-Mail"
+                placeholder={t.ctaForm.emailPlaceholder}
                 className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
                 required
               />
@@ -108,7 +110,7 @@ export default function CTAForm({ onSubmit, isLoading, error, subscribeSuccess }
                 isLoading && 'opacity-50 cursor-not-allowed'
               }`}
             >
-              {isLoading ? 'Wird gesendet...' : 'Jetzt Tester werden'}
+              {isLoading ? 'Wird gesendet...' : t.ctaForm.submit}
             </button>
           </form>
 
@@ -116,7 +118,7 @@ export default function CTAForm({ onSubmit, isLoading, error, subscribeSuccess }
 
           {error && (
             <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">
-              {error}
+              {t.ctaForm.error}
             </div>
           )}
         </motion.div>

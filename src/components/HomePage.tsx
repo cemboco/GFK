@@ -141,12 +141,12 @@ const HomePage: React.FC<HomePageProps> = (props) => {
           <div className="grid gap-6 sm:gap-8 lg:grid-cols-2">
             {[
               {
-                before: "Du kommst schon wieder zu spät!",
-                after: "Mir ist aufgefallen, dass du 15 Minuten nach der vereinbarten Zeit kommst. Das frustriert mich, weil mir Verlässlichkeit wichtig ist. Könntest du mir bitte Bescheid geben, wenn du dich verspätest?"
+                before: t.examples.late.before,
+                after: t.examples.late.after
               },
               {
-                before: "Du hörst mir nie richtig zu!",
-                after: "Wenn ich merke, dass du während unseres Gesprächs auf dein Handy schaust, fühle ich mich traurig, weil mir der Austausch mit dir wichtig ist. Wärst du bereit, dir Zeit für ein ungestörtes Gespräch zu nehmen?"
+                before: t.examples.listening.before,
+                after: t.examples.listening.after
               }
             ].map((example, index) => (
               <motion.div

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ThumbsUp, Send } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface PositiveFeedbackDialogProps {
   isOpen: boolean;
@@ -13,9 +15,11 @@ interface PositiveFeedbackDialogProps {
 }
 
 export default function PositiveFeedbackDialog({ isOpen, onClose, onSubmit }: PositiveFeedbackDialogProps) {
+  const { t } = useLanguage();
   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
   const [otherReason, setOtherReason] = useState('');
   const [additionalComment, setAdditionalComment] = useState('');
+  const [comment, setComment] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,11 +107,11 @@ export default function PositiveFeedbackDialog({ isOpen, onClose, onSubmit }: Po
                   Möchtest du noch etwas hinzufügen?
                 </h4>
                 <textarea
-                  value={additionalComment}
-                  onChange={(e) => setAdditionalComment(e.target.value)}
-                  placeholder="Dein zusätzlicher Kommentar..."
-                  className="w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
-                  rows={4}
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder={t.positiveFeedback.placeholder}
+                  className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  rows={3}
                 />
               </div>
 

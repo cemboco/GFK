@@ -139,6 +139,24 @@ export default function ContextModal({ isOpen, onClose, onSubmit, originalText, 
     return tips;
   };
 
+  const getTipsForQuestion = (questionId: string): string[] => {
+    const tips: string[] = [];
+    
+    if (questionId === 'who') {
+      tips.push(...t.contextTips.who);
+    } else if (questionId === 'when') {
+      tips.push(...t.contextTips.when);
+    } else if (questionId === 'where') {
+      tips.push(...t.contextTips.where);
+    } else if (questionId === 'what') {
+      tips.push(...t.contextTips.what);
+    } else if (questionId === 'why') {
+      tips.push(...t.contextTips.why);
+    }
+    
+    return tips;
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -282,6 +300,13 @@ export default function ContextModal({ isOpen, onClose, onSubmit, originalText, 
                       </div>
                     </div>
                   </div>
+                  
+                  {/* Dynamic Tips */}
+                  {getTipsForQuestion(currentQuestion.id).map((tip, tipIndex) => (
+                    <div key={tipIndex} className="bg-yellow-50 border border-yellow-200 rounded-xl p-3">
+                      <p className="text-sm text-yellow-800">{tip}</p>
+                    </div>
+                  ))}
                 </div>
               </>
             )}
