@@ -656,7 +656,7 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
                   className="text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center space-x-2 hover:underline text-sm"
                 >
                   <span>{t.app.terms}</span>
-                </button>
+            </button>
               </div>
             </div>
           </div>

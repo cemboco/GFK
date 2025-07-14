@@ -15,10 +15,10 @@ serve(async (req: Request) => {
   }
 
   try {
-    const { originalInput, gfkOutput, userQuestion, conversationHistory } = await req.json();
+    const { originalInput, gfkOutput, userQuestion, conversationHistory, lang = 'de' } = await req.json();
     
     if (!userQuestion?.trim()) {
-      throw new Error('Bitte geben Sie eine Frage ein.');
+      throw new Error(errorTexts.emptyInput[lang] || errorTexts.emptyInput.de);
     }
 
     const openai = new OpenAI({
@@ -36,20 +36,27 @@ serve(async (req: Request) => {
       messages: [
         {
           role: "system",
-          content: `Du bist ein GFK-Coach (Gewaltfreie Kommunikation nach Marshall Rosenberg). 
-          
-Deine Aufgabe ist es, dem Benutzer bei Fragen zu seiner GFK-Formulierung zu helfen. Sei empathisch, klar und hilfreich.
-
-WICHTIGE REGELN:
-- Antworte immer auf Deutsch
-- Sei freundlich und unterstützend
-- Erkläre GFK-Konzepte verständlich
-- Gib praktische Tipps
-- Bleibe im Rahmen der GFK-Philosophie`
+          content: systemPrompts.default[lang]
         },
         {
           role: "user",
-          content: `Der Benutzer hat folgende GFK-Transformation erstellt:
+          content: (lang === 'en'
+            ? `The user has created the following NVC transformation:
+
+ORIGINAL INPUT: "${originalInput}"
+
+NVC FORMULATION:
+- Observation: ${gfkOutput.observation}
+- Feeling: ${gfkOutput.feeling}
+- Need: ${gfkOutput.need}
+- Request: ${gfkOutput.request}
+
+${conversationContext ? `PREVIOUS CONVERSATION:\n${conversationContext}\n\n` : ''}
+
+USER QUESTION: ${userQuestion}
+
+Please answer the user's question helpfully and empathetically.`
+            : `Der Benutzer hat folgende GFK-Transformation erstellt:
 
 ORIGINALE EINGABE: "${originalInput}"
 
@@ -63,13 +70,13 @@ ${conversationContext ? `BISHERIGE KONVERSATION:\n${conversationContext}\n\n` : 
 
 FRAGE DES BENUTZERS: ${userQuestion}
 
-Bitte antworte hilfreich und empathisch auf die Frage des Benutzers.`
+Bitte antworte hilfreich und empathisch auf die Frage des Benutzers.`)
         }
       ],
       max_tokens: 500
     });
 
-    const response = completion.choices[0]?.message?.content || 'Entschuldigung, ich konnte keine Antwort generieren.';
+    const response = completion.choices[0]?.message?.content || defaultAnswers.noAnswer[lang];
 
     return new Response(
       JSON.stringify({ response }),
@@ -84,7 +91,7 @@ Bitte antworte hilfreich und empathisch auf die Frage des Benutzers.`
     
     return new Response(
       JSON.stringify({ 
-        error: error instanceof Error ? error.message : 'Ein unbekannter Fehler ist aufgetreten.' 
+        error: error instanceof Error ? error.message : errorTexts.unexpected[lang] || errorTexts.unexpected.de
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -93,3 +100,46 @@ Bitte antworte hilfreich und empathisch auf die Frage des Benutzers.`
     );
   }
 });
+
+const errorTexts = {
+  emptyInput: {
+    de: 'Bitte geben Sie eine Frage ein.',
+    en: 'Please enter a question.'
+  },
+  unexpected: {
+    de: 'Ein unbekannter Fehler ist aufgetreten.',
+    en: 'An unknown error occurred.'
+  }
+};
+
+const defaultAnswers = {
+  noAnswer: {
+    de: 'Entschuldigung, ich konnte keine Antwort generieren.',
+    en: 'Sorry, I could not generate an answer.'
+  }
+};
+
+const systemPrompts = {
+  default: {
+    de: `Du bist ein GFK-Coach (Gewaltfreie Kommunikation nach Marshall Rosenberg).
+
+Deine Aufgabe ist es, dem Benutzer bei Fragen zu seiner GFK-Formulierung zu helfen. Sei empathisch, klar und hilfreich.
+
+WICHTIGE REGELN:
+- Antworte immer auf Deutsch
+- Sei freundlich und unterstützend
+- Erkläre GFK-Konzepte verständlich
+- Gib praktische Tipps
+- Bleibe im Rahmen der GFK-Philosophie`,
+    en: `You are an NVC coach (Nonviolent Communication according to Marshall Rosenberg).
+
+Your task is to help the user with questions about their NVC formulation. Be empathetic, clear, and helpful.
+
+IMPORTANT RULES:
+- Always answer in English
+- Be friendly and supportive
+- Explain NVC concepts clearly
+- Give practical tips
+- Stay within the NVC philosophy`
+  }
+};
