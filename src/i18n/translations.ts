@@ -149,6 +149,7 @@ export interface Translations {
       emptyDescription: string;
       backToHome: string;
     };
+    namePlaceholder: string;
   };
 
   // About
@@ -182,6 +183,8 @@ export interface Translations {
       wolf: string;
       giraffe: string;
     };
+    wolfExample: string;
+    giraffeExample: string;
   };
 
   // FAQ
@@ -341,6 +344,16 @@ export interface Translations {
   positiveFeedback: {
     placeholder: string;
   };
+
+  // Prompts für KI-Beispiele
+  prompts: {
+    senderPerspective: string;
+    receiverPerspective: string;
+  };
+  // ARIA-Labels
+  aria: {
+    close: string;
+  };
 }
 
 export const translations: Record<Language, Translations> = {
@@ -437,6 +450,18 @@ export const translations: Record<Language, Translations> = {
             question: 'Wie funktioniert die KI-Transformation bei GFKCoach?',
             answer: 'Unsere KI analysiert deinen Text und erkennt automatisch die vier GFK-Komponenten. Sie formuliert dann eine empathische Version, die deine Beobachtungen, Gefühle, Bedürfnisse und Bitten klar ausdrückt. Du kannst verschiedene Kontexte wählen (Familie, Arbeit, Partnerschaft), um maßgeschneiderte Formulierungen zu erhalten.',
           },
+          {
+            question: 'Ist GFKCoach kostenlos und gibt es Nutzungslimits?',
+            answer: 'GFKCoach bietet 5 kostenlose Transformationen für nicht-registrierte Nutzer. Nach der kostenlosen Registrierung erhältst du unbegrenzte Transformationen und zusätzlich 3 Chat-Nachrichten pro Monat für persönliche GFK-Beratung. Premium-Pläne mit erweiterten Features sind in Planung.'
+          },
+          {
+            question: 'Kann ich meine transformierten Texte speichern und später wiederfinden?',
+            answer: 'Ja! Nach der Registrierung werden alle deine Transformationen automatisch in deinem Profil gespeichert. Du kannst sie jederzeit in deinem persönlichen Bereich einsehen, bearbeiten oder als Referenz für zukünftige Gespräche verwenden.'
+          },
+          {
+            question: 'Wie kann ich GFK in meinem Alltag am besten üben?',
+            answer: 'Beginne mit einfachen Situationen und übe regelmäßig. Nutze GFKCoach für verschiedene Kontexte und beobachte die Reaktionen. Der GFK-Coach (Chat-Funktion) kann dir bei spezifischen Fragen helfen. Wichtig ist, dass du authentisch bleibst - GFK ist ein Prozess, der Zeit und Übung braucht.'
+          }
         ],
       },
       examples: {
@@ -506,6 +531,7 @@ export const translations: Record<Language, Translations> = {
         emptyDescription: 'Besuchen Sie die Hauptseite, um Ihre erste GFK-Transformation zu erstellen.',
         backToHome: 'Zur Hauptseite',
       },
+      namePlaceholder: 'Ihr vollständiger Name',
     },
     about: {
       title: 'Über Gewaltfreie Kommunikation',
@@ -539,6 +565,8 @@ export const translations: Record<Language, Translations> = {
         wolf: 'Wolfssprache',
         giraffe: 'Giraffensprache',
       },
+      wolfExample: 'Du bist so egoistisch! Du denkst nur an dich selbst. Du musst das sofort ändern!',
+      giraffeExample: 'Wenn ich sehe, dass du deine Sachen liegen lässt, fühle ich mich frustriert, weil mir Ordnung wichtig ist. Könntest du bitte deine Sachen wegräumen?',
     },
     faq: {
       categories: {
@@ -743,7 +771,14 @@ export const translations: Record<Language, Translations> = {
     },
     positiveFeedback: {
       placeholder: 'Dein zusätzlicher Kommentar...'
-    }
+    },
+    prompts: {
+      senderPerspective: 'Als ich das damals gesagt habe, hätte ich es so ausdrücken können: "Wenn ich sehe/höre, dass..., dann fühle ich mich..., weil mir... wichtig ist. Wärst du bereit...?"',
+      receiverPerspective: 'Als ich deine Worte gehört habe, habe ich mich... gefühlt, weil mir... wichtig ist. Wärst du bereit...?'
+    },
+    aria: {
+      close: 'Schließen',
+    },
   },
   en: {
     nav: {
@@ -838,6 +873,18 @@ export const translations: Record<Language, Translations> = {
             question: 'How does AI transformation work at GFKCoach?',
             answer: 'Our AI analyzes your text and automatically recognizes the four NVC components. It then formulates an empathetic version that clearly expresses your observations, feelings, needs, and requests. You can choose different contexts (family, work, partnership) to receive tailored formulations.',
           },
+          {
+            question: 'Is GFKCoach free and are there usage limits?',
+            answer: 'GFKCoach offers 5 free transformations for non-registered users. After registering, you will receive unlimited transformations and an additional 3 chat messages per month for personal GFK counseling. Premium plans with extended features are in planning.'
+          },
+          {
+            question: 'Can I save and find my transformed texts later?',
+            answer: 'Yes! After registering, all your transformations will be automatically saved in your profile. You can view, edit, or use them as references for future conversations.'
+          },
+          {
+            question: 'How can I best practice NVC in my everyday life?',
+            answer: 'Begin with simple situations and practice regularly. Use GFKCoach for different contexts and observe the reactions. The GFK Coach (chat function) can help you with specific questions. It is important to stay authentic - NVC is a process that requires time and practice.'
+          }
         ],
       },
       examples: {
@@ -907,6 +954,7 @@ export const translations: Record<Language, Translations> = {
         emptyDescription: 'Visit the main page to create your first NVC transformation.',
         backToHome: 'Back to home',
       },
+      namePlaceholder: 'Your full name',
     },
     about: {
       title: 'About Nonviolent Communication',
@@ -940,6 +988,8 @@ export const translations: Record<Language, Translations> = {
         wolf: 'Wolf Language',
         giraffe: 'Giraffe Language',
       },
+      wolfExample: 'You\'re so selfish! You only think about yourself. You need to change this immediately!',
+      giraffeExample: 'When I see that you leave your things lying around, I feel frustrated because order is important to me. Could you please tidy up your things?',
     },
     faq: {
       categories: {
@@ -1126,6 +1176,13 @@ export const translations: Record<Language, Translations> = {
     },
     positiveFeedback: {
       placeholder: 'Your additional comment...'
+    },
+    prompts: {
+      senderPerspective: 'When I said that, I could have expressed it like this: "When I see/hear that..., I feel..., because ... is important to me. Would you be willing...?"',
+      receiverPerspective: 'When I heard your words, I felt..., because ... is important to me. Would you be willing...?'
+    },
+    aria: {
+      close: 'Close'
     }
   },
 }; 

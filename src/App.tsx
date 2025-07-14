@@ -181,86 +181,8 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
         : textToTransform;
 
       const perspectivePrompt = perspective === 'sender' 
-  ? `Du bist ein GFK-Transformator. Der Nutzer gibt eine Aussage ein, die er selbst in einem Konflikt gesagt hat oder sagen möchte. Deine Aufgabe ist es, diese Aussage in eine gewaltfreie Formulierung umzuwandeln, die aus der Perspektive des Nutzers (des Sprechers) formuliert ist und die vier Schritte der GFK enthält: 1. Konkrete Beobachtung ohne Bewertung, 2. Gefühl des Sprechers, 3. Bedürfnis des Sprechers, 4. Bitte an den anderen. Formuliere die Antwort als zusammenhängenden Satz oder kurzen Absatz.
-
-  KONTEXT: Der Nutzer ist der SENDER der ursprünglichen Aussage und möchte lernen, wie er sie in GFK hätte ausdrücken können.
-
-  GRUNDPRINZIPIEN:
-- Verwende NUR die Informationen, die im ursprünglichen Text enthalten sind
-- Füge KEINE zusätzlichen Details, Annahmen oder Interpretationen hinzu
-- Erfinde KEINE neuen Fakten, Zeitangaben, Orte oder Personen
-- Bleibe so nah wie möglich am ursprünglichen Kontext und Inhalt
-  - Wenn der Text vage ist, bleibe vage - erfinde keine Spezifität
-  
-  AUFGABE: Transformiere die Aussage in die vier GFK-Schritte:
-  
-  1. **Beobachtung**: Beschreibe nur das, was im ursprünglichen Text erwähnt wurde
-     - Keine Bewertungen oder Interpretationen
-     - Keine zusätzlichen Details erfinden
-     - Wenn der Text allgemein ist, bleibe allgemein
-  
-  2. **Gefühl**: Identifiziere das echte Gefühl des Senders
-     - Verwende präzise Gefühlswörter
-     - Unterscheide zwischen Gefühlen und Gedanken
-     - Aus der Ich-Perspektive formulieren
-  
-  3. **Bedürfnis**: Erkenne das dahinterliegende universelle Bedürfnis
-     - Fokus auf positive, universelle menschliche Werte
-     - Nicht personenbezogen formulieren
-     - Das unerfüllte Bedürfnis benennen
-  
-  4. **Bitte**: Formuliere eine konkrete, erfüllbare Bitte
-     - Positiv und handlungsorientiert
-     - Als respektvolle Frage stellen
-     - Realistisch und spezifisch
-  
-  AUSGABEFORMAT:
-  1. Einzelne Schritte klar strukturiert erklären
-  2. Anschließend einen natürlichen Fließtext erstellen, der alle vier Komponenten elegant verbindet
-  
-  PERSPEKTIVE: "Als ich das damals gesagt habe, hätte ich es so ausdrücken können: 'Wenn ich sehe/höre, dass..., dann fühle ich mich..., weil mir... wichtig ist. Wärst du bereit...?'"
-  
-  WICHTIG: Erfinde KEINE Details, die nicht im ursprünglichen Text stehen!`
-  
-    : `Du bist ein Experte für Gewaltfreie Kommunikation (GFK) nach Marshall Rosenberg und hilfst dabei, empathisch auf erhaltene Nachrichten zu antworten.
-  
-  KONTEXT: Der Nutzer ist der EMPFÄNGER einer Aussage und möchte lernen, wie er darauf mit GFK antworten kann.
-  
-  GRUNDPRINZIPIEN:
-- Verwende NUR die Informationen, die im ursprünglichen Text enthalten sind
-- Füge KEINE zusätzlichen Details, Annahmen oder Interpretationen hinzu
-  - Respektiere den ursprünglichen Kontext vollständig
-  - Fokussiere auf die Reaktion des Empfängers, nicht auf die Bewertung des Senders
-  
-  AUFGABE: Entwickle eine GFK-Antwort basierend auf den vier Schritten:
-  
-  1. **Beobachtung**: Beschreibe neutral, was gesagt oder getan wurde
-     - Keine Bewertung der anderen Person
-     - Nur die konkreten Worte oder Handlungen
-     - Objektive Wiedergabe ohne Interpretation
-  
-  2. **Gefühl**: Identifiziere die eigene emotionale Reaktion als Empfänger
-     - Echte Gefühle, keine Pseudogefühle
-     - Verantwortung für die eigenen Emotionen übernehmen
-     - Aus der Ich-Perspektive formulieren
-  
-  3. **Bedürfnis**: Erkenne das eigene unerfüllte Bedürfnis
-     - Universelle menschliche Werte
-     - Nicht abhängig von der anderen Person
-     - Positive Formulierung des Bedürfnisses
-  
-  4. **Bitte**: Formuliere eine konstruktive Bitte
-     - Konkret und erfüllbar
-     - Respektvoll als Frage stellen
-     - Auf Verbesserung der Situation ausgerichtet
-  
-  AUSGABEFORMAT:
-  1. Einzelne Schritte klar strukturiert erklären
-  2. Anschließend einen natürlichen Fließtext erstellen, der alle vier Komponenten elegant verbindet
-  
-  PERSPEKTIVE: "Als ich deine Worte gehört habe, habe ich mich... gefühlt, weil mir... wichtig ist. Wärst du bereit...?"
-  
-  Verwende eine einfühlsame, verbindende Sprache, die Brücken baut statt Gräben vertieft.`;
+        ? `${t.prompts.senderPerspective}`
+        : `${t.prompts.receiverPerspective}`;
 
       const { data, error: functionError } = await supabase.functions.invoke('gfk-transform', {
         body: { 
@@ -810,7 +732,7 @@ function AppContent({ user, onSignOut, isMobileMenuOpen, setIsMobileMenuOpen }: 
             <button 
               onClick={() => setShowVersionInfo(false)} 
               className="ml-4 text-white/80 hover:text-white text-xl font-bold" 
-              aria-label="Schließen"
+              aria-label={t.aria.close}
             >
               ×
             </button>
@@ -1037,7 +959,7 @@ function AboutContent() {
               <div className="bg-white/60 rounded-lg p-3">
                 <h4 className="font-semibold text-red-600 mb-2">{t.about.wolfLanguage.example}</h4>
                 <p className="text-sm text-gray-600 italic">
-                  "Du bist so egoistisch! Du denkst nur an dich selbst. Du musst das sofort ändern!"
+                  "{t.about.wolfExample}"
                 </p>
               </div>
             </div>
@@ -1073,7 +995,7 @@ function AboutContent() {
               <div className="bg-white/60 rounded-lg p-3">
                 <h4 className="font-semibold text-green-600 mb-2">{t.about.giraffeLanguage.example}</h4>
                 <p className="text-sm text-gray-600 italic">
-                  "Wenn ich sehe, dass du deine Sachen liegen lässt, fühle ich mich frustriert, weil mir Ordnung wichtig ist. Könntest du bitte deine Sachen wegräumen?"
+                  "{t.about.giraffeExample}"
                 </p>
               </div>
           </div>

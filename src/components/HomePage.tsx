@@ -377,29 +377,8 @@ const HomePage: React.FC<HomePageProps> = (props) => {
           </div>
 
           <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
-            {[
-              {
-                question: "Was ist Gewaltfreie Kommunikation (GFK) und warum ist sie wichtig?",
-                answer: "Gewaltfreie Kommunikation nach Marshall B. Rosenberg ist ein Ansatz, der Menschen dabei hilft, selbst in schwierigen Situationen einfühlsam und authentisch zu kommunizieren. Sie basiert auf vier Schritten: Beobachtung, Gefühl, Bedürfnis und Bitte. GFK reduziert Konflikte, verbessert Beziehungen und fördert gegenseitiges Verständnis."
-              },
-              {
-                question: "Wie funktioniert die KI-Transformation bei GFKCoach?",
-                answer: "Unsere KI analysiert deinen Text und erkennt automatisch die vier GFK-Komponenten. Sie formuliert dann eine empathische Version, die deine Beobachtungen, Gefühle, Bedürfnisse und Bitten klar ausdrückt. Du kannst verschiedene Kontexte wählen (Familie, Arbeit, Partnerschaft), um maßgeschneiderte Formulierungen zu erhalten."
-              },
-              {
-                question: "Ist GFKCoach kostenlos und gibt es Nutzungslimits?",
-                answer: "GFKCoach bietet 5 kostenlose Transformationen für nicht-registrierte Nutzer. Nach der kostenlosen Registrierung erhältst du unbegrenzte Transformationen und zusätzlich 3 Chat-Nachrichten pro Monat für persönliche GFK-Beratung. Premium-Pläne mit erweiterten Features sind in Planung."
-              },
-              {
-                question: "Kann ich meine transformierten Texte speichern und später wiederfinden?",
-                answer: "Ja! Nach der Registrierung werden alle deine Transformationen automatisch in deinem Profil gespeichert. Du kannst sie jederzeit in deinem persönlichen Bereich einsehen, bearbeiten oder als Referenz für zukünftige Gespräche verwenden."
-              },
-              {
-                question: "Wie kann ich GFK in meinem Alltag am besten üben?",
-                answer: "Beginne mit einfachen Situationen und übe regelmäßig. Nutze GFKCoach für verschiedene Kontexte und beobachte die Reaktionen. Der GFK-Coach (Chat-Funktion) kann dir bei spezifischen Fragen helfen. Wichtig ist, dass du authentisch bleibst - GFK ist ein Prozess, der Zeit und Übung braucht."
-              }
-            ].map((faq, index) => (
-          <motion.div
+            {t.home.faq.questions.map((faq, index) => (
+              <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -414,7 +393,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
                 </p>
               </motion.div>
             ))}
-              </div>
+          </div>
         </motion.section>
         </motion.div>
     )

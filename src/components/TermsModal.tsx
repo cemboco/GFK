@@ -15,7 +15,7 @@ export default function TermsModal({ isOpen, onClose }: TermsModalProps) {
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-purple-600 text-2xl font-bold"
-          aria-label="Schließen"
+          aria-label={t.modals.terms.closeButtonLabel}
         >
           ×
         </button>

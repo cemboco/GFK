@@ -111,31 +111,11 @@ export default function ContextModal({ isOpen, onClose, onSubmit, originalText, 
   // Generiere Tipps basierend auf den Antworten
   const generateTips = () => {
     const tips = [];
-    
-    if (answers.who && answers.who.length > 0) {
-      tips.push("✅ Du hast klar definiert, mit wem du sprichst. Das hilft bei der Beobachtung.");
-    } else {
-      tips.push("💡 Überlege dir, ob du die Person spezifischer beschreiben kannst.");
-    }
-    
-    if (answers.what && answers.what.length > 0) {
-      tips.push("✅ Du hast beschrieben, was passiert ist. Das ist die Grundlage für die Beobachtung.");
-    } else {
-      tips.push("💡 Versuche, das Verhalten oder die Situation noch konkreter zu beschreiben.");
-    }
-    
-    if (answers.why && answers.why.length > 0) {
-      tips.push("✅ Du hast dein Bedürfnis erkannt. Das ist der Schlüssel für eine gute GFK-Formulierung.");
-    } else {
-      tips.push("💡 Überlege dir, welches universelle Bedürfnis hinter deinem Gefühl steht.");
-    }
-    
-    if (answers.when && answers.when.length > 0 && answers.where && answers.where.length > 0) {
-      tips.push("✅ Zeit und Ort sind klar. Das macht deine Beobachtung präziser.");
-    } else {
-      tips.push("💡 Konkrete Zeitangaben und Orte helfen bei der Beobachtung.");
-    }
-    
+    tips.push(...t.contextTips.who);
+    tips.push(...t.contextTips.what);
+    tips.push(...t.contextTips.why);
+    tips.push(...t.contextTips.when);
+    tips.push(...t.contextTips.where);
     return tips;
   };
 
