@@ -1036,31 +1036,49 @@ export const translations: Record<Language, Translations> = {
       terms: {
         title: 'Terms and Conditions',
         sections: [
-          { heading: '1. Scope', text: 'Placeholder for English terms.' },
-          { heading: '2. Services', text: 'Placeholder for English terms.' },
-          { heading: '3. Liability', text: 'Placeholder for English terms.' },
-          { heading: '4. Privacy', text: 'Placeholder for English terms.' },
-          { heading: '5. Changes', text: 'Placeholder for English terms.' },
-          { heading: '6. Final Provisions', text: 'Placeholder for English terms.' }
+          {
+            heading: '1. Scope',
+            text: 'These Terms and Conditions (T&C) apply to the use of the GFKCoach platform. By registering and using the platform, you agree to these terms.'
+          },
+          {
+            heading: '2. Services',
+            text: 'GFKCoach provides digital support for Nonviolent Communication (NVC). There is no entitlement to availability or specific functionalities.'
+          },
+          {
+            heading: '3. Liability',
+            text: 'Use of the platform is at your own risk. GFKCoach assumes no liability for the accuracy of the information provided or for actions taken based on the suggestions.'
+          },
+          {
+            heading: '4. Privacy',
+            text: 'The Privacy Policy applies. Personal data is handled in accordance with legal requirements.'
+          },
+          {
+            heading: '5. Changes',
+            text: 'GFKCoach reserves the right to change these T&C at any time. The current version is available on the platform.'
+          },
+          {
+            heading: '6. Final Provisions',
+            text: 'German law applies. Should individual provisions be invalid, the validity of the remaining provisions shall remain unaffected.'
+          }
         ]
       },
       privacy: {
         title: 'Privacy Policy',
         sections: [
-          { heading: '1. Privacy at a glance', text: 'Placeholder for English privacy policy.' },
-          { heading: 'General notes', text: 'Placeholder for English privacy policy.' },
-          { heading: 'Data collection on this website', text: 'Placeholder for English privacy policy.' },
-          { heading: 'How do we collect your data?', text: 'Placeholder for English privacy policy.' },
-          { heading: '2. General notes and mandatory information', text: 'Placeholder for English privacy policy.' },
-          { heading: 'Privacy', text: 'Placeholder for English privacy policy.' },
-          { heading: 'Note on the responsible body', text: 'Placeholder for English privacy policy.' },
-          { heading: '3. Data collection on this website', text: 'Placeholder for English privacy policy.' },
-          { heading: 'Contact form', text: 'Placeholder for English privacy policy.' },
-          { heading: 'Storage period', text: 'Placeholder for English privacy policy.' },
-          { heading: '4. Newsletter', text: 'Placeholder for English privacy policy.' },
-          { heading: '5. Your rights', text: 'Placeholder for English privacy policy.' },
-          { heading: '6. Changes', text: 'Placeholder for English privacy policy.' },
-          { heading: '', text: 'Placeholder for English privacy policy.' }
+          { heading: '1. Privacy at a Glance', text: '' },
+          { heading: 'General Information', text: 'The following notes provide a simple overview of what happens to your personal data when you visit this website. Personal data is any data with which you can be personally identified.' },
+          { heading: 'Data Collection on this Website', text: 'Who is responsible for data collection on this website? Data processing on this website is carried out by the website operator.' },
+          { heading: 'How Do We Collect Your Data?', text: 'Your data is collected, firstly, by you providing it to us. This may, for example, be data you enter in a contact form. Other data is collected automatically or after your consent when you visit the website by our IT systems. This is mainly technical data (e.g., internet browser, operating system, or time of page access).' },
+          { heading: '2. General Notes and Mandatory Information', text: '' },
+          { heading: 'Privacy', text: 'The operators of these pages take the protection of your personal data very seriously. We treat your personal data confidentially and in accordance with the statutory data protection regulations and this privacy policy.' },
+          { heading: 'Note on the Responsible Body', text: 'The responsible body for data processing on this website is: GFKCoach, Stuttgart-Nord, info@gfkcoach.com' },
+          { heading: '3. Data Collection on this Website', text: '' },
+          { heading: 'Contact Form', text: 'If you send us inquiries via the contact form, your details from the inquiry form, including the contact details you provide there, will be stored by us for the purpose of processing the inquiry and in case of follow-up questions. We do not pass on this data without your consent.' },
+          { heading: 'Storage Period', text: 'Your data will only be stored for as long as is necessary for the respective purposes. If you subscribe to our newsletter, we will store your email address until you unsubscribe.' },
+          { heading: '4. Newsletter', text: 'If you would like to receive the newsletter offered on the website, we require an email address from you as well as information that allows us to verify that you are the owner of the specified email address and agree to receive the newsletter.' },
+          { heading: '5. Your Rights', text: 'You have the right at any time to obtain information about your stored personal data, its origin and recipient, and the purpose of data processing free of charge. You also have the right to request the correction, blocking, or deletion of this data. For this and other questions on the subject of personal data, you can contact us at any time at the address given in the imprint.' },
+          { heading: '6. Changes', text: 'We reserve the right to amend this privacy policy so that it always complies with current legal requirements or to implement changes to our services in the privacy policy, e.g., when introducing new services.' },
+          { heading: '', text: 'When you use GFKCoach, the texts you enter and the AI reformulations are temporarily stored in our database for both logged-in and anonymous users. This is solely for the purpose of improving the service and for statistical analysis. No personal evaluation is carried out for anonymous users.' }
         ]
       },
       anonFeedback: {
@@ -1123,7 +1141,7 @@ export const translations: Record<Language, Translations> = {
         },
         {
           name: 'Dr. Lisa R.',
-          role: 'Therapist',
+          role: 'Therapeutin',
           text: 'I recommend the NVC Coach to my clients as a supplement to therapy. The practical exercises and immediate reformulations help apply what\'s learned in everyday life. The context selection is particularly valuable.'
         }
       ]
