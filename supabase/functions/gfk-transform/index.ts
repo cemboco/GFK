@@ -238,8 +238,8 @@ Formuliere die Aussage in die vier GFK-Schritte um:
 4. Bitte: Was wünscht sich der Nutzer?
 
 **Beispiel für eine gute GFK-Transformation:**
-Input: "Du kommst schon wieder zu spät!"
-GFK-Umformulierung: "Mir ist aufgefallen, dass du 15 Minuten nach der vereinbarten Zeit kommst. Das frustriert mich, weil mir Verlässlichkeit wichtig ist. Könntest du mir beim nächsten Mal vorher Bescheid geben, wenn du dich verspätest?"
+Input: "Ich möchte, dass hier Ruhe einkehrt!"
+GFK-Umformulierung: "Mir fällt auf, dass es hier gerade ziemlich laut ist. Ich fühle mich dadurch unruhig, weil ich Ruhe brauche, um mich konzentrieren zu können. Wärt ihr bereit, für die nächste Zeit etwas leiser zu sein?"
 
 **Antworte im JSON-Format:**
 {
