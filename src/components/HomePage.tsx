@@ -284,9 +284,9 @@ const HomePage: React.FC<HomePageProps> = (props) => {
               <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Hilf uns, GFKCoach zu verbessern!</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">{t.ctaForm.title}</h2>
               <p className="text-lg sm:text-xl text-purple-100 max-w-2xl mx-auto px-4">
-                Teile deine Erfahrungen mit uns und gestalte die Zukunft der empathischen Kommunikation mit.
+                {t.ctaForm.description}
               </p>
             </div>
             
@@ -296,7 +296,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
                   type="text"
                   value={props.name}
                   onChange={(e) => props.setName(e.target.value)}
-                  placeholder="Dein Name"
+                  placeholder={t.ctaForm.namePlaceholder}
                   className="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-gray-900 bg-white/95 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-white/30 transition-all text-sm sm:text-base"
                   required
                 />
@@ -304,7 +304,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
                   type="email"
                   value={props.email}
                   onChange={(e) => props.setEmail(e.target.value)}
-                  placeholder="Deine E-Mail"
+                  placeholder={t.ctaForm.emailPlaceholder}
                   className="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-gray-900 bg-white/95 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-white/30 transition-all text-sm sm:text-base"
                   required
                 />
@@ -312,7 +312,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
               <textarea
                 value={props.message}
                 onChange={(e) => props.setMessage(e.target.value)}
-                placeholder="Deine Nachricht oder Feedback..."
+                placeholder={t.ctaForm.description}
                 rows={4}
                 className="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-2xl text-gray-900 bg-white/95 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-white/30 transition-all resize-none text-sm sm:text-base"
                 required
@@ -327,7 +327,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
                 }`}
               >
                 <Send className="h-4 w-4 sm:h-5 sm:w-5" />
-                <span>{props.isLoading ? 'Wird gesendet...' : 'Nachricht senden'}</span>
+                <span>{props.isLoading ? 'Wird gesendet...' : t.ctaForm.submit}</span>
               </motion.button>
             </form>
             
@@ -337,7 +337,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-red-500/20 border border-red-300/30 rounded-2xl p-3 sm:p-4 text-white max-w-lg mx-auto text-sm sm:text-base"
               >
-                {props.error}
+                {t.ctaForm.error}
               </motion.div>
             )}
             {props.messageSuccess && (
@@ -346,7 +346,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-green-500/20 border border-green-300/30 rounded-2xl p-3 sm:p-4 text-white max-w-lg mx-auto text-sm sm:text-base"
               >
-                Vielen Dank für deine Nachricht! Wir haben sie erhalten. 🎉
+                {'Vielen Dank für deine Nachricht! Wir haben sie erhalten. 🎉'}
               </motion.div>
             )}
           </div>
