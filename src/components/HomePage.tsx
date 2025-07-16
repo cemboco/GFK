@@ -268,14 +268,6 @@ const HomePage: React.FC<HomePageProps> = (props) => {
           transition={{ delay: 1.0 }}
           className="bg-purple-50/50 rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 xl:p-12"
         >
-            <div className="text-center mb-8 sm:mb-12">
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
-                Was unsere Nutzer über uns sagen
-                </h2>
-                <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto px-4">
-                Echte Erfahrungen von Menschen, die ihre Kommunikation mit unserem GFK Coach transformiert haben.
-                </p>
-            </div>
             <Testimonials />
         </motion.section>
 
