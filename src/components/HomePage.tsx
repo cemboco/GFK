@@ -361,10 +361,10 @@ const HomePage: React.FC<HomePageProps> = (props) => {
         >
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
-              Häufig gestellte Fragen
+              {t.home.faq.title}
             </h2>
             <p className="text-base sm:text-lg text-gray-600 px-4">
-              Finde Antworten auf die wichtigsten Fragen zu GFKCoach
+              {t.home.faq.subtitle}
             </p>
           </div>
 
