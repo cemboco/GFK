@@ -49,7 +49,12 @@ export default function Contact() {
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900">{t.contact.title}</h2>
           <p className="mt-4 text-lg text-gray-600">
-            {t.contact.subtitle}
+            {t.contact.description.split('\n').map((line, i) => (
+              <React.Fragment key={i}>
+                {line}
+                <br />
+              </React.Fragment>
+            ))}
           </p>
         </div>
 

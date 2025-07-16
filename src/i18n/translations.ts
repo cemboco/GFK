@@ -264,6 +264,7 @@ export interface Translations {
   // Contact
   contact: {
     title: string;
+    description: string;
     subtitle: string;
     form: {
       name: string;
@@ -674,6 +675,7 @@ export const translations: Record<Language, Translations> = {
     },
     contact: {
       title: 'Kontakt',
+      description: 'Du bist auf der Kontaktseite von GFKCoach.\nHast du Fragen zur Gewaltfreien Kommunikation (GFK), Feedback zur App oder benötigst Unterstützung?\nWir sind hier, um dir zu helfen!',
       subtitle: 'Haben Sie Fragen oder Anregungen?',
       form: {
         name: 'Name',
@@ -1097,6 +1099,7 @@ export const translations: Record<Language, Translations> = {
     },
     contact: {
       title: 'Contact',
+      description: 'You are on the contact page of GFKCoach.\nDo you have questions about Nonviolent Communication (NVC), feedback about the app, or need support?\nWe are here to help you!',
       subtitle: 'Do you have questions or suggestions?',
       form: {
         name: 'Name',
