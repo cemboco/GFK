@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { motion } from 'framer-motion';
 import { Mail, Send, Loader2, CheckCircle } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Contact() {
   const [name, setName] = useState('');
@@ -10,6 +11,8 @@ export default function Contact() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,11 +47,9 @@ export default function Contact() {
     >
       <div className="bg-white shadow-xl rounded-2xl p-8">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">Kontakt</h2>
+          <h2 className="text-3xl font-bold text-gray-900">{t.contact.title}</h2>
           <p className="mt-4 text-lg text-gray-600">
-            Du bist auf der Kontaktseite von GFKCoach.<br />
-            Hast du Fragen zur Gewaltfreien Kommunikation (GFK), Feedback zur App oder benötigst Unterstützung?<br />
-            Wir sind hier, um dir zu helfen!
+            {t.contact.subtitle}
           </p>
         </div>
 
@@ -65,7 +66,7 @@ export default function Contact() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-              Name
+              {t.contact.form.name}
             </label>
             <input
               type="text"
@@ -79,7 +80,7 @@ export default function Contact() {
 
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              E-Mail
+              {t.contact.form.email}
             </label>
             <input
               type="email"
@@ -93,7 +94,7 @@ export default function Contact() {
 
           <div>
             <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-              Nachricht
+              {t.contact.form.message}
             </label>
             <textarea
               id="message"
@@ -116,7 +117,7 @@ export default function Contact() {
               }`}
             >
               <Send className="h-5 w-5 mr-2" />
-              {isLoading ? 'Wird gesendet...' : 'Nachricht senden'}
+              {isLoading ? t.contact.form.submit + '...' : t.contact.form.submit}
             </motion.button>
           </div>
 
@@ -126,7 +127,7 @@ export default function Contact() {
               animate={{ opacity: 1, y: 0 }}
               className="text-center p-4 bg-red-50 text-red-700 rounded-lg"
             >
-              {error}
+              {t.contact.form.error}
             </motion.div>
           )}
 
@@ -136,7 +137,7 @@ export default function Contact() {
               animate={{ opacity: 1, y: 0 }}
               className="text-center p-4 bg-green-50 text-green-700 rounded-lg"
             >
-              Vielen Dank für deine Nachricht! Wir werden uns so schnell wie möglich bei dir melden.
+              {t.contact.form.success}
             </motion.div>
           )}
         </form>
