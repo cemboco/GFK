@@ -160,10 +160,10 @@ export interface Translations {
     fourSteps: {
       title: string;
       steps: {
-        observation: string;
-        feeling: string;
-        need: string;
-        request: string;
+        observation?: string;
+        feeling?: string;
+        need?: string;
+        request?: string;
       }[];
     };
     wolfLanguage: {
@@ -543,8 +543,14 @@ export const translations: Record<Language, Translations> = {
         steps: [
           {
             observation: 'Beobachtung - Beschreiben Sie die Situation objektiv, ohne zu bewerten oder zu interpretieren.',
+          },
+          {
             feeling: 'Gefühl - Drücken Sie Ihre Gefühle aus, die durch die Situation entstehen.',
+          },
+          {
             need: 'Bedürfnis - Benennen Sie die Bedürfnisse, die hinter Ihren Gefühlen stehen.',
+          },
+          {
             request: 'Bitte - Formulieren Sie eine konkrete, positive und machbare Bitte.',
           },
         ],
@@ -967,8 +973,14 @@ export const translations: Record<Language, Translations> = {
         steps: [
           {
             observation: 'Observation - Describe the situation objectively without judging or interpreting.',
+          },
+          {
             feeling: 'Feeling - Express your feelings that arise from the situation.',
+          },
+          {
             need: 'Need - Name the needs that lie behind your feelings.',
+          },
+          {
             request: 'Request - Formulate a concrete, positive, and feasible request.',
           },
         ],
@@ -1071,9 +1083,9 @@ export const translations: Record<Language, Translations> = {
           { heading: 'General Information', text: 'The following notes provide a simple overview of what happens to your personal data when you visit this website. Personal data is any data with which you can be personally identified.' },
           { heading: 'Data Collection on this Website', text: 'Who is responsible for data collection on this website? Data processing on this website is carried out by the website operator.' },
           { heading: 'How Do We Collect Your Data?', text: 'Your data is collected, firstly, by you providing it to us. This may, for example, be data you enter in a contact form. Other data is collected automatically or after your consent when you visit the website by our IT systems. This is mainly technical data (e.g., internet browser, operating system, or time of page access).' },
-          { heading: '2. General Notes and Mandatory Information', text: '' },
+          { heading: '2. Allgemeine Hinweise und Pflichtinformationen', text: '' },
           { heading: 'Privacy', text: 'The operators of these pages take the protection of your personal data very seriously. We treat your personal data confidentially and in accordance with the statutory data protection regulations and this privacy policy.' },
-          { heading: 'Note on the Responsible Body', text: 'The responsible body for data processing on this website is: GFKCoach, Stuttgart-Nord, info@gfkcoach.com' },
+          { heading: 'Hinweis zur verantwortlichen Stelle', text: 'The responsible body for data processing on this website is: GFKCoach, Stuttgart-Nord, info@gfkcoach.com' },
           { heading: '3. Data Collection on this Website', text: '' },
           { heading: 'Contact Form', text: 'If you send us inquiries via the contact form, your details from the inquiry form, including the contact details you provide there, will be stored by us for the purpose of processing the inquiry and in case of follow-up questions. We do not pass on this data without your consent.' },
           { heading: 'Storage Period', text: 'Your data will only be stored for as long as is necessary for the respective purposes. If you subscribe to our newsletter, we will store your email address until you unsubscribe.' },
